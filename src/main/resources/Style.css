@@ -1,0 +1,90 @@
+/* ---------- ROOT ---------- */
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-padding: 20;
+    -fx-background-color: linear-gradient(to bottom, #87CEFA, #E0F7FF); /* bleu ciel gradient */
+}
+
+/* ---------- LABEL ---------- */
+.label {
+    -fx-text-fill: #0A3D62;
+    -fx-font-weight: bold;
+}
+
+/* ---------- TEXTFIELD / COMBOBOX / DATEPICKER ---------- */
+.text-field,
+.combo-box,
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #87CEFA;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5 10 5 10;
+    -fx-pref-width: 300;
+    -fx-focus-color: #00BFFF;
+    -fx-faint-focus-color: transparent;
+}
+
+/* ---------- BUTTON ---------- */
+.button {
+    -fx-background-color: #00BFFF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 20 8 20;
+}
+.button:hover {
+    -fx-background-color: #1E90FF;
+}
+
+/* ---------- TABLE VIEW ---------- */
+.table-view {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #00BFFF;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #ADD8E6;
+}
+
+/* ---------- SEPARATOR ---------- */
+.separator {
+    -fx-background-color: #00BFFF;
+}
+
+/* ---------- HBOX / VBOX SPACING ---------- */
+.vbox, .hbox {
+    -fx-spacing: 10;
+}
+
+/* ---------- CHECKBOX ---------- */
+.check-box {
+    -fx-text-fill: #0A3D62;
+    -fx-font-weight: bold;
+}
+
+/* ---------- COMBOBOX PROMPT TEXT ---------- */
+.combo-box .text-field:prompt-text {
+    -fx-fill: #AAAAAA;
+}
+
+/* ---------- TABLE COLUMN TEXT ---------- */
+.table-view .table-cell {
+    -fx-text-fill: black;
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="800" prefHeight="500"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.ApprenantController"
+            stylesheets="@Style.css"
+            styleClass="root">
+
+    <VBox spacing="10" alignment="CENTER">
+        <Label text="Gestion des Apprenants"/>
+        <TextField fx:id="tfNom" promptText="Nom"/>
+        <TextField fx:id="tfPrenom" promptText="Prénom"/>
+        <ComboBox fx:id="cbFormation" promptText="Formation"/>
+        <TextField fx:id="tfRecherche" promptText="Rechercher..." onKeyReleased="#filtrer"/>
+        <HBox spacing="10">
+            <Button text="Ajouter" onAction="#ajouter"/>
+            <Button text="Modifier" onAction="#modifier"/>
+            <Button text="Supprimer" onAction="#supprimer"/>
+            <Button text="Retour" onAction="#retourMain"/>
+        </HBox>
+        <TableView fx:id="tableApprenant" prefHeight="200">
+            <columns>
+                <TableColumn text="ID" fx:id="colId"/>
+                <TableColumn text="Nom" fx:id="colNom"/>
+                <TableColumn text="Prénom" fx:id="colPrenom"/>
+                <TableColumn text="Formation" fx:id="colFormation"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

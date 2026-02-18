@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="800" prefHeight="550"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.FormationController"
+            stylesheets="@Style.css"
+            styleClass="root">
+
+    <VBox spacing="10" layoutX="20" layoutY="20" prefWidth="760">
+        <Label text="Gestion des Formations"/>
+        <Button text="⬅ Retour au menu principal" onAction="#retourMain"/>
+        <TextField fx:id="tfRecherche" promptText="🔍 Rechercher par titre..."/>
+        <TextField fx:id="tfTitre" promptText="Titre"/>
+        <TextField fx:id="tfDescription" promptText="Description"/>
+        <TextField fx:id="tfDuree" promptText="Durée (en heures)"/>
+        <ComboBox fx:id="cbNiveau" promptText="Niveau"/>
+        <ComboBox fx:id="cbCategorie" promptText="Catégorie"/>
+        <CheckBox fx:id="cbCertification" text="Certification"/>
+        <HBox spacing="10">
+            <Button text="Ajouter" onAction="#ajouter"/>
+            <Button text="Modifier" onAction="#modifier"/>
+            <Button text="Supprimer" onAction="#supprimer"/>
+            <Button text="Afficher" onAction="#afficher"/>
+        </HBox>
+        <TableView fx:id="tableFormation" prefHeight="250">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colTitre" text="Titre" prefWidth="150"/>
+                <TableColumn fx:id="colDuree" text="Durée" prefWidth="80"/>
+                <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
+                <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
+                <TableColumn fx:id="colCertif" text="Certification" prefWidth="120"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="600" prefHeight="400"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.MainController"
+            stylesheets="@Style.css"
+            styleClass="root">
+
+    <VBox spacing="20" alignment="CENTER"
+          AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0">
+
+        <Label text="Gestion Centre de Formation"
+               style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+
+        <Button text="📘 Gestion des Formations"
+                prefWidth="250"
+                onAction="#openFormation"/>
+
+        <Button text="👨‍🎓 Gestion des Apprenants"
+                prefWidth="250"
+                onAction="#openApprenant"/>
+
+        <Separator/>
+
+        <Button text="❌ Quitter"
+                prefWidth="250"
+                onAction="#quitter"/>
+    </VBox>
+</AnchorPane>
