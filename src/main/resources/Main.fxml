@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.MainController"
+            fx:id="rootPane"
+            stylesheets="@style.css">
+
+    <!-- Sidebar -->
+    <left>
+        <VBox spacing="15" styleClass="sidebar">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Button text="Candidats" fx:id="btnCandidat" styleClass="sidebar-btn"/>
+            <Button text="Offres" fx:id="btnOffre" styleClass="sidebar-btn"/>
+            <Button text="Recrutements" fx:id="btnRecrutement" styleClass="sidebar-btn"/>
+            <Button text="Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
+        </VBox>
+    </left>
+
+    <!-- Top bar with modern darkmode switch -->
+    <top>
+        <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10;">
+            <Label text="Dark Mode" style="-fx-text-fill:#0A3D62;"/>
+            <ToggleButton fx:id="toggleDarkMode" styleClass="switch-toggle"/>
+        </HBox>
+    </top>
+
+    <!-- Main content area -->
+    <center>
+        <AnchorPane fx:id="contentArea" styleClass="content-area">
+            <!-- Welcome page -->
+            <VBox fx:id="welcomePane" alignment="CENTER" spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+                <Label text="Welcome to HR Dashboard" style="-fx-font-size:24; -fx-font-weight:bold; -fx-text-fill:#0A3D62"/>
+                <Label text="Select a section from the left menu to start" style="-fx-font-size:16; -fx-text-fill:#0A3D62"/>
+            </VBox>
+        </AnchorPane>
+    </center>
+
+</BorderPane>
+

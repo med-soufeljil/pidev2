@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.RecrutementController"
+      stylesheets="@style.css"
+      style="-fx-padding:20; -fx-background-color:rgba(244,246,249,0.46);">
+
+    <Label text="Gestion des Recrutements" style="-fx-font-size:18;" />
+
+    <ComboBox fx:id="comboOffre" promptText="Choisir Offre"/>
+    <ComboBox fx:id="comboCandidat" promptText="Choisir Candidat"/>
+
+    <HBox spacing="10">
+        <Button text="Ajouter" fx:id="btnAjouter"/>
+        <Button text="Modifier" fx:id="btnModifier"/>
+        <Button text="Supprimer" fx:id="btnSupprimer"/>
+    </HBox>
+
+    <TableView fx:id="tableRecrutement" prefWidth="300" prefHeight="400" layoutX="50" layoutY="120" >
+        <columns>
+            <TableColumn text="ID" fx:id="colId"/>
+            <TableColumn text="Offre" fx:id="colOffre"/>
+            <TableColumn text="Candidat" fx:id="colCandidat"/>
+        </columns>
+    </TableView>
+
+</VBox>

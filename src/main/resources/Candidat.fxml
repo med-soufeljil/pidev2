@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox spacing="20" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.CandidatController"
+      stylesheets="@style.css"
+      alignment="CENTER"
+      style="-fx-padding:20; -fx-background-color:rgba(244,246,249,0.46);">
+    <Label text="Gestion des Candidats" style="-fx-font-size:18;" />
+    <GridPane hgap="10" vgap="10">
+        <TextField fx:id="txtNom" promptText="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtPrenom" promptText="Prénom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCIN" promptText="CIN" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtTel" promptText="Téléphone" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtAdresse" promptText="Adresse" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtEmail" promptText="Email" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCv" promptText="CV" GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+    </GridPane>
+
+
+    <HBox spacing="10">
+        <Button text="Ajouter" fx:id="btnAjouter"/>
+        <Button text="Modifier" fx:id="btnModifier"/>
+        <Button text="Supprimer" fx:id="btnSupprimer"/>
+    </HBox>
+
+    <TableView fx:id="tableCandidat" prefWidth="700" prefHeight="400" layoutX="50" layoutY="120">
+        <columns>
+            <TableColumn text="Nom" fx:id="colNom"/>
+            <TableColumn text="Prénom" fx:id="colPrenom"/>
+            <TableColumn text="CIN" fx:id="colCIN"/>
+            <TableColumn text="Téléphone" fx:id="colTel"/>
+            <TableColumn text="Adresse" fx:id="colAdresse"/>
+            <TableColumn text="Email" fx:id="colEmail"/>
+            <TableColumn text="CV" fx:id="colCv"/>
+        </columns>
+    </TableView>
+
+
+</VBox>

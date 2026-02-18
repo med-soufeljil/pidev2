@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox spacing="12"
+      alignment="TOP_CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.OffreController"
+      stylesheets="@style.css"
+      styleClass="content-area"
+      style="-fx-padding:20;">
+
+    <Label text="Gestion des Offres"
+           styleClass="title-label"/>
+
+    <!-- Barre de recherche -->
+    <TextField fx:id="txtRecherche"
+               promptText="🔍 Rechercher une offre..."
+               prefWidth="300"/>
+
+    <!-- Formulaire -->
+    <GridPane hgap="10" vgap="10">
+
+        <Label text="Nom Offre:" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtNomOffre"
+                   GridPane.rowIndex="0"
+                   GridPane.columnIndex="1"/>
+
+        <Label text="Type:" GridPane.rowIndex="1"/>
+        <!-- ✅ ComboBox au lieu de TextField -->
+        <ComboBox fx:id="comboType"
+                  prefWidth="200"
+                  GridPane.rowIndex="1"
+                  GridPane.columnIndex="1"/>
+
+        <Label text="Compétences:" GridPane.rowIndex="2"/>
+        <TextField fx:id="txtCompetences"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="1"/>
+
+        <Label text="Salaire:" GridPane.rowIndex="3"/>
+        <TextField fx:id="txtSalaire"
+                   GridPane.rowIndex="3"
+                   GridPane.columnIndex="1"/>
+
+    </GridPane>
+
+    <!-- Boutons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Ajouter" fx:id="btnAjouter" styleClass="sidebar-btn"/>
+        <Button text="Modifier" fx:id="btnModifier" styleClass="sidebar-btn"/>
+        <Button text="Supprimer" fx:id="btnSupprimer" styleClass="sidebar-btn"/>
+        <Button text="Reset" fx:id="btnReset" styleClass="sidebar-btn"/>
+    </HBox>
+
+    <!-- TableView -->
+    <TableView fx:id="tableOffre">
+
+        <columns>
+            <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
+            <TableColumn text="Type" fx:id="colType" prefWidth="120"/>
+            <TableColumn text="Compétences" fx:id="colCompetences" prefWidth="200"/>
+            <TableColumn text="Salaire" fx:id="colSalaire" prefWidth="100"/>
+        </columns>
+
+    </TableView>
+
+</VBox>
