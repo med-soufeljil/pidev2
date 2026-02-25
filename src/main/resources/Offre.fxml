@@ -28,7 +28,6 @@
                    GridPane.columnIndex="1"/>
 
         <Label text="Type:" GridPane.rowIndex="1"/>
-        <!-- ✅ ComboBox au lieu de TextField -->
         <ComboBox fx:id="comboType"
                   prefWidth="200"
                   GridPane.rowIndex="1"
@@ -52,10 +51,25 @@
         <Button text="Modifier" fx:id="btnModifier" styleClass="sidebar-btn"/>
         <Button text="Supprimer" fx:id="btnSupprimer" styleClass="sidebar-btn"/>
         <Button text="Reset" fx:id="btnReset" styleClass="sidebar-btn"/>
+        <Button text="Filtre avancé" fx:id="btnFiltre" styleClass="sidebar-btn"/>
+        <Button text="Reset Filtre" fx:id="btnResetFiltre" styleClass="sidebar-btn"/>
     </HBox>
 
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Label text="Résultats :" styleClass="badge-label"/>
+        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
+    </HBox>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Label text="Trier par :" />
+        <ComboBox fx:id="comboTri" prefWidth="150"/>
+
+        <Label text="Ordre :" />
+        <ComboBox fx:id="comboOrdre" prefWidth="130"/>
+    </HBox>
+
+
     <!-- TableView -->
-    <TableView fx:id="tableOffre">
+    <TableView fx:id="tableOffre" prefHeight="400">
 
         <columns>
             <TableColumn text="Nom" fx:id="colNom" prefWidth="150"/>
@@ -65,5 +79,9 @@
         </columns>
 
     </TableView>
+
+    <Pagination fx:id="pagination"
+                pageCount="1"
+                maxPageIndicatorCount="5"/>
 
 </VBox>

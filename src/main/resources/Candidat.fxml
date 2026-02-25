@@ -3,12 +3,22 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<VBox spacing="20" xmlns:fx="http://javafx.com/fxml"
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox spacing="12" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.CandidatController"
       stylesheets="@style.css"
-      alignment="CENTER"
+      alignment="TOP_CENTER"
       style="-fx-padding:20; -fx-background-color:rgba(244,246,249,0.46);">
-    <Label text="Gestion des Candidats" style="-fx-font-size:18;" />
+
+    <Label text="Gestion des Candidats" styleClass="title-label" />
+
+    <!-- Barre de recherche -->
+    <TextField fx:id="txtRecherche"
+               promptText="🔍 Rechercher un candidat..."
+               prefWidth="300"/>
+
+    <!-- Formulaire -->
     <GridPane hgap="10" vgap="10">
         <TextField fx:id="txtNom" promptText="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="txtPrenom" promptText="Prénom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
@@ -19,24 +29,41 @@
         <TextField fx:id="txtCv" promptText="CV" GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
     </GridPane>
 
-
-    <HBox spacing="10">
+    <!-- Boutons -->
+    <HBox spacing="10" alignment="CENTER">
         <Button text="Ajouter" fx:id="btnAjouter"/>
         <Button text="Modifier" fx:id="btnModifier"/>
         <Button text="Supprimer" fx:id="btnSupprimer"/>
+        <Button text="Filtre avancé" fx:id="btnFiltre"/>
+        <Button text="Reset Filtre" fx:id="btnResetFiltre"/>
     </HBox>
 
-    <TableView fx:id="tableCandidat" prefWidth="700" prefHeight="400" layoutX="50" layoutY="120">
+    <!-- Résultats -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Résultats :" styleClass="badge-label"/>
+        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
+    </HBox>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Trier par:"/>
+        <ComboBox fx:id="comboTriChamp" promptText="Choisir Champ"/>
+        <ComboBox fx:id="comboTriOrdre" promptText="Ordre">
+
+        </ComboBox>
+
+    </HBox>
+    <!-- TableView -->
+    <TableView fx:id="tableCandidat" prefWidth="700" prefHeight="400">
         <columns>
-            <TableColumn text="Nom" fx:id="colNom"/>
-            <TableColumn text="Prénom" fx:id="colPrenom"/>
-            <TableColumn text="CIN" fx:id="colCIN"/>
-            <TableColumn text="Téléphone" fx:id="colTel"/>
-            <TableColumn text="Adresse" fx:id="colAdresse"/>
-            <TableColumn text="Email" fx:id="colEmail"/>
-            <TableColumn text="CV" fx:id="colCv"/>
+            <TableColumn fx:id="colNom" text="Nom"/>
+            <TableColumn fx:id="colPrenom" text="Prénom"/>
+            <TableColumn fx:id="colCIN" text="CIN"/>
+            <TableColumn fx:id="colTel" text="Téléphone"/>
+            <TableColumn fx:id="colAdresse" text="Adresse"/>
+            <TableColumn fx:id="colEmail" text="Email"/>
+            <TableColumn fx:id="colCv" text="CV"/>
         </columns>
     </TableView>
 
 
+    <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
 </VBox>
