@@ -9,7 +9,7 @@
       fx:controller="controllers.CandidatController"
       stylesheets="@style.css"
       alignment="TOP_CENTER"
-      style="-fx-padding:20; -fx-background-color:rgba(244,246,249,0.46);">
+      styleClass="content-area" style="-fx-padding:20;">
 
     <Label text="Gestion des Candidats" styleClass="title-label" />
 

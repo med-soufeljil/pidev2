@@ -6,9 +6,9 @@
 <VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.RecrutementController"
       stylesheets="@style.css"
-      style="-fx-padding:20; -fx-background-color:rgba(244,246,249,0.46);">
+    styleClass="content-area" style="-fx-padding:20;">
 
-    <Label text="Gestion des Recrutements" style="-fx-font-size:18;" />
+    <Label text="Gestion des Recrutements" styleClass="title-label" />
 
     <ComboBox fx:id="comboOffre" promptText="Choisir Offre"/>
     <ComboBox fx:id="comboCandidat" promptText="Choisir Candidat"/>

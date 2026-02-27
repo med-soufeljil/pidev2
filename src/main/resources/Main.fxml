@@ -1,31 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.MainController"
             fx:id="rootPane"
-            stylesheets="@style.css">
-
-    <!-- Sidebar -->
+            stylesheets="@style.css"
+            prefHeight="900"
+            prefWidth="1400">
     <left>
-        <VBox spacing="15" styleClass="sidebar">
+        <VBox spacing="20" styleClass="sidebar">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets top="28" right="20" bottom="28" left="20"/>
             </padding>
-            <Button text="Candidats" fx:id="btnCandidat" styleClass="sidebar-btn"/>
-            <Button text="Offres" fx:id="btnOffre" styleClass="sidebar-btn"/>
-            <Button text="Recrutements" fx:id="btnRecrutement" styleClass="sidebar-btn"/>
-            <Button text="Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
+
+            <VBox spacing="6" styleClass="brand-box">
+                <Label text="TalentFlow" styleClass="brand-title"/>
+                <Label text="Recruitment Management Suite" styleClass="brand-subtitle"/>
+            </VBox>
+
+            <Label text="Navigation" styleClass="section-label"/>
+
+            <Button text="👤 Candidats" fx:id="btnCandidat" styleClass="sidebar-btn"/>
+            <Button text="💼 Offres" fx:id="btnOffre" styleClass="sidebar-btn"/>
+            <Button text="✅ Recrutements" fx:id="btnRecrutement" styleClass="sidebar-btn"/>
+            <Button text="📅 Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox spacing="4" styleClass="status-card">
+                <Label text="System status" styleClass="status-title"/>
+                <Label text="● Connected to recruitment database" styleClass="status-ok"/>
+            </VBox>
         </VBox>
     </left>
 
     <!-- Top bar with modern darkmode switch -->
     <top>
-        <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10;">
-            <Label text="Dark Mode" style="-fx-text-fill:#0A3D62;"/>
+        <HBox alignment="CENTER_LEFT" spacing="14" styleClass="topbar">
+            <padding>
+                <Insets top="16" right="24" bottom="16" left="24"/>
+            </padding>
+
+            <VBox spacing="2">
+                <Label text="Recruitment Operations Dashboard" styleClass="topbar-title"/>
+                <Label text="Track candidates, offers, hires and interviews in one place" styleClass="topbar-subtitle"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label text="Dark mode" styleClass="mode-label"/>
             <ToggleButton fx:id="toggleDarkMode" styleClass="switch-toggle"/>
         </HBox>
     </top>
@@ -33,13 +66,35 @@
     <!-- Main content area -->
     <center>
         <AnchorPane fx:id="contentArea" styleClass="content-area">
-            <!-- Welcome page -->
-            <VBox fx:id="welcomePane" alignment="CENTER" spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-                <Label text="Welcome to HR Dashboard" style="-fx-font-size:24; -fx-font-weight:bold; -fx-text-fill:#0A3D62"/>
-                <Label text="Select a section from the left menu to start" style="-fx-font-size:16; -fx-text-fill:#0A3D62"/>
+            <VBox fx:id="welcomePane" alignment="TOP_LEFT" spacing="18"
+                  AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+                <Label text="Welcome back, HR Team 👋" styleClass="welcome-title"/>
+                <Label text="Choose a module from the left to start managing the full recruitment lifecycle." styleClass="welcome-subtitle"/>
+
+                <HBox spacing="16">
+                    <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+                        <Label text="Candidate Pipeline" styleClass="kpi-label"/>
+                        <Label text="Organize profiles, contacts and CVs" styleClass="kpi-value"/>
+                    </VBox>
+                    <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+                        <Label text="Open Positions" styleClass="kpi-label"/>
+                        <Label text="Centralize offers and required skills" styleClass="kpi-value"/>
+                    </VBox>
+                    <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+                        <Label text="Hiring Decisions" styleClass="kpi-label"/>
+                        <Label text="Convert top candidates faster" styleClass="kpi-value"/>
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="10" styleClass="welcome-panel">
+                    <Label text="Recommended workflow" styleClass="panel-title"/>
+                    <Label text="1. Create or review open offers." styleClass="panel-item"/>
+                    <Label text="2. Qualify and filter candidates." styleClass="panel-item"/>
+                    <Label text="3. Validate recrutements and schedule meetings." styleClass="panel-item"/>
+                </VBox>
             </VBox>
         </AnchorPane>
     </center>
 
 </BorderPane>
-

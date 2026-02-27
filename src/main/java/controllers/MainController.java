@@ -3,34 +3,31 @@ package controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class MainController {
-
-    @FXML private Button btnCandidat, btnOffre, btnRecrutement, btnReunion;
-    @FXML private ToggleButton toggleDarkMode;
-    @FXML private AnchorPane contentArea;
-    @FXML private VBox welcomePane;
-    @FXML private BorderPane rootPane;
+    @FXML
+    private Button btnCandidat, btnOffre, btnRecrutement, btnReunion;
+    @FXML
+    private ToggleButton toggleDarkMode;
+    @FXML
+    private AnchorPane contentArea;
+    @FXML
+    private VBox welcomePane;
+    @FXML
+    private BorderPane rootPane;
 
     @FXML
     public void initialize() {
         // Default light mode
         rootPane.getStyleClass().add("light-mode");
-
-        // Dark mode toggle
-        toggleDarkMode.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) {
-                rootPane.getStyleClass().remove("light-mode");
-                rootPane.getStyleClass().add("dark-mode");
-            } else {
-                rootPane.getStyleClass().remove("dark-mode");
-                rootPane.getStyleClass().add("light-mode");
-            }
+        toggleDarkMode.selectedProperty().addListener((obs, oldVal, isDarkMode) -> {
+            rootPane.getStyleClass().removeAll("light-mode", "dark-mode");
+            rootPane.getStyleClass().add(isDarkMode ? "dark-mode" : "light-mode");
         });
 
         // Load FXMLs & hide welcome page
@@ -51,17 +48,11 @@ public class MainController {
                 AnchorPane.setBottomAnchor(pane, 0.0);
                 AnchorPane.setLeftAnchor(pane, 0.0);
                 AnchorPane.setRightAnchor(pane, 0.0);
-
-                // Si c'est un VBox, centre son contenu
-                if (pane instanceof VBox vbox) {
-                    vbox.setAlignment(javafx.geometry.Pos.CENTER);
-                }
+                welcomePane.setVisible(false);
             }
-            welcomePane.setVisible(false);
         } catch (Exception ex) {
             System.err.println("Erreur lors du chargement du FXML: " + fxml);
             ex.printStackTrace();
         }
     }
-
 }

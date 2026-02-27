@@ -11,41 +11,41 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.layout.GridPane?>
-<VBox prefHeight="500" prefWidth="700" spacing="10" style="-fx-padding:20; -fx-background-color:rgba(244,246,249,0.46);" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="controllers.ReunionController">
+    <VBox prefHeight="500" prefWidth="700" spacing="12" styleClass="content-area" style="-fx-padding:20;" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="controllers.ReunionController">
 
-    <GridPane xmlns:fx="http://javafx.com/fxml"
-              hgap="10" vgap="10"
-              style="-fx-padding:20;"
-              alignment="CENTER">
+        <GridPane xmlns:fx="http://javafx.com/fxml"
+                  hgap="10" vgap="10"
+                  style="-fx-padding:20;"
+                  alignment="CENTER">
 
-    <!-- Labels et champs -->
-    <Label text="Gestion des Réunions"
-           style="-fx-font-size:18; -fx-font-weight:bold;"
-           GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+            <!-- Labels et champs -->
+            <Label text="Gestion des Réunions"
+                   styleClass="title-label"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
 
-    <Label text="ID RH:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-    <TextField fx:id="txtIdRH" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1"
-               promptText="ID RH" />
+            <Label text="ID RH:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="txtIdRH" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                       promptText="ID RH" />
 
-    <Label text="Candidat:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-    <ComboBox fx:id="comboCandidat" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="2"
-              promptText="Choisir un candidat" />
+            <Label text="Candidat:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <ComboBox fx:id="comboCandidat" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                      promptText="Choisir un candidat" />
 
-    <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-    <DatePicker fx:id="datePicker" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <DatePicker fx:id="datePicker" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-    <Label text="Lien réunion:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-    <TextField fx:id="txtLink" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="4"
-               promptText="Lien réunion" />
+            <Label text="Lien réunion:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="txtLink" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                       promptText="Lien réunion" />
 
-        <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2" alignment="CENTER">
-        <Button fx:id="btnAjouter" text="Ajouter" />
-        <Button fx:id="btnModifier" text="Modifier" />
-        <Button fx:id="btnSupprimer" text="Supprimer" />
-    </HBox>
+            <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2" alignment="CENTER">
+                <Button fx:id="btnAjouter" text="Ajouter" />
+                <Button fx:id="btnModifier" text="Modifier" />
+                <Button fx:id="btnSupprimer" text="Supprimer" />
+            </HBox>
         </GridPane>
-    <TableView fx:id="tableReunion" prefHeight="400" VBox.vgrow="ALWAYS">
-        <columns>
+        <TableView fx:id="tableReunion" prefHeight="400" VBox.vgrow="ALWAYS">
+            <columns>
             <TableColumn fx:id="colCandidat" prefWidth="200" text="Candidat" />
             <TableColumn fx:id="colDate" prefWidth="150" text="Date" />
             <TableColumn fx:id="colLink" prefWidth="350" text="Lien" />
