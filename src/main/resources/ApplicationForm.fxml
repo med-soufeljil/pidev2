@@ -14,6 +14,16 @@
         <Label fx:id="pageTitle" text="Application" styleClass="title-label"/>
     </HBox>
 
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Changer statut:" styleClass="section-label"/>
+        <Button text="Nouveau" fx:id="btnTagNouveau" styleClass="status-tag"/>
+        <Button text="Premier entretien" fx:id="btnTagPremier" styleClass="status-tag"/>
+        <Button text="Deuxième entretien" fx:id="btnTagDeuxieme" styleClass="status-tag"/>
+        <Button text="Offre envoyée" fx:id="btnTagOffre" styleClass="status-tag"/>
+        <Button text="Acceptée" fx:id="btnTagAcceptee" styleClass="status-tag"/>
+        <Button text="Rejetée" fx:id="btnTagRejetee" styleClass="status-tag"/>
+    </HBox>
+
     <GridPane hgap="8" vgap="8" styleClass="form-grid">
         <Label text="Offre d'emploi" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <ComboBox fx:id="comboOffre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
@@ -33,6 +43,10 @@
         <TextField fx:id="formCv" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
         <Label text="Statut" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
         <ComboBox fx:id="formStatus" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+        <Label text="Réunion" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+        <Label fx:id="lblReunionInfo" text="Aucune réunion planifiée" GridPane.rowIndex="9" GridPane.columnIndex="1" wrapText="true"/>
+        <Label text="Réponse offre" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+        <Label fx:id="lblOfferResponse" text="-" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
     </GridPane>
 
     <HBox spacing="10">

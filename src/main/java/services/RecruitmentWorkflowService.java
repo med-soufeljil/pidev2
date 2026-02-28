@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class RecruitmentWorkflowService {
 
@@ -48,6 +49,27 @@ public class RecruitmentWorkflowService {
         }
     }
 
+    public String getOfferResponse(int candidateId) throws SQLException {
+        String sql = "SELECT offerResponse FROM candidat_workflow WHERE idCandidat = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, candidateId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getString("offerResponse") : null;
+        }
+    }
+
+    public String getLatestReunionSummary(int candidateId) throws SQLException {
+        String sql = "SELECT date, link FROM reunion WHERE idCandidat = ? ORDER BY date DESC LIMIT 1";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, candidateId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return "Date réunion: " + rs.getTimestamp("date") + " | Lien: " + rs.getString("link");
+            }
+            return "Aucune réunion planifiée";
+        }
+    }
+
     public void updateCandidatePhase(int candidateId, String phase) throws SQLException {
         String sql = """
                 INSERT INTO candidat_workflow(idCandidat, phase)
@@ -61,6 +83,16 @@ public class RecruitmentWorkflowService {
         }
     }
 
+    public void recordOfferResponse(String token, String response) throws SQLException {
+        String sql = "UPDATE candidat_workflow SET offerResponse=?, phase=? WHERE offerResponseToken=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, response);
+            ps.setString(2, response);
+            ps.setString(3, token);
+            ps.executeUpdate();
+        }
+    }
+
     public boolean requiresInterviewMeeting(String status) {
         return STATUS_PREMIER_ENTRETIEN.equalsIgnoreCase(status)
                 || STATUS_DEUXIEME_ENTRETIEN.equalsIgnoreCase(status);
@@ -68,10 +100,12 @@ public class RecruitmentWorkflowService {
 
     public void generateSalaryOfferAndSend(Candidat candidat, int salary) throws Exception {
         String offerLabel = "Offre salaire: " + salary;
-        String acceptUrl = "https://recruitflow.app/offer/accept?candidate=" + candidat.getIdCandidat();
-        String rejectUrl = "https://recruitflow.app/offer/reject?candidate=" + candidat.getIdCandidat();
+        String responseToken = UUID.randomUUID().toString();
+        String baseUrl = System.getProperty("offer.response.base.url", System.getenv().getOrDefault("OFFER_RESPONSE_BASE_URL", "http://localhost:8090"));
+        String acceptUrl = baseUrl + "/offer/accept?token=" + responseToken;
+        String rejectUrl = baseUrl + "/offer/reject?token=" + responseToken;
 
-        saveGeneratedOffer(candidat.getIdCandidat(), offerLabel);
+        saveGeneratedOffer(candidat.getIdCandidat(), offerLabel, responseToken);
         emailApiService.sendOfferEmail(
                 candidat.getEmail(),
                 candidat.getPrenom() + " " + candidat.getNom(),
@@ -81,16 +115,17 @@ public class RecruitmentWorkflowService {
         );
     }
 
-    private void saveGeneratedOffer(int candidateId, String generatedOffer) throws SQLException {
+    private void saveGeneratedOffer(int candidateId, String generatedOffer, String responseToken) throws SQLException {
         String sql = """
-                INSERT INTO candidat_workflow(idCandidat, phase, generatedOffer)
-                VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE phase=VALUES(phase), generatedOffer=VALUES(generatedOffer)
+                INSERT INTO candidat_workflow(idCandidat, phase, generatedOffer, offerResponseToken)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE phase=VALUES(phase), generatedOffer=VALUES(generatedOffer), offerResponseToken=VALUES(offerResponseToken)
                 """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, candidateId);
             ps.setString(2, STATUS_OFFRE_ENVOYEE);
             ps.setString(3, generatedOffer);
+            ps.setString(4, responseToken);
             ps.executeUpdate();
         }
     }
@@ -118,6 +153,8 @@ public class RecruitmentWorkflowService {
                     idCandidat INT PRIMARY KEY,
                     phase VARCHAR(60) NOT NULL,
                     generatedOffer VARCHAR(255),
+                    offerResponse VARCHAR(60),
+                    offerResponseToken VARCHAR(100),
                     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                 )
                 """;
@@ -125,5 +162,13 @@ public class RecruitmentWorkflowService {
             ps.executeUpdate();
         } catch (SQLException ignored) {
         }
+
+        try (PreparedStatement ps = connection.prepareStatement("ALTER TABLE candidat_workflow ADD COLUMN offerResponse VARCHAR(60) NULL")) {
+            ps.executeUpdate();
+        } catch (SQLException ignored) {}
+
+        try (PreparedStatement ps = connection.prepareStatement("ALTER TABLE candidat_workflow ADD COLUMN offerResponseToken VARCHAR(100) NULL")) {
+            ps.executeUpdate();
+        } catch (SQLException ignored) {}
     }
 }

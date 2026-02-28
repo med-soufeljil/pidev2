@@ -73,3 +73,17 @@ mvn javafx:run \
   - Add env vars in the Java launch configuration.
 
 Keep tokens out of git history (`.env` files should not be committed).
+
+
+## 5) Offer accept/reject links callback
+
+Offer emails contain Accepter/Rejeter links that call a local callback server in this app.
+
+- Default base URL: `http://localhost:8090`
+- You can override with environment variable `OFFER_RESPONSE_BASE_URL`
+  or JVM property `-Doffer.response.base.url=...`
+
+For remote candidates, point this to a publicly reachable URL that forwards to your app callback endpoints:
+
+- `/offer/accept?token=...`
+- `/offer/reject?token=...`

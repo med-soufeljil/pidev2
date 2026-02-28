@@ -16,7 +16,8 @@ import java.time.LocalDate;
 public class ApplicationFormController {
 
     @FXML private Button btnBack, btnGenerateReunion, btnSendOffer, btnSave;
-    @FXML private Label pageTitle;
+    @FXML private Button btnTagNouveau, btnTagPremier, btnTagDeuxieme, btnTagOffre, btnTagAcceptee, btnTagRejetee;
+    @FXML private Label pageTitle, lblReunionInfo, lblOfferResponse;
     @FXML private ComboBox<Offre> comboOffre;
     @FXML private TextField formNom, formPrenom, formCin, formTel, formAdresse, formEmail, formCv, salaryField;
     @FXML private ComboBox<String> formStatus;
@@ -34,7 +35,7 @@ public class ApplicationFormController {
     public void initialize() {
         btnBack.setOnAction(e -> MainController.navigate("Candidat.fxml"));
         btnSave.setOnAction(e -> save());
-        btnGenerateReunion.setOnAction(e -> generateReunion());
+        btnGenerateReunion.setOnAction(e -> openGenerateReunionPopup());
         btnSendOffer.setOnAction(e -> sendOffer());
 
         formStatus.setItems(FXCollections.observableArrayList(
@@ -46,6 +47,13 @@ public class ApplicationFormController {
                 RecruitmentWorkflowService.STATUS_REJETEE
         ));
         formStatus.setValue(RecruitmentWorkflowService.STATUS_NOUVEAU);
+
+        btnTagNouveau.setOnAction(e -> applyStatusTag(RecruitmentWorkflowService.STATUS_NOUVEAU));
+        btnTagPremier.setOnAction(e -> applyStatusTag(RecruitmentWorkflowService.STATUS_PREMIER_ENTRETIEN));
+        btnTagDeuxieme.setOnAction(e -> applyStatusTag(RecruitmentWorkflowService.STATUS_DEUXIEME_ENTRETIEN));
+        btnTagOffre.setOnAction(e -> applyStatusTag(RecruitmentWorkflowService.STATUS_OFFRE_ENVOYEE));
+        btnTagAcceptee.setOnAction(e -> applyStatusTag(RecruitmentWorkflowService.STATUS_ACCEPTEE));
+        btnTagRejetee.setOnAction(e -> applyStatusTag(RecruitmentWorkflowService.STATUS_REJETEE));
 
         try {
             comboOffre.setItems(FXCollections.observableArrayList(offreService.recuperer()));
@@ -71,13 +79,18 @@ public class ApplicationFormController {
             formCv.setText(current.getCv());
             try {
                 formStatus.setValue(workflowService.getCandidatePhase(current.getIdCandidat()));
+                lblReunionInfo.setText(workflowService.getLatestReunionSummary(current.getIdCandidat()));
+                String response = workflowService.getOfferResponse(current.getIdCandidat());
+                lblOfferResponse.setText(response == null ? "-" : response);
                 int offerId = recrutementService.recuperer().stream()
                         .filter(r -> r.getIdCandidat() == current.getIdCandidat())
                         .map(r -> r.getIdOffre()).findFirst().orElse(0);
-                if (offerId > 0) comboOffre.getItems().stream().filter(o -> o.getIdOffre() == offerId).findFirst().ifPresent(o -> comboOffre.setValue(o));
+                if (offerId > 0) comboOffre.getItems().stream().filter(o -> o.getIdOffre() == offerId).findFirst().ifPresent(comboOffre::setValue);
             } catch (Exception ignored) {}
         } else {
             pageTitle.setText("Nouvelle application");
+            lblReunionInfo.setText("Aucune réunion planifiée");
+            lblOfferResponse.setText("-");
         }
 
         if (prefilledOffre != null) {
@@ -97,6 +110,25 @@ public class ApplicationFormController {
         btnSave.setDisable(readOnly || !AuthContext.isAdmin());
         btnGenerateReunion.setDisable(readOnly || !AuthContext.isAdmin());
         btnSendOffer.setDisable(readOnly || !AuthContext.isAdmin());
+
+        if (!AuthContext.isAdmin()) {
+            btnTagNouveau.setDisable(true);
+            btnTagPremier.setDisable(true);
+            btnTagDeuxieme.setDisable(true);
+            btnTagOffre.setDisable(true);
+            btnTagAcceptee.setDisable(true);
+            btnTagRejetee.setDisable(true);
+        }
+    }
+
+    private void applyStatusTag(String status) {
+        formStatus.setValue(status);
+        if (current != null) {
+            try {
+                workflowService.updateCandidatePhase(current.getIdCandidat(), status);
+                lblOfferResponse.setText(workflowService.getOfferResponse(current.getIdCandidat()) == null ? "-" : workflowService.getOfferResponse(current.getIdCandidat()));
+            } catch (Exception ignored) {}
+        }
     }
 
     private void save() {
@@ -133,19 +165,45 @@ public class ApplicationFormController {
         }
     }
 
-    private void generateReunion() {
-        try {
-            if (current == null || current.getIdCandidat() == 0) throw new IllegalStateException("Enregistrez l'application d'abord.");
-            Reunion reunion = new Reunion();
-            reunion.setIdRH(1);
-            reunion.setIdCandidat(current.getIdCandidat());
-            reunion.setDate(LocalDate.now().plusDays(1).atStartOfDay());
-            reunion.setLink(externalApiService.generateMeetingLink());
-            reunionService.ajouter(reunion);
-            new Alert(Alert.AlertType.INFORMATION, "Réunion générée.").showAndWait();
-        } catch (Exception ex) {
-            new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+    private void openGenerateReunionPopup() {
+        if (current == null || current.getIdCandidat() == 0) {
+            new Alert(Alert.AlertType.WARNING, "Enregistrez l'application d'abord.").showAndWait();
+            return;
         }
+
+        Dialog<ButtonType> d = new Dialog<>();
+        d.setTitle("Générer réunion");
+        ButtonType generateType = new ButtonType("Générer", ButtonBar.ButtonData.OK_DONE);
+        d.getDialogPane().getButtonTypes().addAll(generateType, ButtonType.CANCEL);
+
+        DatePicker datePicker = new DatePicker(LocalDate.now().plusDays(1));
+        TextField linkField = new TextField(externalApiService.generateMeetingLink());
+        Button regen = new Button("Regénérer lien");
+        regen.setOnAction(e -> linkField.setText(externalApiService.generateMeetingLink()));
+
+        GridPane grid = new GridPane();
+        grid.setHgap(8); grid.setVgap(8);
+        grid.addRow(0, new Label("Date de réunion"), datePicker);
+        grid.addRow(1, new Label("Lien"), linkField);
+        grid.add(regen, 1, 2);
+        d.getDialogPane().setContent(grid);
+
+        d.showAndWait().ifPresent(btn -> {
+            if (btn == generateType) {
+                try {
+                    Reunion reunion = new Reunion();
+                    reunion.setIdRH(1);
+                    reunion.setIdCandidat(current.getIdCandidat());
+                    reunion.setDate(datePicker.getValue().atStartOfDay());
+                    reunion.setLink(linkField.getText());
+                    reunionService.ajouter(reunion);
+                    lblReunionInfo.setText(workflowService.getLatestReunionSummary(current.getIdCandidat()));
+                    new Alert(Alert.AlertType.INFORMATION, "Réunion générée avec succès.").showAndWait();
+                } catch (Exception ex) {
+                    new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+                }
+            }
+        });
     }
 
     private void sendOffer() {
@@ -153,6 +211,7 @@ public class ApplicationFormController {
             if (current == null || current.getIdCandidat() == 0) throw new IllegalStateException("Enregistrez l'application d'abord.");
             int salary = Integer.parseInt(salaryField.getText());
             workflowService.generateSalaryOfferAndSend(current, salary);
+            formStatus.setValue(RecruitmentWorkflowService.STATUS_OFFRE_ENVOYEE);
             new Alert(Alert.AlertType.INFORMATION, "Offre envoyée par email.").showAndWait();
         } catch (Exception ex) {
             new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();

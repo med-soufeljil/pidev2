@@ -3,7 +3,6 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,6 +12,9 @@ import utils.AuthContext;
 import utils.NavigationState;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class OffreController {
 
@@ -30,6 +32,7 @@ public class OffreController {
     private final OffreService service = new OffreService();
     private final ObservableList<Offre> masterList = FXCollections.observableArrayList();
     private FilteredList<Offre> filteredList;
+    private Comparator<Offre> currentComparator;
     private static final int ROWS_PER_PAGE = 8;
 
     @FXML
@@ -58,8 +61,8 @@ public class OffreController {
             updatePagination();
         });
 
-        comboTri.setOnAction(e -> appliquerTri());
-        comboOrdre.setOnAction(e -> appliquerTri());
+        comboTri.setOnAction(e -> { appliquerTri(); updatePagination(); });
+        comboOrdre.setOnAction(e -> { appliquerTri(); updatePagination(); });
 
         btnAjouter.setOnAction(e -> {
             NavigationState.clearAll();
@@ -83,6 +86,18 @@ public class OffreController {
 
     private void applyPermissions() {
         boolean admin = AuthContext.isAdmin();
+
+        btnAjouter.setVisible(admin);
+        btnAjouter.setManaged(admin);
+        btnModifier.setVisible(admin);
+        btnModifier.setManaged(admin);
+        btnSupprimer.setVisible(admin);
+        btnSupprimer.setManaged(admin);
+        btnFiltre.setVisible(admin);
+        btnFiltre.setManaged(admin);
+        btnResetFiltre.setVisible(admin);
+        btnResetFiltre.setManaged(admin);
+
         btnAjouter.setDisable(!admin);
         btnModifier.setDisable(!admin);
         btnSupprimer.setDisable(!admin);
@@ -104,7 +119,11 @@ public class OffreController {
             }
             @Override protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
+                if (empty || AuthContext.isAdmin()) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(btn);
+                }
             }
         });
     }
@@ -134,16 +153,26 @@ public class OffreController {
     private void appliquerTri() {
         String champ = comboTri.getValue();
         String ordre = comboOrdre.getValue();
-        if (champ == null) return;
-        SortedList<Offre> sorted = new SortedList<>(filteredList);
-        switch (champ) {
-            case "Nom" -> sorted.setComparator((o1, o2) -> o1.getNomOffre().compareToIgnoreCase(o2.getNomOffre()));
-            case "Type" -> sorted.setComparator((o1, o2) -> o1.getType().name().compareToIgnoreCase(o2.getType().name()));
-            case "Compétences" -> sorted.setComparator((o1, o2) -> o1.getCompetences().compareToIgnoreCase(o2.getCompetences()));
-            case "Salaire" -> sorted.setComparator((o1, o2) -> Integer.compare(o1.getSalaire(), o2.getSalaire()));
+        currentComparator = null;
+        if (champ != null) {
+            switch (champ) {
+                case "Nom" -> currentComparator = (o1, o2) -> o1.getNomOffre().compareToIgnoreCase(o2.getNomOffre());
+                case "Type" -> currentComparator = (o1, o2) -> o1.getType().name().compareToIgnoreCase(o2.getType().name());
+                case "Compétences" -> currentComparator = (o1, o2) -> o1.getCompetences().compareToIgnoreCase(o2.getCompetences());
+                case "Salaire" -> currentComparator = (o1, o2) -> Integer.compare(o1.getSalaire(), o2.getSalaire());
+            }
+            if (currentComparator != null && "Décroissant".equals(ordre)) {
+                currentComparator = currentComparator.reversed();
+            }
         }
-        if ("Décroissant".equals(ordre) && sorted.getComparator() != null) sorted.setComparator(sorted.getComparator().reversed());
-        tableOffre.setItems(sorted);
+    }
+
+    private List<Offre> getCurrentViewList() {
+        List<Offre> list = new ArrayList<>(filteredList);
+        if (currentComparator != null) {
+            list.sort(currentComparator);
+        }
+        return list;
     }
 
     private void loadTable() {
@@ -156,16 +185,20 @@ public class OffreController {
     }
 
     private void updatePagination() {
-        int total = filteredList.size();
+        List<Offre> view = getCurrentViewList();
+        int total = view.size();
         int pageCount = (int) Math.ceil((double) total / ROWS_PER_PAGE);
         pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
-        pagination.setPageFactory(this::createPage);
+        pagination.setPageFactory(pageIndex -> createPage(pageIndex, view));
+        if (pagination.getCurrentPageIndex() >= pagination.getPageCount()) {
+            pagination.setCurrentPageIndex(Math.max(0, pagination.getPageCount() - 1));
+        }
     }
 
-    private TableView<Offre> createPage(int pageIndex) {
+    private TableView<Offre> createPage(int pageIndex, List<Offre> list) {
         int from = pageIndex * ROWS_PER_PAGE;
-        int to = Math.min(from + ROWS_PER_PAGE, filteredList.size());
-        tableOffre.setItems(FXCollections.observableArrayList(filteredList.subList(from, to)));
+        int to = Math.min(from + ROWS_PER_PAGE, list.size());
+        tableOffre.setItems(from <= to ? FXCollections.observableArrayList(list.subList(from, to)) : FXCollections.observableArrayList());
         return tableOffre;
     }
 

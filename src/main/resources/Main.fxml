@@ -32,7 +32,7 @@
             <Label text="Navigation" styleClass="section-label"/>
 
             <Button text="📊 Dashboard" fx:id="btnDashboard" styleClass="sidebar-btn"/>
-            <Button text="💼 Offres" fx:id="btnOffre" styleClass="sidebar-btn"/>
+            <Button text="💼 Offres d'emploi" fx:id="btnOffre" styleClass="sidebar-btn"/>
             <Button text="🗂 Applications" fx:id="btnCandidat" styleClass="sidebar-btn"/>
             <Button text="📅 Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
 
