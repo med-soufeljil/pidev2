@@ -1,54 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.layout.GridPane?>
-    <VBox prefHeight="500" prefWidth="700" spacing="12" styleClass="content-area" style="-fx-padding:20;" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="controllers.ReunionController">
+<VBox prefHeight="500" prefWidth="700" spacing="12" styleClass="content-area" style="-fx-padding:20;" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="controllers.ReunionController">
 
-        <GridPane xmlns:fx="http://javafx.com/fxml"
-                  hgap="10" vgap="10"
-                  style="-fx-padding:20;"
-                  alignment="CENTER">
+    <Label text="Gestion des Réunions" styleClass="title-label"/>
 
-            <!-- Labels et champs -->
-            <Label text="Gestion des Réunions"
-                   styleClass="title-label"
-                   GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button fx:id="btnAjouter" text="Ajouter" />
+        <Button fx:id="btnModifier" text="Modifier" />
+        <Button fx:id="btnSupprimer" text="Supprimer" />
+        <Button fx:id="btnGenerateLink" text="Générer lien API" />
+        <Button fx:id="btnReset" text="Reset" />
+    </HBox>
 
-            <Label text="ID RH:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextField fx:id="txtIdRH" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                       promptText="ID RH" />
-
-            <Label text="Candidat:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <ComboBox fx:id="comboCandidat" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="2"
-                      promptText="Choisir un candidat" />
-
-            <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <DatePicker fx:id="datePicker" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-            <Label text="Lien réunion:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <TextField fx:id="txtLink" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="4"
-                       promptText="Lien réunion" />
-
-            <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2" alignment="CENTER">
-                <Button fx:id="btnAjouter" text="Ajouter" />
-                <Button fx:id="btnModifier" text="Modifier" />
-                <Button fx:id="btnSupprimer" text="Supprimer" />
-            </HBox>
-        </GridPane>
-        <TableView fx:id="tableReunion" prefHeight="400" VBox.vgrow="ALWAYS">
-            <columns>
-            <TableColumn fx:id="colCandidat" prefWidth="200" text="Candidat" />
-            <TableColumn fx:id="colDate" prefWidth="150" text="Date" />
-            <TableColumn fx:id="colLink" prefWidth="350" text="Lien" />
+    <TableView fx:id="tableReunion" prefHeight="450" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colCandidat" prefWidth="220" text="Candidat" />
+            <TableColumn fx:id="colDate" prefWidth="180" text="Date" />
+            <TableColumn fx:id="colLink" prefWidth="500" text="Lien" />
         </columns>
     </TableView>
 </VBox>

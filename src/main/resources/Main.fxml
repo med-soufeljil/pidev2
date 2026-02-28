@@ -17,6 +17,7 @@
             stylesheets="@style.css"
             prefHeight="900"
             prefWidth="1400">
+
     <left>
         <VBox spacing="20" styleClass="sidebar">
             <padding>
@@ -30,6 +31,7 @@
 
             <Label text="Navigation" styleClass="section-label"/>
 
+            <Button text="📊 Dashboard" fx:id="btnDashboard" styleClass="sidebar-btn"/>
             <Button text="👤 Candidats" fx:id="btnCandidat" styleClass="sidebar-btn"/>
             <Button text="💼 Offres" fx:id="btnOffre" styleClass="sidebar-btn"/>
             <Button text="✅ Recrutements" fx:id="btnRecrutement" styleClass="sidebar-btn"/>
@@ -44,7 +46,6 @@
         </VBox>
     </left>
 
-    <!-- Top bar with modern darkmode switch -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="14" styleClass="topbar">
             <padding>
@@ -58,12 +59,12 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
+            <Label fx:id="lblRole" text="Role: -" styleClass="mode-label"/>
             <Label text="Dark mode" styleClass="mode-label"/>
             <ToggleButton fx:id="toggleDarkMode" styleClass="switch-toggle"/>
         </HBox>
     </top>
 
-    <!-- Main content area -->
     <center>
         <AnchorPane fx:id="contentArea" styleClass="content-area">
             <VBox fx:id="welcomePane" alignment="TOP_LEFT" spacing="18"

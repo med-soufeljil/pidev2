@@ -5,19 +5,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import models.Candidat;
 import models.Offre;
 import models.Recrutement;
 import services.CandidatService;
 import services.OffreService;
 import services.RecrutementService;
+import utils.AuthContext;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class RecrutementController {
 
-    @FXML private ComboBox<Offre> comboOffre;
-    @FXML private ComboBox<Candidat> comboCandidat;
     @FXML private TableView<Recrutement> tableRecrutement;
     @FXML private TableColumn<Recrutement, Integer> colId;
     @FXML private TableColumn<Recrutement, String> colOffre;
@@ -29,240 +30,95 @@ public class RecrutementController {
     private final OffreService offreService = new OffreService();
 
     private final ObservableList<Recrutement> list = FXCollections.observableArrayList();
-    private final ObservableList<Candidat> listCandidat = FXCollections.observableArrayList();
-    private final ObservableList<Offre> listOffre = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-
-        // Configuration des colonnes
         colId.setCellValueFactory(new PropertyValueFactory<>("idRec"));
         colOffre.setCellValueFactory(new PropertyValueFactory<>("nomOffre"));
         colCandidat.setCellValueFactory(new PropertyValueFactory<>("nomCandidat"));
-
         tableRecrutement.setItems(list);
 
-        loadComboBox();
         loadTable();
-        setupComboBoxDisplay();
-        setupTableSelection();
 
-        btnAjouter.setOnAction(e -> ajouterRecrutement());
-        btnModifier.setOnAction(e -> modifierRecrutement());
+        btnAjouter.setOnAction(e -> openForm(null));
+        btnModifier.setOnAction(e -> openForm(tableRecrutement.getSelectionModel().getSelectedItem()));
         btnSupprimer.setOnAction(e -> supprimerRecrutement());
+
+        boolean admin = AuthContext.isAdmin();
+        btnAjouter.setDisable(!admin);
+        btnModifier.setDisable(!admin);
+        btnSupprimer.setDisable(!admin);
     }
 
-    // ============================
-    // AFFICHAGE COMBOBOX
-    // ============================
+    private void openForm(Recrutement selected) {
+        Dialog<ButtonType> d = new Dialog<>();
+        d.setTitle(selected == null ? "Ajouter recrutement" : "Modifier recrutement");
+        ButtonType save = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+        d.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
 
-    private void setupComboBoxDisplay() {
-
-        comboOffre.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(Offre item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNomOffre());
-            }
-        });
-
-        comboOffre.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Offre item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNomOffre());
-            }
-        });
-
-        comboCandidat.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(Candidat item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom() + " " + item.getPrenom());
-                }
-            }
-        });
-
-        comboCandidat.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Candidat item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom() + " " + item.getPrenom());
-                }
-            }
-        });
-    }
-
-    // ============================
-    // CHARGEMENT DONNÉES
-    // ============================
-
-    private void loadComboBox() {
+        ComboBox<Offre> comboOffre = new ComboBox<>();
+        ComboBox<Candidat> comboCandidat = new ComboBox<>();
         try {
-            listCandidat.setAll(candidatService.recuperer());
-            listOffre.setAll(offreService.recuperer());
-
-            comboCandidat.setItems(listCandidat);
-            comboOffre.setItems(listOffre);
-
+            comboOffre.setItems(FXCollections.observableArrayList(offreService.recuperer()));
+            comboCandidat.setItems(FXCollections.observableArrayList(candidatService.recuperer()));
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+        }
+
+        comboOffre.setCellFactory(lv -> new ListCell<>() {
+            @Override protected void updateItem(Offre item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNomOffre()); }
+        });
+        comboOffre.setButtonCell(new ListCell<>() {
+            @Override protected void updateItem(Offre item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNomOffre()); }
+        });
+        comboCandidat.setCellFactory(lv -> new ListCell<>() {
+            @Override protected void updateItem(Candidat item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNom() + " " + item.getPrenom()); }
+        });
+        comboCandidat.setButtonCell(new ListCell<>() {
+            @Override protected void updateItem(Candidat item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNom() + " " + item.getPrenom()); }
+        });
+
+        if (selected != null) {
+            comboOffre.getSelectionModel().select(comboOffre.getItems().stream().filter(o -> o.getIdOffre() == selected.getIdOffre()).findFirst().orElse(null));
+            comboCandidat.getSelectionModel().select(comboCandidat.getItems().stream().filter(c -> c.getIdCandidat() == selected.getIdCandidat()).findFirst().orElse(null));
+        }
+
+        GridPane g = new GridPane(); g.setHgap(8); g.setVgap(8);
+        g.addRow(0, new Label("Offre"), comboOffre);
+        g.addRow(1, new Label("Candidat"), comboCandidat);
+        d.getDialogPane().setContent(g);
+
+        Optional<ButtonType> r = d.showAndWait();
+        if (r.isPresent() && r.get() == save) {
+            Offre o = comboOffre.getValue();
+            Candidat c = comboCandidat.getValue();
+            if (o == null || c == null) return;
+            try {
+                if (selected == null) {
+                    service.ajouter(new Recrutement(o.getIdOffre(), c.getIdCandidat()));
+                } else {
+                    selected.setIdOffre(o.getIdOffre());
+                    selected.setIdCandidat(c.getIdCandidat());
+                    service.modifier(selected);
+                }
+                loadTable();
+            } catch (SQLException e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+            }
         }
     }
 
     private void loadTable() {
-        try {
-            list.setAll(service.recuperer());
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
-        }
+        try { list.setAll(service.recuperer()); }
+        catch (SQLException e) { showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage()); }
     }
-
-    // ============================
-    // SELECTION TABLE
-    // ============================
-
-    private void setupTableSelection() {
-        tableRecrutement.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldSelection, selected) -> {
-                    if (selected != null) {
-                        comboOffre.getSelectionModel().select(
-                                listOffre.stream()
-                                        .filter(o -> o.getIdOffre() == selected.getIdOffre())
-                                        .findFirst()
-                                        .orElse(null)
-                        );
-
-                        comboCandidat.getSelectionModel().select(
-                                listCandidat.stream()
-                                        .filter(c -> c.getIdCandidat() == selected.getIdCandidat())
-                                        .findFirst()
-                                        .orElse(null)
-                        );
-                    }
-                });
-    }
-
-    // ============================
-    // AJOUT
-    // ============================
-
-    private void ajouterRecrutement() {
-
-        Offre offre = comboOffre.getValue();
-        Candidat candidat = comboCandidat.getValue();
-
-        if (offre == null || candidat == null) {
-            showAlert(Alert.AlertType.WARNING, "Validation",
-                    "Veuillez sélectionner un candidat et une offre");
-            return;
-        }
-
-        try {
-            Recrutement recrutement =
-                    new Recrutement(offre.getIdOffre(), candidat.getIdCandidat());
-
-            service.ajouter(recrutement);
-            showAlert(Alert.AlertType.INFORMATION, "Succès",
-                    "Recrutement ajouté avec succès !");
-
-            loadTable();
-            resetFields();
-
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
-        }
-    }
-
-    // ============================
-    // MODIFICATION
-    // ============================
-
-    private void modifierRecrutement() {
-
-        Recrutement selected =
-                tableRecrutement.getSelectionModel().getSelectedItem();
-
-        if (selected == null) {
-            showAlert(Alert.AlertType.WARNING, "Sélection",
-                    "Veuillez sélectionner un recrutement");
-            return;
-        }
-
-        Offre offre = comboOffre.getValue();
-        Candidat candidat = comboCandidat.getValue();
-
-        if (offre == null || candidat == null) {
-            showAlert(Alert.AlertType.WARNING, "Validation",
-                    "Veuillez sélectionner un candidat et une offre");
-            return;
-        }
-
-        try {
-            selected.setIdOffre(offre.getIdOffre());
-            selected.setIdCandidat(candidat.getIdCandidat());
-
-            service.modifier(selected);
-
-            showAlert(Alert.AlertType.INFORMATION, "Succès",
-                    "Recrutement modifié avec succès !");
-
-            loadTable();
-            resetFields();
-
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
-        }
-    }
-
-    // ============================
-    // SUPPRESSION
-    // ============================
 
     private void supprimerRecrutement() {
-
-        Recrutement selected =
-                tableRecrutement.getSelectionModel().getSelectedItem();
-
-        if (selected == null) {
-            showAlert(Alert.AlertType.WARNING, "Sélection",
-                    "Veuillez sélectionner un recrutement");
-            return;
-        }
-
-        try {
-            service.supprimer(selected.getIdRec());
-
-            showAlert(Alert.AlertType.INFORMATION, "Succès",
-                    "Recrutement supprimé avec succès !");
-
-            loadTable();
-            resetFields();
-
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
-        }
+        Recrutement selected = tableRecrutement.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+        try { service.supprimer(selected.getIdRec()); loadTable(); }
+        catch (SQLException e) { showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage()); }
     }
-
-    // ============================
-    // RESET
-    // ============================
-
-    private void resetFields() {
-        comboOffre.getSelectionModel().clearSelection();
-        comboCandidat.getSelectionModel().clearSelection();
-        tableRecrutement.getSelectionModel().clearSelection();
-    }
-
-    // ============================
-    // ALERT
-    // ============================
 
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
