@@ -81,6 +81,8 @@ public class OffreController {
 
         configureActionColumn();
         applyPermissions();
+
+        pagination.currentPageIndexProperty().addListener((obs, oldV, newV) -> createPage(newV.intValue()));
         updatePagination();
     }
 
@@ -185,20 +187,27 @@ public class OffreController {
     }
 
     private void updatePagination() {
-        List<Offre> view = getCurrentViewList();
-        int total = view.size();
+        int total = getCurrentViewList().size();
         int pageCount = (int) Math.ceil((double) total / ROWS_PER_PAGE);
         pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
-        pagination.setPageFactory(pageIndex -> createPage(pageIndex, view));
-        if (pagination.getCurrentPageIndex() >= pagination.getPageCount()) {
-            pagination.setCurrentPageIndex(Math.max(0, pagination.getPageCount() - 1));
+
+        int current = pagination.getCurrentPageIndex();
+        if (current >= pagination.getPageCount()) {
+            current = Math.max(0, pagination.getPageCount() - 1);
+            pagination.setCurrentPageIndex(current);
         }
+        createPage(current);
     }
 
-    private TableView<Offre> createPage(int pageIndex, List<Offre> list) {
+    private TableView<Offre> createPage(int pageIndex) {
+        List<Offre> list = getCurrentViewList();
         int from = pageIndex * ROWS_PER_PAGE;
+        if (from >= list.size()) {
+            tableOffre.setItems(FXCollections.observableArrayList());
+            return tableOffre;
+        }
         int to = Math.min(from + ROWS_PER_PAGE, list.size());
-        tableOffre.setItems(from <= to ? FXCollections.observableArrayList(list.subList(from, to)) : FXCollections.observableArrayList());
+        tableOffre.setItems(FXCollections.observableArrayList(list.subList(from, to)));
         return tableOffre;
     }
 

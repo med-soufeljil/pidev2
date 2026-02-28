@@ -49,7 +49,7 @@
         <Label fx:id="lblOfferResponse" text="-" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
     </GridPane>
 
-    <HBox spacing="10">
+    <HBox spacing="10" fx:id="reunionActions">
         <Button fx:id="btnGenerateReunion" text="Générer réunion"/>
         <Button fx:id="btnSendOffer" text="Générer offre & Envoyer"/>
         <TextField fx:id="salaryField" promptText="Salaire" prefWidth="120"/>

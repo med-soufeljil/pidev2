@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
 import models.Candidat;
 import models.Offre;
 import models.Reunion;
@@ -18,6 +20,7 @@ public class ApplicationFormController {
     @FXML private Button btnBack, btnGenerateReunion, btnSendOffer, btnSave;
     @FXML private Button btnTagNouveau, btnTagPremier, btnTagDeuxieme, btnTagOffre, btnTagAcceptee, btnTagRejetee;
     @FXML private Label pageTitle, lblReunionInfo, lblOfferResponse;
+    @FXML private HBox reunionActions;
     @FXML private ComboBox<Offre> comboOffre;
     @FXML private TextField formNom, formPrenom, formCin, formTel, formAdresse, formEmail, formCv, salaryField;
     @FXML private ComboBox<String> formStatus;
@@ -33,7 +36,7 @@ public class ApplicationFormController {
 
     @FXML
     public void initialize() {
-        btnBack.setOnAction(e -> MainController.navigate("Candidat.fxml"));
+        btnBack.setOnAction(e -> MainController.navigate(AuthContext.isCandidat() ? "Offre.fxml" : "Candidat.fxml"));
         btnSave.setOnAction(e -> save());
         btnGenerateReunion.setOnAction(e -> openGenerateReunionPopup());
         btnSendOffer.setOnAction(e -> sendOffer());
@@ -63,6 +66,10 @@ public class ApplicationFormController {
         });
         comboOffre.setButtonCell(new ListCell<>() {
             @Override protected void updateItem(Offre item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNomOffre()); }
+        });
+        comboOffre.setConverter(new StringConverter<>() {
+            @Override public String toString(Offre offre) { return offre == null ? "" : offre.getNomOffre(); }
+            @Override public Offre fromString(String s) { return null; }
         });
 
         current = NavigationState.selectedCandidat;
@@ -118,6 +125,17 @@ public class ApplicationFormController {
             btnTagOffre.setDisable(true);
             btnTagAcceptee.setDisable(true);
             btnTagRejetee.setDisable(true);
+
+            btnGenerateReunion.setVisible(false);
+            btnGenerateReunion.setManaged(false);
+            btnSendOffer.setVisible(false);
+            btnSendOffer.setManaged(false);
+            salaryField.setVisible(false);
+            salaryField.setManaged(false);
+            if (reunionActions != null) {
+                reunionActions.setVisible(false);
+                reunionActions.setManaged(false);
+            }
         }
     }
 
