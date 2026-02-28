@@ -1,58 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <VBox spacing="12" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.CandidatController"
       stylesheets="@style.css"
       alignment="TOP_CENTER"
-      style="-fx-padding:20; -fx-background-color:rgba(244,246,249,0.46);">
+      styleClass="content-area" style="-fx-padding:20;">
 
-    <Label text="Gestion des Candidats" styleClass="title-label" />
+    <Label text="Gestion des Applications" styleClass="title-label" />
 
-    <!-- Barre de recherche -->
-    <TextField fx:id="txtRecherche"
-               promptText="🔍 Rechercher un candidat..."
-               prefWidth="300"/>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="txtRecherche" promptText="🔍 Rechercher une application..." prefWidth="320"/>
+        <Label text="Trier par:"/>
+        <ComboBox fx:id="comboTriChamp" promptText="Champ" prefWidth="140"/>
+        <ComboBox fx:id="comboTriOrdre" promptText="Ordre" prefWidth="130"/>
+    </HBox>
 
-    <!-- Formulaire -->
-    <GridPane hgap="10" vgap="10">
-        <TextField fx:id="txtNom" promptText="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtPrenom" promptText="Prénom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtCIN" promptText="CIN" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtTel" promptText="Téléphone" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtAdresse" promptText="Adresse" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtEmail" promptText="Email" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtCv" promptText="CV" GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-    </GridPane>
-
-    <!-- Boutons -->
-    <HBox spacing="10" alignment="CENTER">
+    <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Ajouter" fx:id="btnAjouter"/>
         <Button text="Modifier" fx:id="btnModifier"/>
         <Button text="Supprimer" fx:id="btnSupprimer"/>
         <Button text="Filtre avancé" fx:id="btnFiltre"/>
         <Button text="Reset Filtre" fx:id="btnResetFiltre"/>
-    </HBox>
-
-    <!-- Résultats -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Résultats :" styleClass="badge-label"/>
         <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
     </HBox>
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Trier par:"/>
-        <ComboBox fx:id="comboTriChamp" promptText="Choisir Champ"/>
-        <ComboBox fx:id="comboTriOrdre" promptText="Ordre">
 
-        </ComboBox>
+    <Label text="Cliquez sur une ligne pour ouvrir le profil application" styleClass="hint-label" />
 
-    </HBox>
-    <!-- TableView -->
-    <TableView fx:id="tableCandidat" prefWidth="700" prefHeight="400">
+    <TableView fx:id="tableCandidat" prefWidth="1000" prefHeight="480">
         <columns>
             <TableColumn fx:id="colNom" text="Nom"/>
             <TableColumn fx:id="colPrenom" text="Prénom"/>
@@ -61,9 +39,9 @@
             <TableColumn fx:id="colAdresse" text="Adresse"/>
             <TableColumn fx:id="colEmail" text="Email"/>
             <TableColumn fx:id="colCv" text="CV"/>
+            <TableColumn fx:id="colStatut" text="Statut"/>
         </columns>
     </TableView>
-
 
     <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
 </VBox>

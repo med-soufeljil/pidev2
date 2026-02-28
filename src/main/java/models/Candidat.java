@@ -9,6 +9,7 @@ public class Candidat {
     private String adresse;
     private String email;
     private String cv;
+    private String statut;
 
     public Candidat(int idCandidat, String nom, int CIN, String prenom, int tel, String adresse, String email, String cv) {
         this.idCandidat = idCandidat;
@@ -19,6 +20,7 @@ public class Candidat {
         this.adresse = adresse;
         this.email = email;
         this.cv = cv;
+        this.statut = "Nouveau";
     }
 
     public Candidat(String nom, String prenom, int CIN, int tel, String adresse, String email, String cv) {
@@ -29,6 +31,7 @@ public class Candidat {
         this.adresse = adresse;
         this.email = email;
         this.cv = cv;
+        this.statut = "Nouveau";
     }
 
     public Candidat() {
@@ -98,6 +101,14 @@ public class Candidat {
         this.cv = cv;
     }
 
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
     @Override
     public String toString() {
         return "Candidat{" +
@@ -109,6 +120,7 @@ public class Candidat {
                 ", adresse='" + adresse + '\'' +
                 ", email='" + email + '\'' +
                 ", cv='" + cv + '\'' +
+                ", statut='" + statut + '\'' +
                 '}';
     }
 }

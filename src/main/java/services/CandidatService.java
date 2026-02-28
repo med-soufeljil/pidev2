@@ -18,15 +18,21 @@ public class CandidatService implements IService<Candidat> {
     @Override
     public void ajouter(Candidat c) throws SQLException {
         String sql = "INSERT INTO candidat (nom, prenom, CIN, tel, adresse, email, cv) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, c.getNom());
-        ps.setString(2, c.getPrenom());
-        ps.setInt(3, c.getCIN());
-        ps.setInt(4, c.getTel());
-        ps.setString(5, c.getAdresse());
-        ps.setString(6, c.getEmail());
-        ps.setString(7, c.getCv());
-        ps.executeUpdate();
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, c.getNom());
+            ps.setString(2, c.getPrenom());
+            ps.setInt(3, c.getCIN());
+            ps.setInt(4, c.getTel());
+            ps.setString(5, c.getAdresse());
+            ps.setString(6, c.getEmail());
+            ps.setString(7, c.getCv());
+            ps.executeUpdate();
+
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                c.setIdCandidat(generatedKeys.getInt(1));
+            }
+        }
     }
 
     @Override

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.DashboardController"
+      spacing="16" styleClass="content-area" stylesheets="@style.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Dashboard Exécutif" styleClass="title-label"/>
+
+    <HBox spacing="12">
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Candidats" styleClass="kpi-label"/>
+            <Label fx:id="lblCandidates" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Offres" styleClass="kpi-label"/>
+            <Label fx:id="lblOffers" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Recrutements" styleClass="kpi-label"/>
+            <Label fx:id="lblRecruitments" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Réunions" styleClass="kpi-label"/>
+            <Label fx:id="lblMeetings" text="0" styleClass="kpi-number"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="16">
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Statistique des offres par type" styleClass="panel-title"/>
+            <PieChart fx:id="pieOffresType" prefHeight="300" legendVisible="true"/>
+        </VBox>
+
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="API Insights (Free APIs)" styleClass="panel-title"/>
+            <TextField fx:id="txtApiName" promptText="Prénom candidat (ex: sara)"/>
+            <HBox spacing="10">
+                <Button text="API Genderize" onAction="#predictGender"/>
+                <Button text="API Nationalize" onAction="#predictNationality"/>
+            </HBox>
+            <Label fx:id="lblApiResult" text="Résultat API..." wrapText="true"/>
+            <TextField fx:id="txtMarketSkill" promptText="Compétence marché (ex: java)"/>
+            <Button text="API Jobs Market" onAction="#loadMarketJobs"/>
+            <Label fx:id="lblMarketJobs" text="Jobs API..." wrapText="true"/>
+            <Button text="Exporter rapport PDF" onAction="#exportPdf"/>
+            <Button text="Rafraîchir dashboard" onAction="#refreshDashboard"/>
+        </VBox>
+    </HBox>
+</VBox>
