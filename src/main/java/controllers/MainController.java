@@ -17,6 +17,8 @@ import java.util.Optional;
 
 public class MainController {
 
+    private static MainController instance;
+
     @FXML
     private Button btnDashboard, btnCandidat, btnOffre, btnReunion;
     @FXML
@@ -32,6 +34,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        instance = this;
         rootPane.getStyleClass().add("light-mode");
 
         pickRoleIfNeeded();
@@ -46,6 +49,13 @@ public class MainController {
         btnCandidat.setOnAction(e -> loadUI("Candidat.fxml"));
         btnOffre.setOnAction(e -> loadUI("Offre.fxml"));
         btnReunion.setOnAction(e -> loadUI("Reunion.fxml"));
+    }
+
+
+    public static void navigate(String fxml) {
+        if (instance != null) {
+            instance.loadUI(fxml);
+        }
     }
 
     private void pickRoleIfNeeded() {

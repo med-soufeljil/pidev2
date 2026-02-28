@@ -65,7 +65,7 @@
     </top>
 
     <center>
-        <AnchorPane fx:id="contentArea" styleClass="content-area">
+        <AnchorPane fx:id="contentArea" id="contentArea" styleClass="content-area">
             <VBox fx:id="welcomePane" alignment="TOP_LEFT" spacing="18"
                   AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
 

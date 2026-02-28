@@ -7,14 +7,10 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
-import models.Candidat;
 import models.Offre;
-import models.TypeOffre;
-import services.CandidatService;
 import services.OffreService;
-import services.RecruitmentWorkflowService;
 import utils.AuthContext;
+import utils.NavigationState;
 
 import java.sql.SQLException;
 
@@ -23,7 +19,6 @@ public class OffreController {
     @FXML private TextField txtRecherche;
     @FXML private ComboBox<String> comboTri;
     @FXML private ComboBox<String> comboOrdre;
-
     @FXML private TableView<Offre> tableOffre;
     @FXML private TableColumn<Offre, String> colNom, colType, colCompetences;
     @FXML private TableColumn<Offre, Integer> colSalaire;
@@ -32,22 +27,9 @@ public class OffreController {
     @FXML private Label lblCount;
     @FXML private Pagination pagination;
 
-    @FXML private VBox offerFormPane, applyFormPane;
-    @FXML private Label offerFormTitle, applyTitle;
-    @FXML private TextField formNom, formCompetences, formSalaire;
-    @FXML private ComboBox<TypeOffre> formType;
-    @FXML private Button btnSaveOfferForm, btnCancelOfferForm;
-    @FXML private TextField applyNom, applyPrenom, applyCin, applyTel, applyAdresse, applyEmail, applyCv;
-    @FXML private Button btnSubmitApply, btnCancelApply;
-
     private final OffreService service = new OffreService();
-    private final CandidatService candidatService = new CandidatService();
-    private final RecruitmentWorkflowService workflowService = new RecruitmentWorkflowService();
     private final ObservableList<Offre> masterList = FXCollections.observableArrayList();
     private FilteredList<Offre> filteredList;
-    private Offre editing;
-    private Offre applyingTo;
-
     private static final int ROWS_PER_PAGE = 8;
 
     @FXML
@@ -55,7 +37,6 @@ public class OffreController {
         comboTri.getItems().addAll("Nom", "Type", "Compétences", "Salaire");
         comboOrdre.getItems().addAll("Croissant", "Décroissant");
         comboOrdre.setValue("Croissant");
-        formType.setItems(FXCollections.observableArrayList(TypeOffre.values()));
 
         colNom.setCellValueFactory(new PropertyValueFactory<>("nomOffre"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -80,16 +61,20 @@ public class OffreController {
         comboTri.setOnAction(e -> appliquerTri());
         comboOrdre.setOnAction(e -> appliquerTri());
 
-        btnAjouter.setOnAction(e -> openOfferForm(null));
-        btnModifier.setOnAction(e -> openOfferForm(tableOffre.getSelectionModel().getSelectedItem()));
+        btnAjouter.setOnAction(e -> {
+            NavigationState.clearAll();
+            MainController.navigate("OffreForm.fxml");
+        });
+        btnModifier.setOnAction(e -> {
+            Offre selected = tableOffre.getSelectionModel().getSelectedItem();
+            if (selected == null || !AuthContext.isAdmin()) return;
+            NavigationState.clearAll();
+            NavigationState.selectedOffre = selected;
+            MainController.navigate("OffreForm.fxml");
+        });
         btnSupprimer.setOnAction(e -> supprimerOffre());
         btnFiltre.setOnAction(e -> applySalaryFilterFromSearch());
-        btnResetFiltre.setOnAction(e -> { filteredList.setPredicate(o -> true); updatePagination(); });
-
-        btnSaveOfferForm.setOnAction(e -> saveOfferForm());
-        btnCancelOfferForm.setOnAction(e -> hideOfferForm());
-        btnSubmitApply.setOnAction(e -> submitApplication());
-        btnCancelApply.setOnAction(e -> hideApplyForm());
+        btnResetFiltre.setOnAction(e -> {filteredList.setPredicate(o -> true); updatePagination();});
 
         configureActionColumn();
         applyPermissions();
@@ -112,89 +97,16 @@ public class OffreController {
                 btn.getStyleClass().add("apply-btn");
                 btn.setOnAction(e -> {
                     Offre offre = getTableView().getItems().get(getIndex());
-                    openApplyForm(offre);
+                    NavigationState.clearAll();
+                    NavigationState.selectedOffre = offre;
+                    MainController.navigate("ApplicationForm.fxml");
                 });
             }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
+            @Override protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : btn);
             }
         });
-    }
-
-    private void openApplyForm(Offre offre) {
-        applyingTo = offre;
-        applyTitle.setText("Postuler à : " + offre.getNomOffre());
-        applyNom.clear();
-        applyPrenom.clear();
-        applyCin.clear();
-        applyTel.clear();
-        applyAdresse.clear();
-        applyEmail.clear();
-        applyCv.clear();
-        applyFormPane.setVisible(true);
-        applyFormPane.setManaged(true);
-    }
-
-    private void submitApplication() {
-        if (applyingTo == null) return;
-        try {
-            Candidat c = new Candidat(
-                    applyNom.getText(), applyPrenom.getText(), Integer.parseInt(applyCin.getText()),
-                    Integer.parseInt(applyTel.getText()), applyAdresse.getText(), applyEmail.getText(), applyCv.getText()
-            );
-            candidatService.ajouter(c);
-            if (c.getIdCandidat() > 0) {
-                workflowService.updateCandidatePhase(c.getIdCandidat(), RecruitmentWorkflowService.STATUS_NOUVEAU);
-            }
-            showAlert(Alert.AlertType.INFORMATION, "Postulation", "Votre candidature a été envoyée pour l'offre: " + applyingTo.getNomOffre());
-            hideApplyForm();
-        } catch (Exception ex) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
-        }
-    }
-
-    private void hideApplyForm() {
-        applyFormPane.setVisible(false);
-        applyFormPane.setManaged(false);
-        applyingTo = null;
-    }
-
-    private void openOfferForm(Offre selected) {
-        if (!AuthContext.isAdmin()) return;
-        editing = selected;
-        offerFormTitle.setText(selected == null ? "Ajouter Offre" : "Modifier Offre");
-        formNom.setText(selected == null ? "" : selected.getNomOffre());
-        formType.setValue(selected == null ? null : selected.getType());
-        formCompetences.setText(selected == null ? "" : selected.getCompetences());
-        formSalaire.setText(selected == null ? "" : String.valueOf(selected.getSalaire()));
-        offerFormPane.setVisible(true);
-        offerFormPane.setManaged(true);
-    }
-
-    private void saveOfferForm() {
-        try {
-            Offre target = editing == null ? new Offre() : editing;
-            target.setNomOffre(formNom.getText());
-            target.setType(formType.getValue());
-            target.setCompetences(formCompetences.getText());
-            target.setSalaire(Integer.parseInt(formSalaire.getText()));
-
-            if (target.getIdOffre() == 0) service.ajouter(target); else service.modifier(target);
-            loadTable();
-            updatePagination();
-            hideOfferForm();
-        } catch (Exception ex) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
-        }
-    }
-
-    private void hideOfferForm() {
-        offerFormPane.setVisible(false);
-        offerFormPane.setManaged(false);
-        editing = null;
     }
 
     private void supprimerOffre() {
@@ -223,7 +135,6 @@ public class OffreController {
         String champ = comboTri.getValue();
         String ordre = comboOrdre.getValue();
         if (champ == null) return;
-
         SortedList<Offre> sorted = new SortedList<>(filteredList);
         switch (champ) {
             case "Nom" -> sorted.setComparator((o1, o2) -> o1.getNomOffre().compareToIgnoreCase(o2.getNomOffre()));

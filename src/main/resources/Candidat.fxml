@@ -53,42 +53,5 @@
 
     <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
 
-    <VBox fx:id="formPane" spacing="10" visible="false" managed="false" styleClass="form-page">
-        <Label fx:id="formTitle" text="Application" styleClass="panel-title"/>
-        <GridPane hgap="8" vgap="8" styleClass="form-grid">
-            <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="formNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-            <Label text="Prénom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="formPrenom" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-            <Label text="CIN" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="formCin" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-            <Label text="Téléphone" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <TextField fx:id="formTel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-            <Label text="Adresse" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TextField fx:id="formAdresse" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-            <Label text="Email" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-            <TextField fx:id="formEmail" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-            <Label text="CV" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <TextField fx:id="formCv" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-            <Label text="Statut" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="formStatus" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
-        </GridPane>
-        <HBox spacing="10">
-            <Button fx:id="btnGenerateReunion" text="Générer réunion"/>
-            <Button fx:id="btnSaveForm" text="Enregistrer"/>
-            <Button fx:id="btnCancelForm" text="Annuler"/>
-        </HBox>
-    </VBox>
-
-    <VBox fx:id="profilePane" spacing="10" visible="false" managed="false" styleClass="form-page">
-        <Label text="Profil application" styleClass="panel-title"/>
-        <Label fx:id="profileInfo" wrapText="true"/>
-        <HBox spacing="8" alignment="CENTER_LEFT">
-            <Label text="Salaire offre"/>
-            <TextField fx:id="profileSalary" promptText="Ex: 3500" prefWidth="120"/>
-            <Button fx:id="btnSendOffer" text="Générer offre & Envoyer"/>
-            <Button fx:id="btnCloseProfile" text="Fermer"/>
-        </HBox>
-    </VBox>
-
+    
 </VBox>
