@@ -15,11 +15,25 @@
         <Button text="Supprimer" fx:id="btnSupprimer"/>
     </HBox>
 
-    <TableView fx:id="tableRecrutement" prefWidth="980" prefHeight="520">
+    <TableView fx:id="tableRecrutement" prefWidth="980" prefHeight="420" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn text="ID" fx:id="colId" prefWidth="100"/>
             <TableColumn text="Offre" fx:id="colOffre" prefWidth="420"/>
             <TableColumn text="Candidat" fx:id="colCandidat" prefWidth="420"/>
         </columns>
     </TableView>
+
+    <VBox fx:id="formPane" spacing="10" visible="false" managed="false" styleClass="form-page">
+        <Label fx:id="formTitle" text="Recrutement" styleClass="panel-title"/>
+        <GridPane hgap="8" vgap="8" styleClass="form-grid">
+            <Label text="Offre" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="formOffre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Candidat" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="formCandidat" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        </GridPane>
+        <HBox spacing="10">
+            <Button fx:id="btnSaveForm" text="Enregistrer"/>
+            <Button fx:id="btnCancelForm" text="Annuler"/>
+        </HBox>
+    </VBox>
 </VBox>

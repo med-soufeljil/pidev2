@@ -7,8 +7,6 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import models.Candidat;
 import models.Reunion;
@@ -20,34 +18,52 @@ import utils.AuthContext;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Optional;
 
 public class CandidatController {
 
     @FXML private TextField txtRecherche;
-    @FXML private ComboBox<String> comboTriChamp;
-    @FXML private ComboBox<String> comboTriOrdre;
+    @FXML private ComboBox<String> comboTriChamp, comboTriOrdre;
     @FXML private TableView<Candidat> tableCandidat;
     @FXML private TableColumn<Candidat, String> colNom, colPrenom, colAdresse, colEmail, colCv, colStatut;
     @FXML private TableColumn<Candidat, Integer> colCIN, colTel;
-    @FXML private Button btnAjouter, btnModifier, btnSupprimer, btnFiltre, btnResetFiltre;
+    @FXML private Button btnAjouter, btnModifier, btnSupprimer, btnResetFiltre;
+    @FXML private Button btnTagTous, btnTagNouveau, btnTagPremier, btnTagDeuxieme, btnTagOffre, btnTagAcceptee, btnTagRejetee;
     @FXML private Label lblCount;
     @FXML private Pagination pagination;
+
+    @FXML private VBox formPane, profilePane;
+    @FXML private Label formTitle, profileInfo;
+    @FXML private TextField formNom, formPrenom, formCin, formTel, formAdresse, formEmail, formCv;
+    @FXML private ComboBox<String> formStatus;
+    @FXML private Button btnGenerateReunion, btnSaveForm, btnCancelForm;
+    @FXML private TextField profileSalary;
+    @FXML private Button btnSendOffer, btnCloseProfile;
 
     private final CandidatService service = new CandidatService();
     private final RecruitmentWorkflowService workflowService = new RecruitmentWorkflowService();
     private final ReunionService reunionService = new ReunionService();
     private final ExternalApiService externalApiService = new ExternalApiService();
+
     private final ObservableList<Candidat> master = FXCollections.observableArrayList();
     private FilteredList<Candidat> filtered;
     private static final int ROWS = 8;
-    private boolean openingProfile;
+    private Candidat editing;
+    private Candidat viewing;
 
     @FXML
     public void initialize() {
         comboTriChamp.getItems().addAll("Nom", "Prénom", "CIN", "Téléphone", "Adresse", "Email", "CV", "Statut");
         comboTriOrdre.getItems().addAll("Croissant", "Décroissant");
         comboTriOrdre.setValue("Croissant");
+
+        formStatus.setItems(FXCollections.observableArrayList(
+                RecruitmentWorkflowService.STATUS_NOUVEAU,
+                RecruitmentWorkflowService.STATUS_PREMIER_ENTRETIEN,
+                RecruitmentWorkflowService.STATUS_DEUXIEME_ENTRETIEN,
+                RecruitmentWorkflowService.STATUS_OFFRE_ENVOYEE,
+                RecruitmentWorkflowService.STATUS_ACCEPTEE,
+                RecruitmentWorkflowService.STATUS_REJETEE
+        ));
 
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
@@ -59,26 +75,51 @@ public class CandidatController {
         colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
 
         loadTable();
-        filtered = new FilteredList<>(master, x -> true);
+        filtered = new FilteredList<>(master, c -> true);
 
-        txtRecherche.textProperty().addListener((a, b, q) -> { applySearch(q); updatePagination(); });
+        txtRecherche.textProperty().addListener((a, b, q) -> {
+            applySearch(q);
+            updatePagination();
+        });
         comboTriChamp.setOnAction(e -> applySort());
         comboTriOrdre.setOnAction(e -> applySort());
+
+        btnTagTous.setOnAction(e -> filterByStatus(null));
+        btnTagNouveau.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_NOUVEAU));
+        btnTagPremier.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_PREMIER_ENTRETIEN));
+        btnTagDeuxieme.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_DEUXIEME_ENTRETIEN));
+        btnTagOffre.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_OFFRE_ENVOYEE));
+        btnTagAcceptee.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_ACCEPTEE));
+        btnTagRejetee.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_REJETEE));
 
         btnAjouter.setOnAction(e -> openForm(null));
         btnModifier.setOnAction(e -> openForm(tableCandidat.getSelectionModel().getSelectedItem()));
         btnSupprimer.setOnAction(e -> deleteSelected());
-        btnFiltre.setOnAction(e -> openFilterDialog());
-        btnResetFiltre.setOnAction(e -> { filtered.setPredicate(x -> true); updatePagination(); });
+        btnResetFiltre.setOnAction(e -> {
+            txtRecherche.clear();
+            filterByStatus(null);
+            comboTriChamp.setValue(null);
+            tableCandidat.setItems(FXCollections.observableArrayList(filtered));
+            updatePagination();
+        });
 
         tableCandidat.setRowFactory(tv -> {
             TableRow<Candidat> row = new TableRow<>();
             row.setOnMouseClicked(e -> {
-                if (!row.isEmpty() && e.getClickCount() == 1 && AuthContext.isAdmin() && !openingProfile) {
-                    openProfileDialog(row.getItem());
+                if (!row.isEmpty() && e.getClickCount() == 1 && AuthContext.isAdmin()) {
+                    showProfile(row.getItem());
                 }
             });
             return row;
+        });
+
+        btnSaveForm.setOnAction(e -> saveForm());
+        btnCancelForm.setOnAction(e -> hideForm());
+        btnGenerateReunion.setOnAction(e -> generateReunion());
+        btnSendOffer.setOnAction(e -> sendOfferFromProfile());
+        btnCloseProfile.setOnAction(e -> {
+            profilePane.setVisible(false);
+            profilePane.setManaged(false);
         });
 
         boolean admin = AuthContext.isAdmin();
@@ -91,187 +132,99 @@ public class CandidatController {
 
     private void openForm(Candidat c) {
         if (!AuthContext.isAdmin()) return;
+        this.editing = c;
+        formTitle.setText(c == null ? "Nouvelle application" : "Modifier application");
 
-        Dialog<ButtonType> d = new Dialog<>();
-        d.setTitle(c == null ? "Ajouter application" : "Modifier application");
-        ButtonType save = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
-        d.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
+        formNom.setText(c == null ? "" : c.getNom());
+        formPrenom.setText(c == null ? "" : c.getPrenom());
+        formCin.setText(c == null ? "" : String.valueOf(c.getCIN()));
+        formTel.setText(c == null ? "" : String.valueOf(c.getTel()));
+        formAdresse.setText(c == null ? "" : c.getAdresse());
+        formEmail.setText(c == null ? "" : c.getEmail());
+        formCv.setText(c == null ? "" : c.getCv());
+        formStatus.setValue(c == null || c.getStatut() == null ? RecruitmentWorkflowService.STATUS_NOUVEAU : c.getStatut());
 
-        TextField nom = new TextField();
-        TextField prenom = new TextField();
-        TextField cin = new TextField();
-        TextField tel = new TextField();
-        TextField adr = new TextField();
-        TextField email = new TextField();
-        TextField cv = new TextField();
-        ComboBox<String> status = new ComboBox<>();
-        status.setItems(FXCollections.observableArrayList(
-                RecruitmentWorkflowService.STATUS_NOUVEAU,
-                RecruitmentWorkflowService.STATUS_PREMIER_ENTRETIEN,
-                RecruitmentWorkflowService.STATUS_DEUXIEME_ENTRETIEN,
-                RecruitmentWorkflowService.STATUS_OFFRE_ENVOYEE,
-                RecruitmentWorkflowService.STATUS_ACCEPTEE,
-                RecruitmentWorkflowService.STATUS_REJETEE
-        ));
-        status.setValue(RecruitmentWorkflowService.STATUS_NOUVEAU);
+        updateGenerateReunionButton();
+        formStatus.valueProperty().addListener((obs, oldV, newV) -> updateGenerateReunionButton());
 
-        Button btnGenerateReunion = new Button("Générer réunion");
-        btnGenerateReunion.getStyleClass().add("apply-btn");
-        btnGenerateReunion.setDisable(true);
-
-        final Candidat[] current = new Candidat[]{c};
-
-        if (c != null) {
-            nom.setText(c.getNom());
-            prenom.setText(c.getPrenom());
-            cin.setText(String.valueOf(c.getCIN()));
-            tel.setText(String.valueOf(c.getTel()));
-            adr.setText(c.getAdresse());
-            email.setText(c.getEmail());
-            cv.setText(c.getCv());
-            status.setValue(c.getStatut() == null ? RecruitmentWorkflowService.STATUS_NOUVEAU : c.getStatut());
-        }
-
-        status.valueProperty().addListener((obs, oldV, newV) ->
-                btnGenerateReunion.setDisable(current[0] == null || !workflowService.requiresInterviewMeeting(newV))
-        );
-
-        btnGenerateReunion.setOnAction(e -> {
-            if (current[0] == null || current[0].getIdCandidat() <= 0) {
-                showAlert(Alert.AlertType.WARNING, "Réunion", "Enregistrez d'abord l'application avant de générer la réunion.");
-                return;
-            }
-            scheduleInterviewDialog(current[0]);
-        });
-
-        GridPane g = new GridPane();
-        g.getStyleClass().add("form-grid");
-        g.setHgap(8);
-        g.setVgap(8);
-        g.addRow(0, new Label("Nom"), nom);
-        g.addRow(1, new Label("Prénom"), prenom);
-        g.addRow(2, new Label("CIN"), cin);
-        g.addRow(3, new Label("Téléphone"), tel);
-        g.addRow(4, new Label("Adresse"), adr);
-        g.addRow(5, new Label("Email"), email);
-        g.addRow(6, new Label("CV"), cv);
-        g.addRow(7, new Label("Statut"), status);
-        g.add(new HBox(10, btnGenerateReunion), 1, 8);
-        d.getDialogPane().setContent(g);
-
-        Optional<ButtonType> r = d.showAndWait();
-        if (r.isPresent() && r.get() == save) {
-            try {
-                if (current[0] == null) current[0] = new Candidat();
-                current[0].setNom(nom.getText());
-                current[0].setPrenom(prenom.getText());
-                current[0].setCIN(Integer.parseInt(cin.getText()));
-                current[0].setTel(Integer.parseInt(tel.getText()));
-                current[0].setAdresse(adr.getText());
-                current[0].setEmail(email.getText());
-                current[0].setCv(cv.getText());
-
-                if (current[0].getIdCandidat() == 0) {
-                    service.ajouter(current[0]);
-                } else {
-                    service.modifier(current[0]);
-                }
-
-                if (current[0].getIdCandidat() > 0) {
-                    workflowService.updateCandidatePhase(current[0].getIdCandidat(), status.getValue());
-                    current[0].setStatut(status.getValue());
-                }
-
-                loadTable();
-                updatePagination();
-            } catch (Exception ex) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
-            }
-        }
+        formPane.setVisible(true);
+        formPane.setManaged(true);
     }
 
-    private void scheduleInterviewDialog(Candidat candidat) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Générer réunion pour " + candidat.getNom() + " " + candidat.getPrenom());
-        ButtonType save = new ButtonType("Créer", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
-
-        TextField txtIdRh = new TextField("1");
-        DatePicker datePicker = new DatePicker(LocalDate.now().plusDays(1));
-        TextField txtLink = new TextField(externalApiService.generateMeetingLink());
-        Button btnRegenerateLink = new Button("Regénérer lien Meet");
-        btnRegenerateLink.getStyleClass().add("apply-btn");
-        btnRegenerateLink.setOnAction(e -> txtLink.setText(externalApiService.generateMeetingLink()));
-
-        GridPane grid = new GridPane();
-        grid.getStyleClass().add("form-grid");
-        grid.setHgap(8);
-        grid.setVgap(8);
-        grid.addRow(0, new Label("ID RH"), txtIdRh);
-        grid.addRow(1, new Label("Date"), datePicker);
-        grid.addRow(2, new Label("Lien"), txtLink);
-        grid.add(new HBox(10, btnRegenerateLink), 1, 3);
-        dialog.getDialogPane().setContent(grid);
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == save) {
-            try {
-                Reunion reunion = new Reunion();
-                reunion.setIdRH(Integer.parseInt(txtIdRh.getText()));
-                reunion.setIdCandidat(candidat.getIdCandidat());
-                reunion.setDate(datePicker.getValue().atStartOfDay());
-                reunion.setLink(txtLink.getText());
-                reunionService.ajouter(reunion);
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Réunion générée et ajoutée dans le menu Réunions.");
-            } catch (Exception ex) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
-            }
-        }
+    private void updateGenerateReunionButton() {
+        boolean enabled = editing != null && editing.getIdCandidat() > 0 && workflowService.requiresInterviewMeeting(formStatus.getValue());
+        btnGenerateReunion.setDisable(!enabled);
     }
 
-    private void openProfileDialog(Candidat c) {
-        openingProfile = true;
+    private void saveForm() {
         try {
-            Dialog<ButtonType> d = new Dialog<>();
-            d.setTitle("Profil application");
-            ButtonType generate = new ButtonType("Générer offre & Envoyer mail", ButtonBar.ButtonData.OK_DONE);
-            d.getDialogPane().getButtonTypes().addAll(generate, ButtonType.CANCEL);
+            Candidat target = editing == null ? new Candidat() : editing;
+            target.setNom(formNom.getText());
+            target.setPrenom(formPrenom.getText());
+            target.setCIN(Integer.parseInt(formCin.getText()));
+            target.setTel(Integer.parseInt(formTel.getText()));
+            target.setAdresse(formAdresse.getText());
+            target.setEmail(formEmail.getText());
+            target.setCv(formCv.getText());
 
+            if (target.getIdCandidat() == 0) service.ajouter(target); else service.modifier(target);
+            workflowService.updateCandidatePhase(target.getIdCandidat(), formStatus.getValue());
+
+            hideForm();
+            loadTable();
+            updatePagination();
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
+        }
+    }
+
+    private void hideForm() {
+        formPane.setVisible(false);
+        formPane.setManaged(false);
+        editing = null;
+    }
+
+    private void generateReunion() {
+        if (editing == null || editing.getIdCandidat() <= 0) return;
+        try {
+            Reunion reunion = new Reunion();
+            reunion.setIdRH(1);
+            reunion.setIdCandidat(editing.getIdCandidat());
+            reunion.setDate(LocalDate.now().plusDays(1).atStartOfDay());
+            reunion.setLink(externalApiService.generateMeetingLink());
+            reunionService.ajouter(reunion);
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Réunion générée dans le menu Réunions.");
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
+        }
+    }
+
+    private void showProfile(Candidat c) {
+        this.viewing = c;
+        try {
             String phase = workflowService.getCandidatePhase(c.getIdCandidat());
             String offer = workflowService.getGeneratedOffer(c.getIdCandidat());
-
-            Label info = new Label("Nom: " + c.getNom() + " " + c.getPrenom()
+            profileInfo.setText("Nom: " + c.getNom() + " " + c.getPrenom()
                     + "\nEmail: " + c.getEmail()
                     + "\nTéléphone: " + c.getTel()
                     + "\nStatut: " + phase
                     + "\nOffre: " + (offer == null ? "Aucune" : offer));
-            info.setWrapText(true);
-
-            TextField salaireField = new TextField();
-            salaireField.setPromptText("Ex: 3500");
-            salaireField.textProperty().addListener((obs, oldV, newV) -> {
-                if (!newV.matches("\\d*")) salaireField.setText(newV.replaceAll("[^\\d]", ""));
-            });
-
-            VBox box = new VBox(12, info, new Label("Salaire de l'offre"), salaireField);
-            box.getStyleClass().add("profile-card");
-            d.getDialogPane().setContent(box);
-
-            Optional<ButtonType> res = d.showAndWait();
-            if (res.isPresent() && res.get() == generate) {
-                if (salaireField.getText().isBlank()) {
-                    showAlert(Alert.AlertType.WARNING, "Validation", "Veuillez saisir un salaire.");
-                    return;
-                }
-                int salary = Integer.parseInt(salaireField.getText());
-                workflowService.generateSalaryOfferAndSend(c, salary);
-                loadTable();
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre envoyée par API mail avec boutons Accepter/Rejeter.");
-            }
+            profilePane.setVisible(true);
+            profilePane.setManaged(true);
         } catch (Exception ex) {
             showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
-        } finally {
-            openingProfile = false;
+        }
+    }
+
+    private void sendOfferFromProfile() {
+        if (viewing == null) return;
+        try {
+            int salary = Integer.parseInt(profileSalary.getText());
+            workflowService.generateSalaryOfferAndSend(viewing, salary);
+            loadTable();
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre envoyée par email.");
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
         }
     }
 
@@ -288,15 +241,9 @@ public class CandidatController {
         }
     }
 
-    private void openFilterDialog() {
-        TextInputDialog d = new TextInputDialog();
-        d.setTitle("Filtre Nom");
-        d.setHeaderText(null);
-        d.setContentText("Contient:");
-        d.showAndWait().ifPresent(v -> {
-            filtered.setPredicate(c -> c.getNom().toLowerCase().contains(v.toLowerCase()));
-            updatePagination();
-        });
+    private void filterByStatus(String status) {
+        filtered.setPredicate(c -> status == null || status.equalsIgnoreCase(c.getStatut()));
+        updatePagination();
     }
 
     private void applySearch(String q) {

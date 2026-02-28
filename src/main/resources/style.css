@@ -500,3 +500,37 @@
     -fx-border-radius: 12;
     -fx-padding: 14;
 }
+
+/* In-page forms and status tags */
+.form-page {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f8fbff);
+    -fx-padding: 16;
+    -fx-border-color: #d7e3f4;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+.status-tag {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #334155;
+    -fx-padding: 6 10;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: #cbd5e1;
+}
+
+.status-tag:hover {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #1d4ed8;
+}
+
+.root.dark-mode .form-page {
+    -fx-background-color: #1f2937;
+    -fx-border-color: #374151;
+}
+
+.root.dark-mode .status-tag {
+    -fx-background-color: #1f2937;
+    -fx-text-fill: #cbd5e1;
+    -fx-border-color: #475569;
+}

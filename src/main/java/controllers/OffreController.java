@@ -7,6 +7,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import models.Candidat;
 import models.Offre;
 import models.TypeOffre;
@@ -16,8 +17,6 @@ import services.RecruitmentWorkflowService;
 import utils.AuthContext;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
 
 public class OffreController {
 
@@ -33,11 +32,21 @@ public class OffreController {
     @FXML private Label lblCount;
     @FXML private Pagination pagination;
 
+    @FXML private VBox offerFormPane, applyFormPane;
+    @FXML private Label offerFormTitle, applyTitle;
+    @FXML private TextField formNom, formCompetences, formSalaire;
+    @FXML private ComboBox<TypeOffre> formType;
+    @FXML private Button btnSaveOfferForm, btnCancelOfferForm;
+    @FXML private TextField applyNom, applyPrenom, applyCin, applyTel, applyAdresse, applyEmail, applyCv;
+    @FXML private Button btnSubmitApply, btnCancelApply;
+
     private final OffreService service = new OffreService();
     private final CandidatService candidatService = new CandidatService();
-    private final ObservableList<Offre> masterList = FXCollections.observableArrayList();
     private final RecruitmentWorkflowService workflowService = new RecruitmentWorkflowService();
+    private final ObservableList<Offre> masterList = FXCollections.observableArrayList();
     private FilteredList<Offre> filteredList;
+    private Offre editing;
+    private Offre applyingTo;
 
     private static final int ROWS_PER_PAGE = 8;
 
@@ -46,6 +55,7 @@ public class OffreController {
         comboTri.getItems().addAll("Nom", "Type", "Compétences", "Salaire");
         comboOrdre.getItems().addAll("Croissant", "Décroissant");
         comboOrdre.setValue("Croissant");
+        formType.setItems(FXCollections.observableArrayList(TypeOffre.values()));
 
         colNom.setCellValueFactory(new PropertyValueFactory<>("nomOffre"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -70,11 +80,16 @@ public class OffreController {
         comboTri.setOnAction(e -> appliquerTri());
         comboOrdre.setOnAction(e -> appliquerTri());
 
-        btnAjouter.setOnAction(e -> ouvrirFormulaireOffre(null));
-        btnModifier.setOnAction(e -> ouvrirFormulaireOffre(tableOffre.getSelectionModel().getSelectedItem()));
+        btnAjouter.setOnAction(e -> openOfferForm(null));
+        btnModifier.setOnAction(e -> openOfferForm(tableOffre.getSelectionModel().getSelectedItem()));
         btnSupprimer.setOnAction(e -> supprimerOffre());
-        btnFiltre.setOnAction(e -> ouvrirFiltreSalaire());
-        btnResetFiltre.setOnAction(e -> {filteredList.setPredicate(o -> true); updatePagination();});
+        btnFiltre.setOnAction(e -> applySalaryFilterFromSearch());
+        btnResetFiltre.setOnAction(e -> { filteredList.setPredicate(o -> true); updatePagination(); });
+
+        btnSaveOfferForm.setOnAction(e -> saveOfferForm());
+        btnCancelOfferForm.setOnAction(e -> hideOfferForm());
+        btnSubmitApply.setOnAction(e -> submitApplication());
+        btnCancelApply.setOnAction(e -> hideApplyForm());
 
         configureActionColumn();
         applyPermissions();
@@ -97,7 +112,7 @@ public class OffreController {
                 btn.getStyleClass().add("apply-btn");
                 btn.setOnAction(e -> {
                     Offre offre = getTableView().getItems().get(getIndex());
-                    ouvrirFormulairePostuler(offre);
+                    openApplyForm(offre);
                 });
             }
 
@@ -109,93 +124,77 @@ public class OffreController {
         });
     }
 
-    private void ouvrirFormulairePostuler(Offre offre) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Postuler à: " + offre.getNomOffre());
-        ButtonType applyType = new ButtonType("Envoyer", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(applyType, ButtonType.CANCEL);
+    private void openApplyForm(Offre offre) {
+        applyingTo = offre;
+        applyTitle.setText("Postuler à : " + offre.getNomOffre());
+        applyNom.clear();
+        applyPrenom.clear();
+        applyCin.clear();
+        applyTel.clear();
+        applyAdresse.clear();
+        applyEmail.clear();
+        applyCv.clear();
+        applyFormPane.setVisible(true);
+        applyFormPane.setManaged(true);
+    }
 
-        TextField nom = new TextField();
-        TextField prenom = new TextField();
-        TextField cin = new TextField();
-        TextField tel = new TextField();
-        TextField adresse = new TextField();
-        TextField email = new TextField();
-        TextField cv = new TextField();
-
-        GridPane g = new GridPane();
-        g.getStyleClass().add("form-grid");
-        g.setHgap(8); g.setVgap(8);
-        g.addRow(0, new Label("Nom"), nom);
-        g.addRow(1, new Label("Prénom"), prenom);
-        g.addRow(2, new Label("CIN"), cin);
-        g.addRow(3, new Label("Téléphone"), tel);
-        g.addRow(4, new Label("Adresse"), adresse);
-        g.addRow(5, new Label("Email"), email);
-        g.addRow(6, new Label("CV"), cv);
-
-        dialog.getDialogPane().setContent(g);
-        Optional<ButtonType> result = dialog.showAndWait();
-
-        if (result.isPresent() && result.get() == applyType) {
-            try {
-                Candidat c = new Candidat(nom.getText(), prenom.getText(), Integer.parseInt(cin.getText()), Integer.parseInt(tel.getText()), adresse.getText(), email.getText(), cv.getText());
-                candidatService.ajouter(c);
-                if (c.getIdCandidat() > 0) {
-                    workflowService.updateCandidatePhase(c.getIdCandidat(), RecruitmentWorkflowService.STATUS_NOUVEAU);
-                }
-                showAlert(Alert.AlertType.INFORMATION, "Postulation", "Votre candidature a été envoyée pour l'offre: " + offre.getNomOffre());
-            } catch (Exception ex) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
+    private void submitApplication() {
+        if (applyingTo == null) return;
+        try {
+            Candidat c = new Candidat(
+                    applyNom.getText(), applyPrenom.getText(), Integer.parseInt(applyCin.getText()),
+                    Integer.parseInt(applyTel.getText()), applyAdresse.getText(), applyEmail.getText(), applyCv.getText()
+            );
+            candidatService.ajouter(c);
+            if (c.getIdCandidat() > 0) {
+                workflowService.updateCandidatePhase(c.getIdCandidat(), RecruitmentWorkflowService.STATUS_NOUVEAU);
             }
+            showAlert(Alert.AlertType.INFORMATION, "Postulation", "Votre candidature a été envoyée pour l'offre: " + applyingTo.getNomOffre());
+            hideApplyForm();
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
         }
     }
 
-    private void ouvrirFormulaireOffre(Offre selected) {
-        if (selected == null && !AuthContext.isAdmin()) return;
+    private void hideApplyForm() {
+        applyFormPane.setVisible(false);
+        applyFormPane.setManaged(false);
+        applyingTo = null;
+    }
 
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(selected == null ? "Ajouter Offre" : "Modifier Offre");
-        ButtonType saveType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveType, ButtonType.CANCEL);
+    private void openOfferForm(Offre selected) {
+        if (!AuthContext.isAdmin()) return;
+        editing = selected;
+        offerFormTitle.setText(selected == null ? "Ajouter Offre" : "Modifier Offre");
+        formNom.setText(selected == null ? "" : selected.getNomOffre());
+        formType.setValue(selected == null ? null : selected.getType());
+        formCompetences.setText(selected == null ? "" : selected.getCompetences());
+        formSalaire.setText(selected == null ? "" : String.valueOf(selected.getSalaire()));
+        offerFormPane.setVisible(true);
+        offerFormPane.setManaged(true);
+    }
 
-        TextField nom = new TextField();
-        ComboBox<TypeOffre> type = new ComboBox<>(FXCollections.observableArrayList(TypeOffre.values()));
-        TextField comp = new TextField();
-        TextField salaire = new TextField();
+    private void saveOfferForm() {
+        try {
+            Offre target = editing == null ? new Offre() : editing;
+            target.setNomOffre(formNom.getText());
+            target.setType(formType.getValue());
+            target.setCompetences(formCompetences.getText());
+            target.setSalaire(Integer.parseInt(formSalaire.getText()));
 
-        if (selected != null) {
-            nom.setText(selected.getNomOffre());
-            type.setValue(selected.getType());
-            comp.setText(selected.getCompetences());
-            salaire.setText(String.valueOf(selected.getSalaire()));
+            if (target.getIdOffre() == 0) service.ajouter(target); else service.modifier(target);
+            loadTable();
+            updatePagination();
+            hideOfferForm();
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
         }
+    }
 
-        GridPane g = new GridPane();
-        g.getStyleClass().add("form-grid");
-        g.setHgap(8); g.setVgap(8);
-        g.addRow(0, new Label("Nom"), nom);
-        g.addRow(1, new Label("Type"), type);
-        g.addRow(2, new Label("Compétences"), comp);
-        g.addRow(3, new Label("Salaire"), salaire);
-        dialog.getDialogPane().setContent(g);
-
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == saveType) {
-            try {
-                if (selected == null) selected = new Offre();
-                selected.setNomOffre(nom.getText());
-                selected.setType(type.getValue());
-                selected.setCompetences(comp.getText());
-                selected.setSalaire(Integer.parseInt(salaire.getText()));
-
-                if (selected.getIdOffre() == 0) service.ajouter(selected); else service.modifier(selected);
-                loadTable();
-                updatePagination();
-            } catch (Exception ex) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
-            }
-        }
+    private void hideOfferForm() {
+        offerFormPane.setVisible(false);
+        offerFormPane.setManaged(false);
+        editing = null;
     }
 
     private void supprimerOffre() {
@@ -210,18 +209,14 @@ public class OffreController {
         }
     }
 
-    private void ouvrirFiltreSalaire() {
-        TextInputDialog d = new TextInputDialog();
-        d.setTitle("Filtre salaire min");
-        d.setHeaderText(null);
-        d.setContentText("Salaire minimum:");
-        d.showAndWait().ifPresent(v -> {
-            try {
-                int min = Integer.parseInt(v);
-                filteredList.setPredicate(o -> o.getSalaire() >= min);
-                updatePagination();
-            } catch (NumberFormatException ignored) {}
-        });
+    private void applySalaryFilterFromSearch() {
+        try {
+            int min = Integer.parseInt(txtRecherche.getText().trim());
+            filteredList.setPredicate(o -> o.getSalaire() >= min);
+            updatePagination();
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.INFORMATION, "Filtre salaire", "Saisissez un montant dans la recherche puis cliquez Filtre avancé.");
+        }
     }
 
     private void appliquerTri() {
@@ -236,7 +231,7 @@ public class OffreController {
             case "Compétences" -> sorted.setComparator((o1, o2) -> o1.getCompetences().compareToIgnoreCase(o2.getCompetences()));
             case "Salaire" -> sorted.setComparator((o1, o2) -> Integer.compare(o1.getSalaire(), o2.getSalaire()));
         }
-        if ("Décroissant".equals(ordre)) sorted.setComparator(sorted.getComparator().reversed());
+        if ("Décroissant".equals(ordre) && sorted.getComparator() != null) sorted.setComparator(sorted.getComparator().reversed());
         tableOffre.setItems(sorted);
     }
 

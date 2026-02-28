@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="12" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml"
+<VBox spacing="12" alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.OffreController" stylesheets="@style.css"
       styleClass="content-area" style="-fx-padding:20;">
 
@@ -14,6 +14,8 @@
         <Label text="Trier:"/>
         <ComboBox fx:id="comboTri" prefWidth="130"/>
         <ComboBox fx:id="comboOrdre" prefWidth="130"/>
+        <Label text="Résultats:" styleClass="badge-label"/>
+        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
@@ -22,11 +24,9 @@
         <Button text="Supprimer" fx:id="btnSupprimer"/>
         <Button text="Filtre avancé" fx:id="btnFiltre"/>
         <Button text="Reset Filtre" fx:id="btnResetFiltre"/>
-        <Label text="Résultats:" styleClass="badge-label"/>
-        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
     </HBox>
 
-    <TableView fx:id="tableOffre" prefHeight="470" prefWidth="1000">
+    <TableView fx:id="tableOffre" prefHeight="470" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn text="Nom" fx:id="colNom" prefWidth="190"/>
             <TableColumn text="Type" fx:id="colType" prefWidth="140"/>
@@ -37,4 +37,46 @@
     </TableView>
 
     <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
+
+    <VBox fx:id="offerFormPane" spacing="10" visible="false" managed="false" styleClass="form-page">
+        <Label fx:id="offerFormTitle" text="Offre" styleClass="panel-title"/>
+        <GridPane hgap="8" vgap="8" styleClass="form-grid">
+            <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="formNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Type" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="formType" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="Compétences" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="formCompetences" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Salaire" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="formSalaire" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        </GridPane>
+        <HBox spacing="10">
+            <Button fx:id="btnSaveOfferForm" text="Enregistrer"/>
+            <Button fx:id="btnCancelOfferForm" text="Annuler"/>
+        </HBox>
+    </VBox>
+
+    <VBox fx:id="applyFormPane" spacing="10" visible="false" managed="false" styleClass="form-page">
+        <Label fx:id="applyTitle" text="Postuler" styleClass="panel-title"/>
+        <GridPane hgap="8" vgap="8" styleClass="form-grid">
+            <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="applyNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Prénom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="applyPrenom" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="CIN" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="applyCin" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Téléphone" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="applyTel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label text="Adresse" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="applyAdresse" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            <Label text="Email" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="applyEmail" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            <Label text="CV" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="applyCv" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+        </GridPane>
+        <HBox spacing="10">
+            <Button fx:id="btnSubmitApply" text="Envoyer"/>
+            <Button fx:id="btnCancelApply" text="Annuler"/>
+        </HBox>
+    </VBox>
 </VBox>

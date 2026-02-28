@@ -6,31 +6,39 @@
 <VBox spacing="12" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.CandidatController"
       stylesheets="@style.css"
-      alignment="TOP_CENTER"
+      alignment="TOP_LEFT"
       styleClass="content-area" style="-fx-padding:20;">
 
     <Label text="Gestion des Applications" styleClass="title-label" />
+
+    <HBox spacing="8" alignment="CENTER_LEFT" fx:id="statusTagsBar">
+        <Label text="Statuts:" styleClass="section-label"/>
+        <Button text="Tous" fx:id="btnTagTous" styleClass="status-tag"/>
+        <Button text="Nouveau" fx:id="btnTagNouveau" styleClass="status-tag"/>
+        <Button text="Premier entretien" fx:id="btnTagPremier" styleClass="status-tag"/>
+        <Button text="Deuxième entretien" fx:id="btnTagDeuxieme" styleClass="status-tag"/>
+        <Button text="Offre envoyée" fx:id="btnTagOffre" styleClass="status-tag"/>
+        <Button text="Acceptée" fx:id="btnTagAcceptee" styleClass="status-tag"/>
+        <Button text="Rejetée" fx:id="btnTagRejetee" styleClass="status-tag"/>
+    </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <TextField fx:id="txtRecherche" promptText="🔍 Rechercher une application..." prefWidth="320"/>
         <Label text="Trier par:"/>
         <ComboBox fx:id="comboTriChamp" promptText="Champ" prefWidth="140"/>
         <ComboBox fx:id="comboTriOrdre" promptText="Ordre" prefWidth="130"/>
-    </HBox>
-
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="Ajouter" fx:id="btnAjouter"/>
-        <Button text="Modifier" fx:id="btnModifier"/>
-        <Button text="Supprimer" fx:id="btnSupprimer"/>
-        <Button text="Filtre avancé" fx:id="btnFiltre"/>
-        <Button text="Reset Filtre" fx:id="btnResetFiltre"/>
         <Label text="Résultats :" styleClass="badge-label"/>
         <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
     </HBox>
 
-    <Label text="Cliquez sur une ligne pour ouvrir le profil application" styleClass="hint-label" />
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Nouvelle application" fx:id="btnAjouter"/>
+        <Button text="Modifier" fx:id="btnModifier"/>
+        <Button text="Supprimer" fx:id="btnSupprimer"/>
+        <Button text="Reset Filtre" fx:id="btnResetFiltre"/>
+    </HBox>
 
-    <TableView fx:id="tableCandidat" prefWidth="1000" prefHeight="480">
+    <TableView fx:id="tableCandidat" prefHeight="420" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colNom" text="Nom"/>
             <TableColumn fx:id="colPrenom" text="Prénom"/>
@@ -44,4 +52,43 @@
     </TableView>
 
     <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
+
+    <VBox fx:id="formPane" spacing="10" visible="false" managed="false" styleClass="form-page">
+        <Label fx:id="formTitle" text="Application" styleClass="panel-title"/>
+        <GridPane hgap="8" vgap="8" styleClass="form-grid">
+            <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="formNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Prénom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="formPrenom" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="CIN" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="formCin" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Téléphone" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="formTel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label text="Adresse" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="formAdresse" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            <Label text="Email" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="formEmail" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            <Label text="CV" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="formCv" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+            <Label text="Statut" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="formStatus" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+        </GridPane>
+        <HBox spacing="10">
+            <Button fx:id="btnGenerateReunion" text="Générer réunion"/>
+            <Button fx:id="btnSaveForm" text="Enregistrer"/>
+            <Button fx:id="btnCancelForm" text="Annuler"/>
+        </HBox>
+    </VBox>
+
+    <VBox fx:id="profilePane" spacing="10" visible="false" managed="false" styleClass="form-page">
+        <Label text="Profil application" styleClass="panel-title"/>
+        <Label fx:id="profileInfo" wrapText="true"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label text="Salaire offre"/>
+            <TextField fx:id="profileSalary" promptText="Ex: 3500" prefWidth="120"/>
+            <Button fx:id="btnSendOffer" text="Générer offre & Envoyer"/>
+            <Button fx:id="btnCloseProfile" text="Fermer"/>
+        </HBox>
+    </VBox>
+
 </VBox>

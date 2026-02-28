@@ -5,8 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import models.Candidat;
 import models.Reunion;
 import services.CandidatService;
@@ -17,7 +16,6 @@ import utils.AuthContext;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public class ReunionController {
 
@@ -25,11 +23,19 @@ public class ReunionController {
     @FXML private TableColumn<Reunion, String> colCandidat, colDate, colLink;
     @FXML private Button btnAjouter, btnModifier, btnSupprimer, btnReset;
 
+    @FXML private VBox formPane;
+    @FXML private Label formTitle;
+    @FXML private TextField formIdRh, formLink;
+    @FXML private ComboBox<Candidat> formCandidat;
+    @FXML private DatePicker formDate;
+    @FXML private Button btnGenerateLink, btnSaveForm, btnCancelForm;
+
     private final ReunionService service = new ReunionService();
     private final CandidatService candidatService = new CandidatService();
     private final ExternalApiService externalApiService = new ExternalApiService();
 
     private final ObservableList<Reunion> list = FXCollections.observableArrayList();
+    private Reunion editing;
 
     @FXML
     public void initialize() {
@@ -45,73 +51,71 @@ public class ReunionController {
         btnSupprimer.setOnAction(e -> supprimerReunion());
         btnReset.setOnAction(e -> tableReunion.getSelectionModel().clearSelection());
 
+        btnGenerateLink.setOnAction(e -> formLink.setText(externalApiService.generateMeetingLink()));
+        btnSaveForm.setOnAction(e -> saveForm());
+        btnCancelForm.setOnAction(e -> hideForm());
+
+        formCandidat.setCellFactory(lv -> new ListCell<>() {
+            @Override protected void updateItem(Candidat item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNom() + " " + item.getPrenom()); }
+        });
+        formCandidat.setButtonCell(new ListCell<>() {
+            @Override protected void updateItem(Candidat item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNom() + " " + item.getPrenom()); }
+        });
+
         applyPermissions();
     }
 
     private void openForm(Reunion selected) {
-        Dialog<ButtonType> d = new Dialog<>();
-        d.setTitle(selected == null ? "Ajouter réunion" : "Modifier réunion");
-        ButtonType save = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
-        d.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
-
-        ComboBox<Candidat> comboCandidat = new ComboBox<>();
-        DatePicker datePicker = new DatePicker();
-        TextField txtIdRH = new TextField();
-        TextField txtLink = new TextField();
-        Button btnFillMeetLink = new Button("Générer lien Meet");
+        editing = selected;
+        formTitle.setText(selected == null ? "Ajouter réunion" : "Modifier réunion");
 
         try {
-            comboCandidat.setItems(FXCollections.observableArrayList(candidatService.recuperer()));
+            formCandidat.setItems(FXCollections.observableArrayList(candidatService.recuperer()));
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
         }
 
-        comboCandidat.setCellFactory(lv -> new ListCell<>() {
-            @Override protected void updateItem(Candidat item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNom() + " " + item.getPrenom()); }
-        });
-        comboCandidat.setButtonCell(new ListCell<>() {
-            @Override protected void updateItem(Candidat item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.getNom() + " " + item.getPrenom()); }
-        });
-
-        btnFillMeetLink.setOnAction(e -> txtLink.setText(externalApiService.generateMeetingLink()));
-
-        if (selected != null) {
-            txtIdRH.setText(String.valueOf(selected.getIdRH()));
-            datePicker.setValue(selected.getDate().toLocalDate());
-            txtLink.setText(selected.getLink());
-            comboCandidat.getSelectionModel().select(comboCandidat.getItems().stream().filter(c->c.getIdCandidat()==selected.getIdCandidat()).findFirst().orElse(null));
+        if (selected == null) {
+            formIdRh.setText("1");
+            formDate.setValue(LocalDate.now().plusDays(1));
+            formLink.setText(externalApiService.generateMeetingLink());
+            formCandidat.getSelectionModel().clearSelection();
+        } else {
+            formIdRh.setText(String.valueOf(selected.getIdRH()));
+            formDate.setValue(selected.getDate().toLocalDate());
+            formLink.setText(selected.getLink());
+            formCandidat.getSelectionModel().select(formCandidat.getItems().stream().filter(c -> c.getIdCandidat() == selected.getIdCandidat()).findFirst().orElse(null));
         }
 
-        GridPane g = new GridPane();
-        g.getStyleClass().add("form-grid");
-        g.setHgap(8); g.setVgap(8);
-        g.addRow(0, new Label("ID RH"), txtIdRH);
-        g.addRow(1, new Label("Candidat"), comboCandidat);
-        g.addRow(2, new Label("Date"), datePicker);
-        g.addRow(3, new Label("Lien"), txtLink);
-        g.add(new HBox(10, btnFillMeetLink), 1, 4);
-        d.getDialogPane().setContent(g);
+        formPane.setVisible(true);
+        formPane.setManaged(true);
+    }
 
-        Optional<ButtonType> r = d.showAndWait();
-        if (r.isPresent() && r.get() == save) {
-            Candidat c = comboCandidat.getValue();
-            LocalDate date = datePicker.getValue();
-            if (c == null || date == null || txtIdRH.getText().isBlank() || txtLink.getText().isBlank()) {
-                showAlert(Alert.AlertType.WARNING, "Validation", "Veuillez remplir tous les champs.");
-                return;
-            }
-            try {
-                if (selected == null) selected = new Reunion();
-                selected.setIdRH(Integer.parseInt(txtIdRH.getText()));
-                selected.setIdCandidat(c.getIdCandidat());
-                selected.setDate(date.atStartOfDay());
-                selected.setLink(txtLink.getText());
-                if (selected.getIdReunion() == 0) service.ajouter(selected); else service.modifier(selected);
-                loadTable();
-            } catch (Exception e) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
-            }
+    private void saveForm() {
+        Candidat c = formCandidat.getValue();
+        LocalDate date = formDate.getValue();
+        if (c == null || date == null || formIdRh.getText().isBlank() || formLink.getText().isBlank()) {
+            showAlert(Alert.AlertType.WARNING, "Validation", "Veuillez remplir tous les champs.");
+            return;
         }
+        try {
+            Reunion target = editing == null ? new Reunion() : editing;
+            target.setIdRH(Integer.parseInt(formIdRh.getText()));
+            target.setIdCandidat(c.getIdCandidat());
+            target.setDate(date.atStartOfDay());
+            target.setLink(formLink.getText());
+            if (target.getIdReunion() == 0) service.ajouter(target); else service.modifier(target);
+            hideForm();
+            loadTable();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+        }
+    }
+
+    private void hideForm() {
+        formPane.setVisible(false);
+        formPane.setManaged(false);
+        editing = null;
     }
 
     private void applyPermissions() {
@@ -142,8 +146,12 @@ public class ReunionController {
     private void supprimerReunion() {
         Reunion r = tableReunion.getSelectionModel().getSelectedItem();
         if (r == null) return;
-        try { service.supprimer(r.getIdReunion()); loadTable(); }
-        catch (SQLException ex) { showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage()); }
+        try {
+            service.supprimer(r.getIdReunion());
+            loadTable();
+        } catch (SQLException ex) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {
