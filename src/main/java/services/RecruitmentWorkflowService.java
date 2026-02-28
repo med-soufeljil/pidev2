@@ -84,11 +84,10 @@ public class RecruitmentWorkflowService {
     }
 
     public void recordOfferResponse(String token, String response) throws SQLException {
-        String sql = "UPDATE candidat_workflow SET offerResponse=?, phase=? WHERE offerResponseToken=?";
+        String sql = "UPDATE candidat_workflow SET offerResponse=? WHERE offerResponseToken=?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, response);
-            ps.setString(2, response);
-            ps.setString(3, token);
+            ps.setString(2, token);
             ps.executeUpdate();
         }
     }
