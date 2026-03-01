@@ -3,34 +3,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefWidth="600" prefHeight="400"
+<AnchorPane prefWidth="680" prefHeight="460"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.MainController"
             stylesheets="@Style.css"
-            styleClass="root">
+            styleClass="page-root">
 
-    <VBox spacing="20" alignment="CENTER"
+    <VBox spacing="18" alignment="CENTER"
           AnchorPane.topAnchor="0"
           AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0"
           AnchorPane.rightAnchor="0">
 
-        <Label text="Gestion Centre de Formation"
-               style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label text="Gestion Centre de Formation" styleClass="page-title"/>
 
-        <Button text="📘 Gestion des Formations"
-                prefWidth="250"
-                onAction="#openFormation"/>
+        <Button text="📘 Gestion des Formations" prefWidth="300" onAction="#openFormation"/>
+        <Button text="👨‍🎓 Gestion des Apprenants" prefWidth="300" onAction="#openApprenant"/>
+        <Button text="📊 Dashboard avancé" prefWidth="300" onAction="#openDashboard"/>
 
-        <Button text="👨‍🎓 Gestion des Apprenants"
-                prefWidth="250"
-                onAction="#openApprenant"/>
+        <Separator prefWidth="260"/>
 
-        <Separator/>
-
-        <Button text="❌ Quitter"
-                prefWidth="250"
-                onAction="#quitter"/>
+        <Button text="❌ Quitter" prefWidth="300" onAction="#quitter" styleClass="secondary-btn"/>
     </VBox>
 </AnchorPane>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="16" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.DashboardController" stylesheets="@Style.css" styleClass="page-root">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Dashboard avancé" styleClass="page-title"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Formations" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="lblTotalFormations" styleClass="kpi-value" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Apprenants" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="lblTotalApprenants" styleClass="kpi-value" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Durée moyenne" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label fx:id="lblAvgDuree" styleClass="kpi-value" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Certifications" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label fx:id="lblCertif" styleClass="kpi-value" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <PieChart fx:id="pieChart" title="Répartition certifications" prefHeight="250"/>
+
+    <HBox spacing="10">
+        <Button text="Actualiser" onAction="#refresh"/>
+        <Button text="Exporter PDF" onAction="#exportPdf"/>
+        <Button text="Exporter CSV" onAction="#exportCsv"/>
+        <Button text="Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+    </HBox>
+</VBox>
