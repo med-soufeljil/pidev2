@@ -40,25 +40,6 @@ public class MainController {
     }
 
     @FXML
-    public void showApiInfo(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("API locale disponible");
-        alert.setHeaderText("Documentation API (méthode + exemples)");
-        String base = ApiRuntime.getBaseUrl();
-        alert.setContentText(
-                "GET  " + base + "/api/health\n"
-                        + "GET  " + base + "/api/formations?q=java&sortBy=duree&order=desc\n"
-                        + "GET  " + base + "/api/apprenants\n"
-                        + "GET  " + base + "/api/dashboard\n"
-                        + "GET  " + base + "/api/dashboard/pdf\n"
-                        + "GET  " + base + "/api/feedbacks?formationId=1\n"
-                        + "POST " + base + "/api/mailing/registration?email=a@b.com&name=Ali+Ben&formation=Java\n"
-                        + "GET  " + base + "/api/external/suggestion"
-        );
-        alert.showAndWait();
-    }
-
-    @FXML
     public void quitter(ActionEvent event) {
         System.exit(0);
     }

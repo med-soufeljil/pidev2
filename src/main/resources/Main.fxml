@@ -52,7 +52,6 @@
     <bottom>
         <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="bottom-actions">
             <padding><Insets top="8" right="26" bottom="18" left="26"/></padding>
-            <Button text="Documentation API complète" onAction="#showApiInfo" styleClass="secondary-btn"/>
             <Button text="Quitter" onAction="#quitter" styleClass="danger-btn"/>
         </HBox>
     </bottom>
