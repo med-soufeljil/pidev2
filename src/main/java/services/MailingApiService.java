@@ -25,9 +25,13 @@ public class MailingApiService {
     public boolean sendRegistrationEmail(String email, String fullName, String formationTitle) {
         String apiKey = pick(
                 envOrNull("MAILERSEND_API_KEY"),
+                envOrNull("MAILERSEND_TOKEN"),
                 envOrNull("MAILSENDER_API_KEY"),
+                envOrNull("MAILSENDER_TOKEN"),
                 System.getProperty("mailersend.api.key"),
-                FILE_CONFIG.getProperty("mailersend.api.key")
+                System.getProperty("mailersend.token"),
+                FILE_CONFIG.getProperty("mailersend.api.key"),
+                FILE_CONFIG.getProperty("mailersend.token")
         );
 
         String fromEmail = pick(
@@ -46,8 +50,8 @@ public class MailingApiService {
         );
 
         if (isBlank(apiKey) || isBlank(fromEmail)) {
-            lastError = "Configuration MailerSend manquante. Définissez MAILERSEND_API_KEY + MAILERSEND_FROM_EMAIL "
-                    + "(ou MAILSENDER_*), ou ajoutez ./mailing.properties avec mailersend.api.key et mailersend.from.email.";
+            lastError = "Configuration MailerSend manquante. Définissez MAILERSEND_API_KEY (ou MAILERSEND_TOKEN) + MAILERSEND_FROM_EMAIL "
+                    + "(ou MAILSENDER_*), ou ajoutez ./mailing.properties avec mailersend.api.key (ou mailersend.token) et mailersend.from.email.";
             return false;
         }
 

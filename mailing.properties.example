@@ -1,4 +1,5 @@
 # Copy this file to mailing.properties and fill your real credentials
-mailersend.api.key=ms_XXXXXXXXXXXXXXXXXXXXXXXX
+# You can use either mailersend.api.key or mailersend.token
+mailersend.token=mlsn_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 mailersend.from.email=verified-sender@yourdomain.com
 mailersend.from.name=PIDEV Formation
