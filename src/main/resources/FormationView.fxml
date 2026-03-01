@@ -40,6 +40,7 @@
                         <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
                         <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
                         <TableColumn fx:id="colCertif" text="Certif" prefWidth="90"/>
+                        <TableColumn fx:id="colPostulerAction" text="Postuler" prefWidth="120"/>
                     </columns>
                 </TableView>
             </VBox>
@@ -75,7 +76,7 @@
                 <HBox spacing="8">
                     <Button text="Ajouter feedback" onAction="#addFeedback"/>
                     <Button fx:id="btnPostuler" text="Postuler" onAction="#postuler" styleClass="secondary-btn"/>
-                    <Button text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn"/>
+                    <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn"/>
                 </HBox>
 
                 <TableView fx:id="tableFeedback" prefHeight="180">

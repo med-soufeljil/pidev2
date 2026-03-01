@@ -181,3 +181,18 @@
     -fx-text-fill: #0a3d62;
     -fx-padding: 8 10;
 }
+
+
+.postuler-row-btn {
+    -fx-background-color: linear-gradient(to bottom, #1d9bf0, #0a6dd8);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 800;
+    -fx-background-radius: 18;
+    -fx-padding: 6 14;
+    -fx-border-color: transparent;
+}
+
+.postuler-row-btn:hover {
+    -fx-background-color: linear-gradient(to bottom, #39b4ff, #1b82ea);
+    -fx-effect: dropshadow(gaussian, rgba(9,85,170,0.30), 8, 0.25, 0, 1);
+}

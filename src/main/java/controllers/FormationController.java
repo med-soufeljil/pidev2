@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.TableCell;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -49,10 +50,12 @@ public class FormationController implements Initializable {
     @FXML private TableColumn<Formation, Niveau> colNiveau;
     @FXML private TableColumn<Formation, Categorie> colCategorie;
     @FXML private TableColumn<Formation, Boolean> colCertif;
+    @FXML private TableColumn<Formation, Void> colPostulerAction;
 
     @FXML private VBox boxEdition;
     @FXML private HBox hbCrud;
     @FXML private Button btnPostuler;
+    @FXML private Button btnAfficherFeedbacks;
 
     @FXML private TextField tfFeedbackAuteur;
     @FXML private TextArea taFeedback;
@@ -85,6 +88,30 @@ public class FormationController implements Initializable {
         colNiveau.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getNiveau()));
         colCategorie.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCategorie()));
         colCertif.setCellValueFactory(data -> new SimpleBooleanProperty(data.getValue().isCertification()));
+        if (colPostulerAction != null) {
+            colPostulerAction.setCellFactory(param -> new TableCell<>() {
+                private final Button applyButton = new Button("Postuler");
+                {
+                    applyButton.getStyleClass().add("postuler-row-btn");
+                    applyButton.setOnAction(event -> {
+                        Formation formation = getTableView().getItems().get(getIndex());
+                        postulerForFormation(formation);
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        applyButton.setVisible(SessionContext.isUser());
+                        applyButton.setManaged(SessionContext.isUser());
+                        setGraphic(SessionContext.isUser() ? applyButton : null);
+                    }
+                }
+            });
+        }
 
         colFeedbackAuteur.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getAuthor()));
         colFeedbackNote.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRating()).asObject());
@@ -353,6 +380,13 @@ public class FormationController implements Initializable {
             alert("Postuler", "Sélectionnez une formation pour postuler.");
             return;
         }
+        postulerForFormation(selected);
+    }
+
+    private void postulerForFormation(Formation selected) {
+        if (selected == null) {
+            return;
+        }
         SessionContext.setPendingFormation(selected.getId_formation(), selected.getTitre());
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/ApprenantView.fxml"));
@@ -384,6 +418,11 @@ public class FormationController implements Initializable {
         if (hbCrud != null) hbCrud.setManaged(!userMode);
         if (btnPostuler != null) btnPostuler.setVisible(userMode);
         if (btnPostuler != null) btnPostuler.setManaged(userMode);
+        if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setVisible(!userMode);
+        if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setManaged(!userMode);
+        if (tableFeedback != null) tableFeedback.setVisible(!userMode);
+        if (tableFeedback != null) tableFeedback.setManaged(!userMode);
+        if (colPostulerAction != null) colPostulerAction.setVisible(userMode);
     }
     private void alert(String header, String content) {
         Alert a = new Alert(Alert.AlertType.ERROR);
