@@ -44,14 +44,15 @@
 
             <ListView fx:id="listMarkets" prefHeight="120" styleClass="card"/>
 
-            <PieChart fx:id="pieChart" title="Répartition certifications" prefHeight="260"/>
-
-            <HBox spacing="10">
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
+                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                 <Button text="Actualiser" onAction="#refresh"/>
                 <Button text="Export PDF (API)" onAction="#exportPdf"/>
                 <Button text="Export CSV" onAction="#exportCsv" styleClass="secondary-btn"/>
                 <Button text="Retour" onAction="#retourMain" styleClass="danger-btn"/>
             </HBox>
+
+            <PieChart fx:id="pieChart" title="Répartition certifications" prefHeight="240"/>
         </VBox>
     </content>
 </ScrollPane>
