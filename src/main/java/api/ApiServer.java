@@ -39,6 +39,7 @@ public class ApiServer {
         server.createContext("/api/feedbacks", this::handleFeedbacks);
         server.createContext("/api/mailing/registration", this::handleMailingRegistration);
         server.createContext("/api/external/suggestion", this::handleExternalSuggestion);
+        server.createContext("/api/market/top", this::handleTopMarkets);
         server.createContext("/api/health", this::handleHealth);
         server.setExecutor(Executors.newFixedThreadPool(6));
         server.start();
@@ -202,6 +203,38 @@ public class ApiServer {
         }
         String suggestion = new ExternalPublicApiService().fetchSuggestionTitle();
         sendJson(exchange, 200, "{\"source\":\"jsonplaceholder\",\"suggestion\":\"" + escape(suggestion) + "\"}");
+    }
+
+
+    private void handleTopMarkets(HttpExchange exchange) throws IOException {
+        if (!"GET".equals(exchange.getRequestMethod())) {
+            sendJson(exchange, 405, "{"error":"Method not allowed"}");
+            return;
+        }
+        Map<String, String> query = parseQuery(exchange.getRequestURI());
+        String tech = query.getOrDefault("tech", "").trim().toLowerCase();
+        if (tech.isBlank()) {
+            sendJson(exchange, 400, "{"error":"tech query param is required"}");
+            return;
+        }
+
+        Map<String, List<String>> marketMap = new HashMap<>();
+        marketMap.put("java", List.of("Germany", "United States", "India"));
+        marketMap.put("spring", List.of("Germany", "Netherlands", "Poland"));
+        marketMap.put("javascript", List.of("United States", "United Kingdom", "Canada"));
+        marketMap.put("react", List.of("United States", "Germany", "France"));
+        marketMap.put("angular", List.of("India", "United Kingdom", "Germany"));
+        marketMap.put("python", List.of("United States", "Canada", "Germany"));
+        marketMap.put("dotnet", List.of("United States", "United Kingdom", "Sweden"));
+
+        List<String> markets = marketMap.getOrDefault(tech, List.of("United States", "Germany", "France"));
+        StringBuilder json = new StringBuilder("{"tech":"").append(escape(tech)).append("","topMarkets":[");
+        for (int i = 0; i < markets.size(); i++) {
+            json.append(""").append(escape(markets.get(i))).append(""");
+            if (i < markets.size() - 1) json.append(',');
+        }
+        json.append("]}");
+        sendJson(exchange, 200, json.toString());
     }
 
     private void handleHealth(HttpExchange exchange) throws IOException {

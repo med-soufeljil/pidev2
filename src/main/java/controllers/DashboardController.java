@@ -9,19 +9,23 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import services.DashboardService;
+import utils.ApiRuntime;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import utils.ApiRuntime;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardController {
 
@@ -30,6 +34,9 @@ public class DashboardController {
     @FXML private Label lblAvgDuree;
     @FXML private Label lblCertif;
     @FXML private PieChart pieChart;
+
+    @FXML private TextField tfTech;
+    @FXML private ListView<String> listMarkets;
 
     private final DashboardService dashboardService = new DashboardService();
     private DashboardStats stats;
@@ -56,6 +63,51 @@ public class DashboardController {
         } catch (SQLException e) {
             error("Chargement dashboard", e.getMessage());
         }
+    }
+
+    @FXML
+    public void findTopMarkets() {
+        String tech = tfTech.getText() == null ? "" : tfTech.getText().trim();
+        if (tech.isEmpty()) {
+            error("Top markets", "Veuillez saisir une technologie (ex: java, spring, react).");
+            return;
+        }
+
+        try {
+            URL url = new URL(ApiRuntime.getBaseUrl() + "/api/market/top?tech=" + tech.replace(" ", "%20"));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(3000);
+            conn.setReadTimeout(5000);
+
+            int code = conn.getResponseCode();
+            if (code != 200) {
+                throw new IOException("API market/top returned status " + code);
+            }
+
+            String body;
+            try (InputStream in = conn.getInputStream()) {
+                body = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            }
+
+            listMarkets.setItems(FXCollections.observableArrayList(parseMarkets(body)));
+        } catch (IOException e) {
+            error("Top markets", "Erreur API: " + e.getMessage());
+        }
+    }
+
+    private List<String> parseMarkets(String json) {
+        List<String> result = new ArrayList<>();
+        int start = json.indexOf("[\"");
+        int end = json.indexOf("\"]", start);
+        if (start == -1 || end == -1) {
+            return result;
+        }
+        String raw = json.substring(start + 2, end);
+        for (String item : raw.split("\",\"")) {
+            result.add(item);
+        }
+        return result;
     }
 
     @FXML

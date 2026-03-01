@@ -4,6 +4,8 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -27,7 +29,16 @@
         <Label fx:id="lblCertif" styleClass="kpi-value" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
     </GridPane>
 
-    <PieChart fx:id="pieChart" title="Répartition certifications" prefHeight="300"/>
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
+        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+        <Label text="Top markets (tech)" styleClass="section-title"/>
+        <TextField fx:id="tfTech" promptText="java / spring / react ..." prefWidth="280"/>
+        <Button text="Trouver Top 3" onAction="#findTopMarkets"/>
+    </HBox>
+
+    <ListView fx:id="listMarkets" prefHeight="120" styleClass="card"/>
+
+    <PieChart fx:id="pieChart" title="Répartition certifications" prefHeight="260"/>
 
     <HBox spacing="10">
         <Button text="Actualiser" onAction="#refresh"/>
