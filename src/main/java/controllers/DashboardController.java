@@ -1,9 +1,5 @@
 package controllers;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.PdfWriter;
 import dto.DashboardStats;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -16,13 +12,14 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import services.DashboardService;
+import utils.SimplePdfExporter;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.List;
 
 public class DashboardController {
 
@@ -79,20 +76,17 @@ public class DashboardController {
             return;
         }
 
-        Document document = new Document();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(file));
-            document.open();
-            document.add(new Paragraph("Rapport Dashboard"));
-            document.add(new Paragraph("Total formations: " + stats.getTotalFormations()));
-            document.add(new Paragraph("Total apprenants: " + stats.getTotalApprenants()));
-            document.add(new Paragraph(String.format("Durée moyenne: %.2f h", stats.getAverageDuration())));
-            document.add(new Paragraph("Formations certifiées: " + stats.getCertifiedFormations()));
+            List<String> lines = List.of(
+                    "Total formations: " + stats.getTotalFormations(),
+                    "Total apprenants: " + stats.getTotalApprenants(),
+                    String.format("Durée moyenne: %.2f h", stats.getAverageDuration()),
+                    "Formations certifiées: " + stats.getCertifiedFormations()
+            );
+            SimplePdfExporter.writeSimpleReport(file.toPath(), "Rapport Dashboard", lines);
             ok("Export PDF", "PDF généré: " + file.getAbsolutePath());
-        } catch (DocumentException | IOException e) {
+        } catch (IOException e) {
             error("Export PDF", e.getMessage());
-        } finally {
-            document.close();
         }
     }
 
