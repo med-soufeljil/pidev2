@@ -8,6 +8,8 @@ public final class SessionContext {
     }
 
     private static Role currentRole;
+    private static Integer pendingFormationId;
+    private static String pendingFormationTitle;
 
     private SessionContext() {
     }
@@ -26,5 +28,27 @@ public final class SessionContext {
 
     public static boolean isUser() {
         return currentRole == Role.USER;
+    }
+
+    public static void setPendingFormation(Integer formationId, String formationTitle) {
+        pendingFormationId = formationId;
+        pendingFormationTitle = formationTitle;
+    }
+
+    public static Integer getPendingFormationId() {
+        return pendingFormationId;
+    }
+
+    public static String getPendingFormationTitle() {
+        return pendingFormationTitle;
+    }
+
+    public static boolean hasPendingFormation() {
+        return pendingFormationId != null;
+    }
+
+    public static void clearPendingFormation() {
+        pendingFormationId = null;
+        pendingFormationTitle = null;
     }
 }

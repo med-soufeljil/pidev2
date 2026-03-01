@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import services.ApprenantService;
 import services.FormationService;
 import services.MailingApiService;
+import utils.SessionContext;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -80,6 +81,7 @@ public class ApprenantController implements Initializable {
             colFormation.setCellValueFactory(data -> new SimpleStringProperty(getTitreFormation(data.getValue().getId_formation())));
 
             refreshTable();
+            applyPendingFormationSelection();
             tableApprenant.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
                 if (newSel != null) fillForm(newSel);
             });
@@ -91,6 +93,34 @@ public class ApprenantController implements Initializable {
         } catch (SQLException e) {
             alert("Init", e.getMessage());
         }
+    }
+
+
+    private void applyPendingFormationSelection() {
+        if (!SessionContext.hasPendingFormation() || cbFormation.getItems() == null) {
+            return;
+        }
+
+        Integer formationId = SessionContext.getPendingFormationId();
+        if (formationId == null) {
+            return;
+        }
+
+        cbFormation.getItems().stream()
+                .filter(f -> f.getId_formation() == formationId)
+                .findFirst()
+                .ifPresent(cbFormation::setValue);
+
+        if (cbFormation.getValue() != null) {
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setTitle("Postulation");
+            info.setHeaderText("Formation présélectionnée");
+            String title = SessionContext.getPendingFormationTitle() == null ? "" : SessionContext.getPendingFormationTitle();
+            info.setContentText("La formation '" + title + "' a été remplie automatiquement.");
+            info.showAndWait();
+        }
+
+        SessionContext.clearPendingFormation();
     }
 
     @FXML

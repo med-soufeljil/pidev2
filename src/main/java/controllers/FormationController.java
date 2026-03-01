@@ -353,10 +353,15 @@ public class FormationController implements Initializable {
             alert("Postuler", "Sélectionnez une formation pour postuler.");
             return;
         }
-        Alert info = new Alert(Alert.AlertType.INFORMATION);
-        info.setHeaderText("Postulation enregistrée");
-        info.setContentText("Votre demande de postulation pour la formation '" + selected.getTitre() + "' est enregistrée.");
-        info.showAndWait();
+        SessionContext.setPendingFormation(selected.getId_formation(), selected.getTitre());
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ApprenantView.fxml"));
+            Stage stage = (Stage) tableFormation.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            alert("Postuler", "Impossible d'ouvrir le formulaire apprenant: " + e.getMessage());
+        }
     }
 
     private void applyRolePermissions() {
