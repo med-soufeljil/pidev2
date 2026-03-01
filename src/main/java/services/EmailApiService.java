@@ -12,8 +12,9 @@ import java.net.http.HttpResponse;
 public class EmailApiService {
 
     private static final String MAILERSEND_ENDPOINT = "https://api.mailersend.com/v1/email";
-    private static final String FROM_EMAIL = "hr@recruitflow.app";
-    private static final String FROM_NAME = "RecruitFlow RH";
+    private static final String REQUIRED_SENDER_DOMAIN = "test-3m5jgroevrxgdpyo.mlsender.net";
+    private static final String DEFAULT_FROM_EMAIL = "hr@" + REQUIRED_SENDER_DOMAIN;
+    private static final String DEFAULT_FROM_NAME = "RecruitFlow RH";
 
     private final HttpClient client = HttpClient.newHttpClient();
 
@@ -21,12 +22,14 @@ public class EmailApiService {
             throws IOException, InterruptedException {
 
         String apiKey = resolveApiKey();
+        String fromEmail = resolveFromEmail();
+        String fromName = resolveFromName();
 
         JsonObject body = new JsonObject();
 
         JsonObject from = new JsonObject();
-        from.addProperty("email", FROM_EMAIL);
-        from.addProperty("name", FROM_NAME);
+        from.addProperty("email", fromEmail);
+        from.addProperty("name", fromName);
         body.add("from", from);
 
         JsonArray to = new JsonArray();
@@ -65,23 +68,69 @@ public class EmailApiService {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() >= 300) {
-            throw new IllegalStateException("Email API error " + response.statusCode() + ": " + response.body());
+            throw buildEmailApiException(response.statusCode(), response.body(), fromEmail);
         }
     }
 
-    private String resolveApiKey() {
-        String env = System.getenv("MAILERSEND_API_KEY");
-        if (env != null && !env.isBlank()) {
-            return env.trim();
+    private IllegalStateException buildEmailApiException(int statusCode, String responseBody, String fromEmail) {
+        if (statusCode == 422 && responseBody != null && responseBody.toLowerCase().contains("domain must be verified")) {
+            return new IllegalStateException(
+                    "MailerSend rejected the sender address (422): domain/email not verified for from='" + fromEmail + "'. "
+                            + "Verify the sender domain in MailerSend, create a verified sender email, then configure "
+                            + "MAILERSEND_FROM_EMAIL (or -Dmailersend.from.email). The sender domain must be " + REQUIRED_SENDER_DOMAIN + " and optionally MAILERSEND_FROM_NAME "
+                            + "(or -Dmailersend.from.name). Raw API response: " + responseBody
+            );
         }
 
-        String property = System.getProperty("mailersend.api.key");
-        if (property != null && !property.isBlank()) {
-            return property.trim();
+        return new IllegalStateException("Email API error " + statusCode + ": " + responseBody);
+    }
+
+    private String resolveApiKey() {
+        String value = resolveConfig("MAILERSEND_API_KEY", "mailersend.api.key", null);
+        if (value != null) {
+            return value;
         }
 
         throw new IllegalStateException(
                 "MailerSend API key is missing. Set MAILERSEND_API_KEY env var OR JVM property -Dmailersend.api.key=..."
         );
+    }
+
+    private String resolveFromEmail() {
+        String configured = resolveConfig("MAILERSEND_FROM_EMAIL", "mailersend.from.email", DEFAULT_FROM_EMAIL);
+
+        if (configured == null || configured.isBlank()) {
+            return DEFAULT_FROM_EMAIL;
+        }
+
+        String trimmed = configured.trim().toLowerCase();
+        if (trimmed.endsWith("@" + REQUIRED_SENDER_DOMAIN)) {
+            return trimmed;
+        }
+
+        String localPart = trimmed.contains("@") ? trimmed.substring(0, trimmed.indexOf("@")) : trimmed;
+        if (localPart.isBlank()) {
+            localPart = "hr";
+        }
+
+        return localPart + "@" + REQUIRED_SENDER_DOMAIN;
+    }
+
+    private String resolveFromName() {
+        return resolveConfig("MAILERSEND_FROM_NAME", "mailersend.from.name", DEFAULT_FROM_NAME);
+    }
+
+    private String resolveConfig(String envKey, String systemPropertyKey, String defaultValue) {
+        String envValue = System.getenv(envKey);
+        if (envValue != null && !envValue.isBlank()) {
+            return envValue.trim();
+        }
+
+        String propertyValue = System.getProperty(systemPropertyKey);
+        if (propertyValue != null && !propertyValue.isBlank()) {
+            return propertyValue.trim();
+        }
+
+        return defaultValue;
     }
 }

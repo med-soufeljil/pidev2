@@ -11,15 +11,16 @@
         <Button fx:id="btnAjouter" text="Ajouter" />
         <Button fx:id="btnModifier" text="Modifier" />
         <Button fx:id="btnSupprimer" text="Supprimer" />
-        <Button fx:id="btnGenerateLink" text="Générer lien API" />
         <Button fx:id="btnReset" text="Reset" />
     </HBox>
 
-    <TableView fx:id="tableReunion" prefHeight="450" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableReunion" prefHeight="380" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colCandidat" prefWidth="220" text="Candidat" />
             <TableColumn fx:id="colDate" prefWidth="180" text="Date" />
             <TableColumn fx:id="colLink" prefWidth="500" text="Lien" />
         </columns>
     </TableView>
+
+    
 </VBox>

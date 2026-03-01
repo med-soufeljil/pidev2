@@ -4,7 +4,7 @@ public final class AuthContext {
 
     public enum Role {
         ADMIN,
-        USER
+        CANDIDAT
     }
 
     private static Role currentRole = null;
@@ -22,5 +22,9 @@ public final class AuthContext {
 
     public static boolean isAdmin() {
         return currentRole == Role.ADMIN;
+    }
+
+    public static boolean isCandidat() {
+        return currentRole == Role.CANDIDAT;
     }
 }

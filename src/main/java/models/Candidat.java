@@ -9,6 +9,10 @@ public class Candidat {
     private String adresse;
     private String email;
     private String cv;
+    private String statut;
+    private String nomOffre;
+    private String aiAnalyse;
+    private int aiScore;
 
     public Candidat(int idCandidat, String nom, int CIN, String prenom, int tel, String adresse, String email, String cv) {
         this.idCandidat = idCandidat;
@@ -19,6 +23,7 @@ public class Candidat {
         this.adresse = adresse;
         this.email = email;
         this.cv = cv;
+        this.statut = "Nouveau";
     }
 
     public Candidat(String nom, String prenom, int CIN, int tel, String adresse, String email, String cv) {
@@ -29,6 +34,7 @@ public class Candidat {
         this.adresse = adresse;
         this.email = email;
         this.cv = cv;
+        this.statut = "Nouveau";
     }
 
     public Candidat() {
@@ -98,6 +104,38 @@ public class Candidat {
         this.cv = cv;
     }
 
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
+    public String getNomOffre() {
+        return nomOffre;
+    }
+
+    public void setNomOffre(String nomOffre) {
+        this.nomOffre = nomOffre;
+    }
+
+    public String getAiAnalyse() {
+        return aiAnalyse;
+    }
+
+    public void setAiAnalyse(String aiAnalyse) {
+        this.aiAnalyse = aiAnalyse;
+    }
+
+    public int getAiScore() {
+        return aiScore;
+    }
+
+    public void setAiScore(int aiScore) {
+        this.aiScore = aiScore;
+    }
+
     @Override
     public String toString() {
         return "Candidat{" +
@@ -109,6 +147,9 @@ public class Candidat {
                 ", adresse='" + adresse + '\'' +
                 ", email='" + email + '\'' +
                 ", cv='" + cv + '\'' +
+                ", statut='" + statut + '\'' +
+                ", nomOffre='" + nomOffre + '\'' +
+                ", aiScore=" + aiScore +
                 '}';
     }
 }

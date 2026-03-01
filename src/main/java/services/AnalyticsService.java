@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ public class AnalyticsService {
 
     public AnalyticsService() {
         this.connection = MyDatabase.getInstance().getConnection();
+        ensureStatusColumn();
     }
 
     public int countCandidats() throws SQLException {
@@ -43,6 +45,49 @@ public class AnalyticsService {
             }
         }
         return result;
+    }
+
+
+    public Map<String, Integer> applicationsParStatut() throws SQLException {
+        String sql = "SELECT COALESCE(statut, 'Nouveau') AS statut, COUNT(*) AS total FROM candidat GROUP BY statut ORDER BY total DESC";
+        Map<String, Integer> result = new LinkedHashMap<>();
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.put(rs.getString("statut"), rs.getInt("total"));
+            }
+        }
+        return result;
+    }
+
+    public Map<String, Integer> applicationsParOffre() throws SQLException {
+        String sql = """
+                SELECT o.nomOffre, COUNT(*) AS total
+                FROM recrutement r
+                JOIN offre o ON r.idOffre = o.idOffre
+                GROUP BY o.idOffre, o.nomOffre
+                ORDER BY total DESC, o.nomOffre
+                """;
+        Map<String, Integer> result = new LinkedHashMap<>();
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.put(rs.getString("nomOffre"), rs.getInt("total"));
+            }
+        }
+        return result;
+    }
+
+
+    private void ensureStatusColumn() {
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate("ALTER TABLE candidat ADD COLUMN statut VARCHAR(60) NOT NULL DEFAULT 'Nouveau'");
+        } catch (SQLException ignored) {
+        }
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate("UPDATE candidat SET statut='Nouveau' WHERE statut IS NULL OR statut = ''");
+        } catch (SQLException ignored) {
+        }
     }
 
     private int fetchCount(String sql) throws SQLException {

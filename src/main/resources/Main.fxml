@@ -32,9 +32,8 @@
             <Label text="Navigation" styleClass="section-label"/>
 
             <Button text="📊 Dashboard" fx:id="btnDashboard" styleClass="sidebar-btn"/>
-            <Button text="👤 Candidats" fx:id="btnCandidat" styleClass="sidebar-btn"/>
-            <Button text="💼 Offres" fx:id="btnOffre" styleClass="sidebar-btn"/>
-            <Button text="✅ Recrutements" fx:id="btnRecrutement" styleClass="sidebar-btn"/>
+            <Button text="💼 Offres d'emploi" fx:id="btnOffre" styleClass="sidebar-btn"/>
+            <Button text="🗂 Applications" fx:id="btnCandidat" styleClass="sidebar-btn"/>
             <Button text="📅 Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
 
             <Region VBox.vgrow="ALWAYS"/>
@@ -66,7 +65,7 @@
     </top>
 
     <center>
-        <AnchorPane fx:id="contentArea" styleClass="content-area">
+        <AnchorPane fx:id="contentArea" id="contentArea" styleClass="content-area">
             <VBox fx:id="welcomePane" alignment="TOP_LEFT" spacing="18"
                   AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
 
@@ -91,8 +90,8 @@
                 <VBox spacing="10" styleClass="welcome-panel">
                     <Label text="Recommended workflow" styleClass="panel-title"/>
                     <Label text="1. Create or review open offers." styleClass="panel-item"/>
-                    <Label text="2. Qualify and filter candidates." styleClass="panel-item"/>
-                    <Label text="3. Validate recrutements and schedule meetings." styleClass="panel-item"/>
+                    <Label text="2. Receive applications from job offers." styleClass="panel-item"/>
+                    <Label text="3. Update statuses, generate interviews and send offers." styleClass="panel-item"/>
                 </VBox>
             </VBox>
         </AnchorPane>

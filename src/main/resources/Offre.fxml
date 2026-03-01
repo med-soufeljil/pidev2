@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="12" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml"
+<VBox spacing="12" alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.OffreController" stylesheets="@style.css"
       styleClass="content-area" style="-fx-padding:20;">
 
@@ -14,6 +14,8 @@
         <Label text="Trier:"/>
         <ComboBox fx:id="comboTri" prefWidth="130"/>
         <ComboBox fx:id="comboOrdre" prefWidth="130"/>
+        <Label text="Résultats:" styleClass="badge-label"/>
+        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
@@ -22,11 +24,9 @@
         <Button text="Supprimer" fx:id="btnSupprimer"/>
         <Button text="Filtre avancé" fx:id="btnFiltre"/>
         <Button text="Reset Filtre" fx:id="btnResetFiltre"/>
-        <Label text="Résultats:" styleClass="badge-label"/>
-        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
     </HBox>
 
-    <TableView fx:id="tableOffre" prefHeight="470" prefWidth="1000">
+    <TableView fx:id="tableOffre" prefHeight="470" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn text="Nom" fx:id="colNom" prefWidth="190"/>
             <TableColumn text="Type" fx:id="colType" prefWidth="140"/>
@@ -37,4 +37,6 @@
     </TableView>
 
     <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
+
+    
 </VBox>

@@ -11,11 +11,14 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import services.OfferResponseHttpServer;
 import utils.AuthContext;
 
 import java.util.Optional;
 
 public class MainController {
+
+    private static MainController instance;
 
     @FXML
     private Button btnDashboard, btnCandidat, btnOffre, btnReunion;
@@ -32,10 +35,12 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        instance = this;
         rootPane.getStyleClass().add("light-mode");
 
         pickRoleIfNeeded();
         applyPermissions();
+        OfferResponseHttpServer.ensureStarted();
 
         toggleDarkMode.selectedProperty().addListener((obs, oldVal, isDarkMode) -> {
             rootPane.getStyleClass().removeAll("light-mode", "dark-mode");
@@ -48,21 +53,30 @@ public class MainController {
         btnReunion.setOnAction(e -> loadUI("Reunion.fxml"));
     }
 
+    public static void navigate(String fxml) {
+        if (instance != null) {
+            instance.loadUI(fxml);
+        }
+    }
+
     private void pickRoleIfNeeded() {
         if (AuthContext.getRole() != null) {
             return;
         }
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("ADMIN", FXCollections.observableArrayList("ADMIN", "USER"));
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("ADMIN", FXCollections.observableArrayList("ADMIN", "CANDIDAT"));
         dialog.setTitle("Connexion rôle");
         dialog.setHeaderText("Sélectionnez votre rôle");
         dialog.setContentText("Rôle:");
         Optional<String> choice = dialog.showAndWait();
-        AuthContext.setRole("USER".equals(choice.orElse("ADMIN")) ? AuthContext.Role.USER : AuthContext.Role.ADMIN);
+        AuthContext.setRole("CANDIDAT".equals(choice.orElse("ADMIN")) ? AuthContext.Role.CANDIDAT : AuthContext.Role.ADMIN);
     }
 
     private void applyPermissions() {
         boolean isAdmin = AuthContext.isAdmin();
-        lblRole.setText("Role: " + (isAdmin ? "ADMIN RH" : "USER"));
+        lblRole.setText("Role: " + (isAdmin ? "ADMIN RH" : "CANDIDAT"));
+
+        btnDashboard.setVisible(isAdmin);
+        btnDashboard.setManaged(isAdmin);
 
         btnCandidat.setDisable(!isAdmin);
         btnOffre.setDisable(false);

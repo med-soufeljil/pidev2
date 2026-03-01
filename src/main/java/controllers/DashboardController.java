@@ -2,12 +2,12 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import services.AnalyticsService;
-import services.ExternalApiService;
 import services.PdfExportService;
 
 import java.nio.file.Path;
@@ -17,15 +17,14 @@ import java.util.Map;
 public class DashboardController {
 
     @FXML
-    private Label lblCandidates, lblOffers, lblRecruitments, lblMeetings, lblApiResult, lblMarketJobs;
+    private Label lblCandidates, lblOffers, lblRecruitments, lblMeetings;
     @FXML
-    private PieChart pieOffresType;
+    private PieChart pieOffresType, pieApplicationsStatut;
     @FXML
-    private TextField txtApiName, txtMarketSkill;
+    private BarChart<String, Number> barApplicationsByOffer;
 
     private final AnalyticsService analyticsService = new AnalyticsService();
     private final PdfExportService pdfExportService = new PdfExportService();
-    private final ExternalApiService externalApiService = new ExternalApiService();
 
     @FXML
     public void initialize() {
@@ -44,6 +43,17 @@ public class DashboardController {
             for (Map.Entry<String, Integer> entry : analyticsService.offresParType().entrySet()) {
                 pieOffresType.getData().add(new PieChart.Data(entry.getKey(), entry.getValue()));
             }
+
+            pieApplicationsStatut.getData().clear();
+            for (Map.Entry<String, Integer> entry : analyticsService.applicationsParStatut().entrySet()) {
+                pieApplicationsStatut.getData().add(new PieChart.Data(entry.getKey(), entry.getValue()));
+            }
+
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            for (Map.Entry<String, Integer> entry : analyticsService.applicationsParOffre().entrySet()) {
+                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+            }
+            barApplicationsByOffer.setData(FXCollections.observableArrayList(series));
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Dashboard", e.getMessage());
         }
@@ -56,51 +66,6 @@ public class DashboardController {
             showAlert(Alert.AlertType.INFORMATION, "PDF Export", "Report exported: " + exported.toAbsolutePath());
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "PDF Export", e.getMessage());
-        }
-    }
-
-    @FXML
-    private void predictGender() {
-        String name = txtApiName.getText();
-        if (name == null || name.isBlank()) {
-            lblApiResult.setText("Please type a first name.");
-            return;
-        }
-
-        try {
-            lblApiResult.setText(externalApiService.getGenderPrediction(name));
-        } catch (Exception e) {
-            lblApiResult.setText("Gender API unavailable: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void predictNationality() {
-        String name = txtApiName.getText();
-        if (name == null || name.isBlank()) {
-            lblApiResult.setText("Please type a first name.");
-            return;
-        }
-
-        try {
-            lblApiResult.setText(externalApiService.getNationalityPrediction(name));
-        } catch (Exception e) {
-            lblApiResult.setText("Nationality API unavailable: " + e.getMessage());
-        }
-    }
-
-
-    @FXML
-    private void loadMarketJobs() {
-        String skill = txtMarketSkill.getText();
-        if (skill == null || skill.isBlank()) {
-            lblMarketJobs.setText("Please type a skill.");
-            return;
-        }
-        try {
-            lblMarketJobs.setText(externalApiService.fetchMarketJobs(skill));
-        } catch (Exception e) {
-            lblMarketJobs.setText("Jobs API unavailable: " + e.getMessage());
         }
     }
 

@@ -1,72 +1,109 @@
 package controllers;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import models.Candidat;
-import services.CandidatService;
-import services.RecruitmentWorkflowService;
+import models.Offre;
+import models.Recrutement;
+import services.*;
 import utils.AuthContext;
+import utils.NavigationState;
 
 import java.sql.SQLException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CandidatController {
 
     @FXML private TextField txtRecherche;
-    @FXML private ComboBox<String> comboTriChamp;
-    @FXML private ComboBox<String> comboTriOrdre;
+    @FXML private ComboBox<String> comboTriChamp, comboTriOrdre, comboGroupeOffre;
     @FXML private TableView<Candidat> tableCandidat;
-    @FXML private TableColumn<Candidat, String> colNom, colPrenom, colAdresse, colEmail, colCv;
-    @FXML private TableColumn<Candidat, Integer> colCIN, colTel;
-    @FXML private Button btnAjouter, btnModifier, btnSupprimer, btnFiltre, btnResetFiltre;
+    @FXML private TableColumn<Candidat, String> colOffre, colNom, colPrenom, colAdresse, colEmail, colCv, colStatut, colAiAnalyse;
+    @FXML private TableColumn<Candidat, Integer> colCIN, colTel, colAiScore;
+    @FXML private Button btnAjouter, btnModifier, btnSupprimer, btnResetFiltre, btnTopFit;
+    @FXML private Button btnTagTous, btnTagNouveau, btnTagPremier, btnTagDeuxieme, btnTagOffre, btnTagAcceptee, btnTagRejetee;
     @FXML private Label lblCount;
     @FXML private Pagination pagination;
 
     private final CandidatService service = new CandidatService();
+    private final OffreService offreService = new OffreService();
+    private final RecrutementService recrutementService = new RecrutementService();
     private final RecruitmentWorkflowService workflowService = new RecruitmentWorkflowService();
-    private final javafx.collections.ObservableList<Candidat> master = FXCollections.observableArrayList();
+    private final ApplicationFitAiService fitAiService = new ApplicationFitAiService();
+
+    private final ObservableList<Candidat> master = FXCollections.observableArrayList();
     private FilteredList<Candidat> filtered;
+    private String selectedStatus;
+    private Comparator<Candidat> currentComparator;
     private static final int ROWS = 8;
-    private boolean openingProfile;
 
     @FXML
     public void initialize() {
-        comboTriChamp.getItems().addAll("Nom", "Prénom", "CIN", "Téléphone", "Adresse", "Email", "CV");
+        comboTriChamp.getItems().addAll("Offre", "Nom", "Prénom", "CIN", "Téléphone", "Adresse", "Email", "CV", "Statut", "AI Score");
         comboTriOrdre.getItems().addAll("Croissant", "Décroissant");
         comboTriOrdre.setValue("Croissant");
 
+        colOffre.setCellValueFactory(new PropertyValueFactory<>("nomOffre"));
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
         colCIN.setCellValueFactory(new PropertyValueFactory<>("CIN"));
-        colTel.setCellValueFactory(new PropertyValueFactory<>("Tel"));
+        colTel.setCellValueFactory(new PropertyValueFactory<>("tel"));
         colAdresse.setCellValueFactory(new PropertyValueFactory<>("adresse"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colCv.setCellValueFactory(new PropertyValueFactory<>("cv"));
+        colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
+        colAiScore.setCellValueFactory(new PropertyValueFactory<>("aiScore"));
+        colAiAnalyse.setCellValueFactory(new PropertyValueFactory<>("aiAnalyse"));
 
         loadTable();
-        filtered = new FilteredList<>(master, x -> true);
+        filtered = new FilteredList<>(master, c -> true);
 
-        txtRecherche.textProperty().addListener((a,b,q)->{applySearch(q); updatePagination();});
-        comboTriChamp.setOnAction(e->applySort());
-        comboTriOrdre.setOnAction(e->applySort());
+        txtRecherche.textProperty().addListener((a, b, q) -> {
+            applyCombinedFilters();
+            updatePagination();
+        });
+        comboTriChamp.setOnAction(e -> { applySort(); updatePagination(); });
+        comboTriOrdre.setOnAction(e -> { applySort(); updatePagination(); });
+        comboGroupeOffre.setOnAction(e -> {
+            applyCombinedFilters();
+            updatePagination();
+        });
 
-        btnAjouter.setOnAction(e->openForm(null));
-        btnModifier.setOnAction(e->openForm(tableCandidat.getSelectionModel().getSelectedItem()));
-        btnSupprimer.setOnAction(e->deleteSelected());
-        btnFiltre.setOnAction(e->openFilterDialog());
-        btnResetFiltre.setOnAction(e->{filtered.setPredicate(x->true); updatePagination();});
+        btnTagTous.setOnAction(e -> filterByStatus(null));
+        btnTagNouveau.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_NOUVEAU));
+        btnTagPremier.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_PREMIER_ENTRETIEN));
+        btnTagDeuxieme.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_DEUXIEME_ENTRETIEN));
+        btnTagOffre.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_OFFRE_ENVOYEE));
+        btnTagAcceptee.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_ACCEPTEE));
+        btnTagRejetee.setOnAction(e -> filterByStatus(RecruitmentWorkflowService.STATUS_REJETEE));
+
+        btnAjouter.setOnAction(e -> {
+            NavigationState.clearAll();
+            MainController.navigate("ApplicationForm.fxml");
+        });
+        btnModifier.setOnAction(e -> openSelectedForEdit());
+        btnSupprimer.setOnAction(e -> deleteSelected());
+        btnTopFit.setOnAction(e -> analyzeTopFitByOffer());
+        btnResetFiltre.setOnAction(e -> {
+            txtRecherche.clear();
+            comboGroupeOffre.setValue("Toutes les offres");
+            loadTable();
+            refreshOfferGroupingChoices();
+            filterByStatus(null);
+        });
 
         tableCandidat.setRowFactory(tv -> {
             TableRow<Candidat> row = new TableRow<>();
             row.setOnMouseClicked(e -> {
-                if (!row.isEmpty() && e.getClickCount() == 1 && AuthContext.isAdmin() && !openingProfile) {
-                    openProfileDialog(row.getItem());
+                if (!row.isEmpty() && e.getClickCount() == 1) {
+                    NavigationState.clearAll();
+                    NavigationState.selectedCandidat = row.getItem();
+                    NavigationState.readOnly = !AuthContext.isAdmin();
+                    MainController.navigate("ApplicationForm.fxml");
                 }
             });
             return row;
@@ -76,156 +113,211 @@ public class CandidatController {
         btnAjouter.setDisable(!admin);
         btnModifier.setDisable(!admin);
         btnSupprimer.setDisable(!admin);
+        btnTopFit.setDisable(!admin);
 
+        pagination.currentPageIndexProperty().addListener((obs, oldV, newV) -> createPage(newV.intValue()));
+
+        refreshOfferGroupingChoices();
+        applyCombinedFilters();
+        applySort();
         updatePagination();
     }
 
-    private void openForm(Candidat c) {
-        if (!AuthContext.isAdmin()) return;
-        Dialog<ButtonType> d = new Dialog<>();
-        d.setTitle(c == null ? "Ajouter candidat" : "Modifier candidat");
-        ButtonType save = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
-        d.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
-
-        TextField nom = new TextField();
-        TextField prenom = new TextField();
-        TextField cin = new TextField();
-        TextField tel = new TextField();
-        TextField adr = new TextField();
-        TextField email = new TextField();
-        TextField cv = new TextField();
-
-        if (c != null) {
-            nom.setText(c.getNom()); prenom.setText(c.getPrenom()); cin.setText(String.valueOf(c.getCIN()));
-            tel.setText(String.valueOf(c.getTel())); adr.setText(c.getAdresse()); email.setText(c.getEmail()); cv.setText(c.getCv());
-        }
-
-        GridPane g = new GridPane();
-        g.getStyleClass().add("form-grid");
-        g.setHgap(8); g.setVgap(8);
-        g.addRow(0, new Label("Nom"), nom);
-        g.addRow(1, new Label("Prénom"), prenom);
-        g.addRow(2, new Label("CIN"), cin);
-        g.addRow(3, new Label("Téléphone"), tel);
-        g.addRow(4, new Label("Adresse"), adr);
-        g.addRow(5, new Label("Email"), email);
-        g.addRow(6, new Label("CV"), cv);
-        d.getDialogPane().setContent(g);
-
-        Optional<ButtonType> r = d.showAndWait();
-        if (r.isPresent() && r.get() == save) {
-            try {
-                if (c == null) c = new Candidat();
-                c.setNom(nom.getText()); c.setPrenom(prenom.getText()); c.setCIN(Integer.parseInt(cin.getText()));
-                c.setTel(Integer.parseInt(tel.getText())); c.setAdresse(adr.getText()); c.setEmail(email.getText()); c.setCv(cv.getText());
-                if (c.getIdCandidat() == 0) service.ajouter(c); else service.modifier(c);
-                loadTable(); updatePagination();
-            } catch (Exception ex) { showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage()); }
-        }
-    }
-
-    private void openProfileDialog(Candidat c) {
-        openingProfile = true;
-        try {
-            Dialog<ButtonType> d = new Dialog<>();
-            d.setTitle("Profil candidat");
-            ButtonType generate = new ButtonType("Générer offre & Envoyer mail", ButtonBar.ButtonData.OK_DONE);
-            d.getDialogPane().getButtonTypes().addAll(generate, ButtonType.CLOSE);
-
-            String phaseText;
-            try {
-                phaseText = workflowService.getCandidatePhase(c.getIdCandidat());
-            } catch (SQLException e) {
-                phaseText = "UNKNOWN";
-            }
-
-            Label info = new Label("Nom: " + c.getNom() + " " + c.getPrenom() + "\nEmail: " + c.getEmail() + "\nPhase: " + phaseText);
-            info.getStyleClass().add("profile-info");
-
-            TextField salaireField = new TextField();
-            salaireField.setPromptText("Salaire proposé");
-            salaireField.textProperty().addListener((obs, oldV, newV) -> {
-                if (!newV.matches("\\d*")) salaireField.setText(newV.replaceAll("[^\\d]", ""));
-            });
-
-            VBox box = new VBox(12, info, new Label("Salaire de l'offre"), salaireField);
-            box.getStyleClass().add("profile-card");
-            d.getDialogPane().setContent(box);
-
-            Optional<ButtonType> res = d.showAndWait();
-            if (res.isPresent() && res.get() == generate) {
-                if (salaireField.getText().isBlank()) {
-                    showAlert(Alert.AlertType.WARNING, "Validation", "Veuillez saisir un salaire.");
-                    return;
-                }
-                int salary = Integer.parseInt(salaireField.getText());
-                workflowService.generateSalaryOfferAndSend(c, salary);
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Offre envoyée par API mail avec boutons Accepter/Rejeter.");
-            }
-        } catch (Exception ex) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", ex.getMessage());
-        } finally {
-            openingProfile = false;
-        }
+    private void openSelectedForEdit() {
+        Candidat selected = tableCandidat.getSelectionModel().getSelectedItem();
+        if (selected == null || !AuthContext.isAdmin()) return;
+        NavigationState.clearAll();
+        NavigationState.selectedCandidat = selected;
+        MainController.navigate("ApplicationForm.fxml");
     }
 
     private void deleteSelected() {
         if (!AuthContext.isAdmin()) return;
         Candidat c = tableCandidat.getSelectionModel().getSelectedItem();
         if (c == null) return;
-        try { service.supprimer(c.getIdCandidat()); loadTable(); updatePagination(); }
-        catch (SQLException e){showAlert(Alert.AlertType.ERROR,"Erreur",e.getMessage());}
+        try {
+            service.supprimer(c.getIdCandidat());
+            loadTable();
+            refreshOfferGroupingChoices();
+            applyCombinedFilters();
+            updatePagination();
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+        }
     }
 
-    private void openFilterDialog() {
-        TextInputDialog d = new TextInputDialog();
-        d.setTitle("Filtre Nom"); d.setHeaderText(null); d.setContentText("Contient:");
-        d.showAndWait().ifPresent(v->{ filtered.setPredicate(c->c.getNom().toLowerCase().contains(v.toLowerCase())); updatePagination();});
+    private void filterByStatus(String status) {
+        selectedStatus = status;
+        applyCombinedFilters();
+        updatePagination();
     }
 
-    private void applySearch(String q) {
-        filtered.setPredicate(c -> q == null || q.isBlank() ||
-                c.getNom().toLowerCase().contains(q.toLowerCase()) ||
-                c.getPrenom().toLowerCase().contains(q.toLowerCase()) ||
-                c.getEmail().toLowerCase().contains(q.toLowerCase()));
+    private void applyCombinedFilters() {
+        String query = txtRecherche.getText();
+        String offerFilter = comboGroupeOffre.getValue();
+        filtered.setPredicate(c -> {
+            boolean statusOk = selectedStatus == null || selectedStatus.equalsIgnoreCase(c.getStatut());
+            boolean offerOk = offerFilter == null || "Toutes les offres".equals(offerFilter)
+                    || offerFilter.equalsIgnoreCase(Optional.ofNullable(c.getNomOffre()).orElse(""));
+            String q = query == null ? "" : query.trim().toLowerCase();
+            boolean searchOk = q.isBlank()
+                    || c.getNom().toLowerCase().contains(q)
+                    || c.getPrenom().toLowerCase().contains(q)
+                    || c.getEmail().toLowerCase().contains(q)
+                    || Optional.ofNullable(c.getNomOffre()).orElse("").toLowerCase().contains(q)
+                    || Optional.ofNullable(c.getAiAnalyse()).orElse("").toLowerCase().contains(q)
+                    || (c.getStatut() != null && c.getStatut().toLowerCase().contains(q));
+            return statusOk && offerOk && searchOk;
+        });
     }
 
     private void applySort() {
         String champ = comboTriChamp.getValue();
+        currentComparator = null;
         if (champ == null) return;
-        SortedList<Candidat> s = new SortedList<>(filtered);
+
         switch (champ) {
-            case "Nom" -> s.setComparator((a,b)->a.getNom().compareToIgnoreCase(b.getNom()));
-            case "Prénom" -> s.setComparator((a,b)->a.getPrenom().compareToIgnoreCase(b.getPrenom()));
-            case "CIN" -> s.setComparator((a,b)->Integer.compare(a.getCIN(),b.getCIN()));
-            case "Téléphone" -> s.setComparator((a,b)->Integer.compare(a.getTel(),b.getTel()));
-            case "Adresse" -> s.setComparator((a,b)->a.getAdresse().compareToIgnoreCase(b.getAdresse()));
-            case "Email" -> s.setComparator((a,b)->a.getEmail().compareToIgnoreCase(b.getEmail()));
-            case "CV" -> s.setComparator((a,b)->a.getCv().compareToIgnoreCase(b.getCv()));
+            case "Offre" -> currentComparator = Comparator.comparing(c -> Optional.ofNullable(c.getNomOffre()).orElse(""), String.CASE_INSENSITIVE_ORDER);
+            case "Nom" -> currentComparator = (a, b) -> a.getNom().compareToIgnoreCase(b.getNom());
+            case "Prénom" -> currentComparator = (a, b) -> a.getPrenom().compareToIgnoreCase(b.getPrenom());
+            case "CIN" -> currentComparator = (a, b) -> Integer.compare(a.getCIN(), b.getCIN());
+            case "Téléphone" -> currentComparator = (a, b) -> Integer.compare(a.getTel(), b.getTel());
+            case "Adresse" -> currentComparator = (a, b) -> a.getAdresse().compareToIgnoreCase(b.getAdresse());
+            case "Email" -> currentComparator = (a, b) -> a.getEmail().compareToIgnoreCase(b.getEmail());
+            case "CV" -> currentComparator = (a, b) -> a.getCv().compareToIgnoreCase(b.getCv());
+            case "Statut" -> currentComparator = (a, b) -> a.getStatut().compareToIgnoreCase(b.getStatut());
+            case "AI Score" -> currentComparator = Comparator.comparingInt(Candidat::getAiScore);
         }
-        if ("Décroissant".equals(comboTriOrdre.getValue())) s.setComparator(s.getComparator().reversed());
-        tableCandidat.setItems(s);
+
+        if (currentComparator != null && "Décroissant".equals(comboTriOrdre.getValue())) {
+            currentComparator = currentComparator.reversed();
+        }
     }
 
     private void loadTable() {
-        try { master.setAll(service.recuperer()); lblCount.setText(String.valueOf(master.size())); }
-        catch (SQLException e) { showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage()); }
+        try {
+            master.setAll(service.recuperer());
+            for (Candidat candidat : master) {
+                candidat.setStatut(workflowService.getCandidatePhase(candidat.getIdCandidat()));
+            }
+            lblCount.setText(String.valueOf(master.size()));
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+        }
+    }
+
+    private void refreshOfferGroupingChoices() {
+        List<String> offers = master.stream()
+                .map(Candidat::getNomOffre)
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isBlank())
+                .distinct()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .collect(Collectors.toList());
+        ObservableList<String> items = FXCollections.observableArrayList();
+        items.add("Toutes les offres");
+        items.addAll(offers);
+        comboGroupeOffre.setItems(items);
+        if (comboGroupeOffre.getValue() == null) {
+            comboGroupeOffre.setValue("Toutes les offres");
+        }
+    }
+
+    private void analyzeTopFitByOffer() {
+        try {
+            List<Candidat> allApplications = service.recuperer();
+            for (Candidat candidat : allApplications) {
+                candidat.setStatut(workflowService.getCandidatePhase(candidat.getIdCandidat()));
+            }
+
+            Map<Integer, Offre> offers = offreService.recuperer().stream().collect(Collectors.toMap(Offre::getIdOffre, o -> o));
+            Map<Integer, Recrutement> linkByCandidate = recrutementService.recuperer().stream()
+                    .collect(Collectors.toMap(Recrutement::getIdCandidat, r -> r, (a, b) -> a));
+
+            for (Candidat candidat : allApplications) {
+                Recrutement link = linkByCandidate.get(candidat.getIdCandidat());
+                if (link == null) continue;
+                Offre offer = offers.get(link.getIdOffre());
+                if (offer == null) continue;
+
+                var result = fitAiService.analyze(candidat, offer);
+                candidat.setAiScore(result.score());
+                candidat.setAiAnalyse("[" + result.engine() + "] " + result.analysis());
+                service.modifier(candidat);
+            }
+
+            List<Candidat> ranked = new ArrayList<>(allApplications);
+            ranked.sort(Comparator
+                    .comparing((Candidat c) -> Optional.ofNullable(c.getNomOffre()).orElse(""), String.CASE_INSENSITIVE_ORDER)
+                    .thenComparing(Candidat::getAiScore, Comparator.reverseOrder()));
+
+            Map<String, List<Candidat>> byOffer = ranked.stream()
+                    .filter(c -> c.getNomOffre() != null && !c.getNomOffre().isBlank())
+                    .collect(Collectors.groupingBy(Candidat::getNomOffre, LinkedHashMap::new, Collectors.toList()));
+
+            List<Candidat> topFits = new ArrayList<>();
+            for (List<Candidat> group : byOffer.values()) {
+                topFits.add(group.get(0));
+            }
+
+            if (topFits.isEmpty()) {
+                showAlert(Alert.AlertType.INFORMATION, "Top Fit IA", "Aucune application liée à une offre pour le moment.");
+                return;
+            }
+
+            master.setAll(topFits);
+            selectedStatus = null;
+            txtRecherche.clear();
+            comboGroupeOffre.setValue("Toutes les offres");
+            refreshOfferGroupingChoices();
+            applyCombinedFilters();
+            updatePagination();
+            showAlert(Alert.AlertType.INFORMATION, "Top Fit IA", "Analyse terminée. La liste affiche le meilleur candidat pour chaque offre.");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Top Fit IA", e.getMessage());
+        }
     }
 
     private void updatePagination() {
-        int total = filtered.size();
-        int pages = (int)Math.ceil((double)total/ROWS);
-        pagination.setPageCount(pages==0?1:pages);
-        pagination.setPageFactory(this::createPage);
+        int total = getCurrentViewList().size();
+        int pages = (int) Math.ceil((double) total / ROWS);
+        pagination.setPageCount(pages == 0 ? 1 : pages);
+
+        int current = pagination.getCurrentPageIndex();
+        if (current >= pagination.getPageCount()) {
+            current = Math.max(0, pagination.getPageCount() - 1);
+            pagination.setCurrentPageIndex(current);
+        }
+
+        createPage(current);
+        lblCount.setText(String.valueOf(total));
     }
 
-    private TableView<Candidat> createPage(int idx){
-        int from = idx*ROWS, to = Math.min(from+ROWS, filtered.size());
-        tableCandidat.setItems(FXCollections.observableArrayList(filtered.subList(from,to)));
+    private TableView<Candidat> createPage(int idx) {
+        List<Candidat> list = getCurrentViewList();
+        int from = idx * ROWS;
+        if (from >= list.size()) {
+            tableCandidat.setItems(FXCollections.observableArrayList());
+            return tableCandidat;
+        }
+        int to = Math.min(from + ROWS, list.size());
+        tableCandidat.setItems(FXCollections.observableArrayList(list.subList(from, to)));
         return tableCandidat;
     }
 
+    private List<Candidat> getCurrentViewList() {
+        List<Candidat> list = new ArrayList<>(filtered);
+        if (currentComparator != null) {
+            list.sort(currentComparator);
+        }
+        return list;
+    }
+
     private void showAlert(Alert.AlertType type, String title, String msg) {
-        Alert a = new Alert(type); a.setTitle(title); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
+        Alert a = new Alert(type);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
     }
 }
