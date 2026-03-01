@@ -196,7 +196,37 @@ public class FormationController implements Initializable {
             alert("Feedback", "Sélectionnez une formation pour afficher ses feedbacks.");
             return;
         }
-        loadFeedback(selected.getId_formation());
+        try {
+            var feedbacks = feedbackService.getByFormation(selected.getId_formation());
+            StringBuilder sb = new StringBuilder();
+            if (feedbacks.isEmpty()) {
+                sb.append("Aucun feedback pour cette formation.");
+            } else {
+                for (int i = 0; i < feedbacks.size(); i++) {
+                    FormationFeedback f = feedbacks.get(i);
+                    sb.append(i + 1).append(") ")
+                            .append(f.getAuthor()).append(" - ")
+                            .append(f.getRating()).append("/5\n")
+                            .append(f.getComment()).append("\n")
+                            .append("Date: ").append(f.getCreatedAt() == null ? "N/A" : f.getCreatedAt()).append("\n\n");
+                }
+            }
+
+            TextArea area = new TextArea(sb.toString());
+            area.setEditable(false);
+            area.setWrapText(true);
+            area.setPrefSize(620, 420);
+
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Feedbacks - " + selected.getTitre());
+            dialog.getDialogPane().setContent(area);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+
+            loadFeedback(selected.getId_formation());
+        } catch (SQLException e) {
+            alert("Feedback", e.getMessage());
+        }
     }
     @FXML
     void retourMain() {

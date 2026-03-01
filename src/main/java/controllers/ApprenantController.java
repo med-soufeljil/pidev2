@@ -158,8 +158,8 @@ public class ApprenantController implements Initializable {
         info.setTitle("Mail inscription");
         info.setHeaderText(sent ? "Email envoyé" : "Email non envoyé");
         info.setContentText(sent
-                ? "Le mail d'inscription a été envoyé (ou mis en file locale)."
-                : "L'envoi du mail a échoué.");
+                ? "Le mail d'inscription a été envoyé via MailerSend."
+                : "L'envoi du mail a échoué: " + mailingApiService.getLastError());
         info.showAndWait();
     }
     @FXML
@@ -273,7 +273,7 @@ public class ApprenantController implements Initializable {
             Alert warn = new Alert(Alert.AlertType.WARNING);
             warn.setTitle("Notification");
             warn.setHeaderText("Inscription enregistrée");
-            warn.setContentText("L'appel API mailing a échoué, mais l'apprenant a bien été ajouté.");
+            warn.setContentText("L'appel MailerSend a échoué. Vérifiez vos variables d'environnement MailerSend.");
             warn.showAndWait();
         }
     }
