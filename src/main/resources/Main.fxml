@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefWidth="980" prefHeight="640"
+<BorderPane prefWidth="1040" prefHeight="680"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.MainController"
@@ -12,42 +12,47 @@
             styleClass="page-root">
 
     <top>
-        <VBox spacing="8" styleClass="hero">
-            <padding><Insets top="26" right="26" bottom="22" left="26"/></padding>
-            <Label text="Plateforme de Gestion des Formations" styleClass="hero-title"/>
-            <Label text="Administration complète : catalogue, apprenants, évaluations, reporting API et exports." styleClass="hero-subtitle"/>
+        <VBox spacing="10" styleClass="hero">
+            <padding><Insets top="28" right="30" bottom="24" left="30"/></padding>
+            <Label text="Système de Gestion des Formations" styleClass="hero-title"/>
+            <Label text="Plateforme avancée: formations, apprenants, feedbacks, APIs métier et intégrations externes." styleClass="hero-subtitle"/>
+            <Label fx:id="lblSuggestion" styleClass="hero-chip" text="Suggestion externe: chargement..."/>
         </VBox>
     </top>
 
     <center>
-        <HBox spacing="16" alignment="CENTER" BorderPane.alignment="CENTER">
-            <VBox spacing="10" styleClass="feature-card">
-                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
-                <Label text="Catalogue Formations" styleClass="section-title"/>
-                <Label text="CRUD, tri, recherche, feedback et notes." wrapText="true"/>
-                <Button text="Ouvrir" onAction="#openFormation"/>
-            </VBox>
+        <VBox spacing="14" alignment="CENTER">
+            <padding><Insets top="28" right="26" bottom="22" left="26"/></padding>
 
-            <VBox spacing="10" styleClass="feature-card">
-                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
-                <Label text="Suivi Apprenants" styleClass="section-title"/>
-                <Label text="Gestion statut, dates, email et formation liée." wrapText="true"/>
-                <Button text="Ouvrir" onAction="#openApprenant"/>
-            </VBox>
+            <HBox spacing="18" alignment="CENTER">
+                <VBox spacing="10" styleClass="feature-card" prefWidth="280">
+                    <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
+                    <Label text="📘 Gestion Formations" styleClass="section-title"/>
+                    <Label wrapText="true" text="Catalogue, tri, recherche avancée, évaluations et historique des feedbacks."/>
+                    <Button text="Ouvrir module" onAction="#openFormation"/>
+                </VBox>
 
-            <VBox spacing="10" styleClass="feature-card">
-                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
-                <Label text="Analytics Dashboard" styleClass="section-title"/>
-                <Label text="KPIs, graphique, export CSV et PDF via API." wrapText="true"/>
-                <Button text="Ouvrir" onAction="#openDashboard"/>
-            </VBox>
-        </HBox>
+                <VBox spacing="10" styleClass="feature-card" prefWidth="280">
+                    <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
+                    <Label text="👨‍🎓 Gestion Apprenants" styleClass="section-title"/>
+                    <Label wrapText="true" text="Inscription complète, statut, dates et envoi automatique d'email API."/>
+                    <Button text="Ouvrir module" onAction="#openApprenant"/>
+                </VBox>
+
+                <VBox spacing="10" styleClass="feature-card" prefWidth="280">
+                    <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
+                    <Label text="📊 Dashboard & Exports" styleClass="section-title"/>
+                    <Label wrapText="true" text="KPIs temps réel et export PDF/CSV via endpoints API sécurisés."/>
+                    <Button text="Ouvrir module" onAction="#openDashboard"/>
+                </VBox>
+            </HBox>
+        </VBox>
     </center>
 
     <bottom>
         <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="bottom-actions">
-            <padding><Insets top="14" right="26" bottom="20" left="26"/></padding>
-            <Button text="Documentation API" onAction="#showApiInfo" styleClass="secondary-btn"/>
+            <padding><Insets top="8" right="26" bottom="18" left="26"/></padding>
+            <Button text="Documentation API complète" onAction="#showApiInfo" styleClass="secondary-btn"/>
             <Button text="Quitter" onAction="#quitter" styleClass="danger-btn"/>
         </HBox>
     </bottom>

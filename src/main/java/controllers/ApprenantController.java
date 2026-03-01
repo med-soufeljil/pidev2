@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import services.ApprenantService;
 import services.FormationService;
+import services.MailingApiService;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -43,6 +44,7 @@ public class ApprenantController implements Initializable {
 
     private final ApprenantService service = new ApprenantService();
     private final FormationService formationService = new FormationService();
+    private final MailingApiService mailingApiService = new MailingApiService();
     private FilteredList<Apprenant> filteredList;
     private List<Formation> formations;
 
@@ -97,6 +99,7 @@ public class ApprenantController implements Initializable {
             if (!validateForm()) return;
             Apprenant a = buildFromForm(new Apprenant());
             service.ajouter(a);
+            sendRegistrationEmail(a);
             refreshTable();
             clearFields();
         } catch (SQLException e) {
@@ -235,6 +238,23 @@ public class ApprenantController implements Initializable {
         return formations.stream().filter(f -> f.getId_formation() == idFormation).map(Formation::getTitre).findFirst().orElse("N/A");
     }
 
+
+    private void sendRegistrationEmail(Apprenant apprenant) {
+        Formation formation = cbFormation.getValue();
+        String formationTitle = formation != null ? formation.getTitre() : "Formation";
+        boolean sent = mailingApiService.sendRegistrationEmail(
+                apprenant.getEmail(),
+                apprenant.getPrenom() + " " + apprenant.getNom(),
+                formationTitle
+        );
+        if (!sent) {
+            Alert warn = new Alert(Alert.AlertType.WARNING);
+            warn.setTitle("Notification");
+            warn.setHeaderText("Inscription enregistrée");
+            warn.setContentText("L'appel API mailing a échoué, mais l'apprenant a bien été ajouté.");
+            warn.showAndWait();
+        }
+    }
     private void clearFields() {
         tfNom.clear();
         tfPrenom.clear();

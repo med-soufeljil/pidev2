@@ -36,6 +36,7 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
+        ApiRuntime.ensureStarted();
         refresh();
     }
 

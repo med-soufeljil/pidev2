@@ -8,8 +8,10 @@ import entities.Formation;
 import entities.FormationFeedback;
 import services.ApprenantService;
 import services.DashboardService;
+import services.ExternalPublicApiService;
 import services.FeedbackService;
 import services.FormationService;
+import services.MailingApiService;
 import utils.SimplePdfExporter;
 
 import java.io.IOException;
@@ -35,6 +37,8 @@ public class ApiServer {
         server.createContext("/api/dashboard", this::handleDashboard);
         server.createContext("/api/dashboard/pdf", this::handleDashboardPdf);
         server.createContext("/api/feedbacks", this::handleFeedbacks);
+        server.createContext("/api/mailing/registration", this::handleMailingRegistration);
+        server.createContext("/api/external/suggestion", this::handleExternalSuggestion);
         server.createContext("/api/health", this::handleHealth);
         server.setExecutor(Executors.newFixedThreadPool(6));
         server.start();
@@ -67,10 +71,12 @@ public class ApiServer {
             formations.sort(comparator);
 
             StringBuilder json = new StringBuilder("[");
+            FeedbackService feedbackService = new FeedbackService();
             for (int i = 0; i < formations.size(); i++) {
                 Formation f = formations.get(i);
-                json.append(String.format("{\"id\":%d,\"titre\":\"%s\",\"description\":\"%s\",\"duree\":%d,\"niveau\":\"%s\",\"categorie\":\"%s\",\"certification\":%s}",
-                        f.getId_formation(), escape(f.getTitre()), escape(f.getDescription()), f.getDuree(), f.getNiveau(), f.getCategorie(), f.isCertification()));
+                int feedbackCount = feedbackService.getByFormation(f.getId_formation()).size();
+                json.append(String.format("{\"id\":%d,\"titre\":\"%s\",\"description\":\"%s\",\"duree\":%d,\"niveau\":\"%s\",\"categorie\":\"%s\",\"certification\":%s,\"feedbackCount\":%d}",
+                        f.getId_formation(), escape(f.getTitre()), escape(f.getDescription()), f.getDuree(), f.getNiveau(), f.getCategorie(), f.isCertification(), feedbackCount));
                 if (i < formations.size() - 1) json.append(',');
             }
             json.append(']');
@@ -172,6 +178,31 @@ public class ApiServer {
         }
     }
 
+    private void handleMailingRegistration(HttpExchange exchange) throws IOException {
+        if (!"POST".equals(exchange.getRequestMethod())) {
+            sendJson(exchange, 405, "{\"error\":\"Use POST\"}");
+            return;
+        }
+        Map<String, String> query = parseQuery(exchange.getRequestURI());
+        String email = query.getOrDefault("email", "");
+        String name = query.getOrDefault("name", "");
+        String formation = query.getOrDefault("formation", "Formation");
+        if (email.isBlank() || name.isBlank()) {
+            sendJson(exchange, 400, "{\"error\":\"email and name are required\"}");
+            return;
+        }
+        boolean sent = new MailingApiService().sendRegistrationEmail(email, name, formation);
+        sendJson(exchange, sent ? 200 : 502, "{\"mailSent\":" + sent + "}");
+    }
+
+    private void handleExternalSuggestion(HttpExchange exchange) throws IOException {
+        if (!"GET".equals(exchange.getRequestMethod())) {
+            sendJson(exchange, 405, "{\"error\":\"Method not allowed\"}");
+            return;
+        }
+        String suggestion = new ExternalPublicApiService().fetchSuggestionTitle();
+        sendJson(exchange, 200, "{\"source\":\"jsonplaceholder\",\"suggestion\":\"" + escape(suggestion) + "\"}");
+    }
 
     private void handleHealth(HttpExchange exchange) throws IOException {
         if (!"GET".equals(exchange.getRequestMethod())) {
@@ -180,6 +211,7 @@ public class ApiServer {
         }
         sendJson(exchange, 200, "{\"status\":\"ok\"}");
     }
+
     private Map<String, String> parseQuery(URI uri) {
         Map<String, String> map = new HashMap<>();
         String query = uri.getRawQuery();

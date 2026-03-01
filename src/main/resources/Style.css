@@ -124,3 +124,17 @@
     -fx-border-radius: 12;
     -fx-padding: 10;
 }
+
+
+.hero-chip {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-text-fill: #ffffff;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 14;
+    -fx-font-size: 12px;
+}
+
+.bottom-actions {
+    -fx-background-color: rgba(255,255,255,0.7);
+    -fx-background-radius: 12 12 0 0;
+}
