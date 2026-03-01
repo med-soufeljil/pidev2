@@ -12,27 +12,23 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import services.DashboardService;
-import utils.SimplePdfExporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.List;
 
 public class DashboardController {
 
-    @FXML
-    private Label lblTotalFormations;
-    @FXML
-    private Label lblTotalApprenants;
-    @FXML
-    private Label lblAvgDuree;
-    @FXML
-    private Label lblCertif;
-    @FXML
-    private PieChart pieChart;
+    @FXML private Label lblTotalFormations;
+    @FXML private Label lblTotalApprenants;
+    @FXML private Label lblAvgDuree;
+    @FXML private Label lblCertif;
+    @FXML private PieChart pieChart;
 
     private final DashboardService dashboardService = new DashboardService();
     private DashboardStats stats;
@@ -50,7 +46,6 @@ public class DashboardController {
             lblTotalApprenants.setText(String.valueOf(stats.getTotalApprenants()));
             lblAvgDuree.setText(String.format("%.2f h", stats.getAverageDuration()));
             lblCertif.setText(String.valueOf(stats.getCertifiedFormations()));
-
             int nonCertif = Math.max(0, stats.getTotalFormations() - stats.getCertifiedFormations());
             pieChart.setData(FXCollections.observableArrayList(
                     new PieChart.Data("Certifiées", stats.getCertifiedFormations()),
@@ -63,46 +58,42 @@ public class DashboardController {
 
     @FXML
     public void exportPdf() {
-        if (stats == null) {
-            refresh();
-        }
-
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Exporter le dashboard en PDF");
+        chooser.setTitle("Exporter le dashboard en PDF (API)");
         chooser.setInitialFileName("dashboard-report.pdf");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
-        File file = chooser.showSaveDialog(pieChart.getScene().getWindow());
-        if (file == null) {
-            return;
-        }
+        File destination = chooser.showSaveDialog(pieChart.getScene().getWindow());
+        if (destination == null) return;
 
         try {
-            List<String> lines = List.of(
-                    "Total formations: " + stats.getTotalFormations(),
-                    "Total apprenants: " + stats.getTotalApprenants(),
-                    String.format("Durée moyenne: %.2f h", stats.getAverageDuration()),
-                    "Formations certifiées: " + stats.getCertifiedFormations()
-            );
-            SimplePdfExporter.writeSimpleReport(file.toPath(), "Rapport Dashboard", lines);
-            ok("Export PDF", "PDF généré: " + file.getAbsolutePath());
+            URL url = new URL("http://localhost:8080/api/dashboard/pdf");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(3000);
+            conn.setReadTimeout(5000);
+
+            int code = conn.getResponseCode();
+            if (code != 200) {
+                throw new IOException("API dashboard/pdf returned status " + code);
+            }
+            try (InputStream in = conn.getInputStream()) {
+                Files.copy(in, destination.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            }
+            ok("Export PDF", "PDF généré via API: " + destination.getAbsolutePath());
         } catch (IOException e) {
-            error("Export PDF", e.getMessage());
+            error("Export PDF", "Erreur API PDF: " + e.getMessage());
         }
     }
 
     @FXML
     public void exportCsv() {
-        if (stats == null) {
-            refresh();
-        }
+        if (stats == null) refresh();
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Exporter les statistiques en CSV");
         chooser.setInitialFileName("dashboard-report.csv");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
         File file = chooser.showSaveDialog(pieChart.getScene().getWindow());
-        if (file == null) {
-            return;
-        }
+        if (file == null) return;
 
         String csv = "metric,value\n"
                 + "total_formations," + stats.getTotalFormations() + "\n"

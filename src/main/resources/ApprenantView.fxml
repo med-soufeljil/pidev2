@@ -1,34 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefWidth="800" prefHeight="500"
+<BorderPane prefWidth="1150" prefHeight="720"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.ApprenantController"
             stylesheets="@Style.css"
             styleClass="page-root">
 
-    <VBox spacing="10" alignment="CENTER">
-        <Label text="Gestion des Apprenants"/>
-        <TextField fx:id="tfNom" promptText="Nom"/>
-        <TextField fx:id="tfPrenom" promptText="Prénom"/>
-        <ComboBox fx:id="cbFormation" promptText="Formation"/>
-        <TextField fx:id="tfRecherche" promptText="Rechercher..." onKeyReleased="#filtrer"/>
-        <HBox spacing="10">
-            <Button text="Ajouter" onAction="#ajouter"/>
-            <Button text="Modifier" onAction="#modifier"/>
-            <Button text="Supprimer" onAction="#supprimer"/>
-            <Button text="Retour" onAction="#retourMain"/>
-        </HBox>
-        <TableView fx:id="tableApprenant" prefHeight="200">
-            <columns>
-                <TableColumn text="ID" fx:id="colId"/>
-                <TableColumn text="Nom" fx:id="colNom"/>
-                <TableColumn text="Prénom" fx:id="colPrenom"/>
-                <TableColumn text="Formation" fx:id="colFormation"/>
-            </columns>
-        </TableView>
-    </VBox>
-</AnchorPane>
+    <top>
+        <VBox spacing="10" styleClass="top-bar">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            <Label text="Gestion avancée des apprenants" styleClass="page-title"/>
+            <HBox spacing="10">
+                <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+                <TextField fx:id="tfRecherche" promptText="Recherche..." HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="cbSortBy" prefWidth="140"/>
+                <ComboBox fx:id="cbSortOrder" prefWidth="120"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.6">
+            <VBox spacing="10" styleClass="card">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <Label text="Liste des apprenants" styleClass="section-title"/>
+                <TableView fx:id="tableApprenant" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colNom" text="Nom" prefWidth="130"/>
+                        <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="130"/>
+                        <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
+                        <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
+                        <TableColumn fx:id="colFormation" text="Formation" prefWidth="180"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <VBox spacing="10" styleClass="card">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <Label text="Fiche apprenant" styleClass="section-title"/>
+                <TextField fx:id="tfNom" promptText="Nom"/>
+                <TextField fx:id="tfPrenom" promptText="Prénom"/>
+                <TextField fx:id="tfEmail" promptText="Email"/>
+                <ComboBox fx:id="cbStatut" promptText="Statut"/>
+                <HBox spacing="8">
+                    <DatePicker fx:id="dpDebut" promptText="Date début" HBox.hgrow="ALWAYS"/>
+                    <DatePicker fx:id="dpFin" promptText="Date fin" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <ComboBox fx:id="cbFormation" promptText="Formation"/>
+                <HBox spacing="8">
+                    <Button text="Ajouter" onAction="#ajouter"/>
+                    <Button text="Modifier" onAction="#modifier"/>
+                    <Button text="Supprimer" onAction="#supprimer" styleClass="danger-btn"/>
+                    <Button text="Rafraîchir" onAction="#afficher" styleClass="secondary-btn"/>
+                </HBox>
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>

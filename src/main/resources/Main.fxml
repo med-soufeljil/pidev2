@@ -1,29 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefWidth="680" prefHeight="460"
+<BorderPane prefWidth="980" prefHeight="640"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.MainController"
             stylesheets="@Style.css"
             styleClass="page-root">
 
-    <VBox spacing="18" alignment="CENTER"
-          AnchorPane.topAnchor="0"
-          AnchorPane.bottomAnchor="0"
-          AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0">
+    <top>
+        <VBox spacing="8" styleClass="hero">
+            <padding><Insets top="26" right="26" bottom="22" left="26"/></padding>
+            <Label text="Plateforme de Gestion des Formations" styleClass="hero-title"/>
+            <Label text="Administration complète : catalogue, apprenants, évaluations, reporting API et exports." styleClass="hero-subtitle"/>
+        </VBox>
+    </top>
 
-        <Label text="Gestion Centre de Formation" styleClass="page-title"/>
+    <center>
+        <HBox spacing="16" alignment="CENTER" BorderPane.alignment="CENTER">
+            <VBox spacing="10" styleClass="feature-card">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <Label text="Catalogue Formations" styleClass="section-title"/>
+                <Label text="CRUD, tri, recherche, feedback et notes." wrapText="true"/>
+                <Button text="Ouvrir" onAction="#openFormation"/>
+            </VBox>
 
-        <Button text="📘 Gestion des Formations" prefWidth="300" onAction="#openFormation"/>
-        <Button text="👨‍🎓 Gestion des Apprenants" prefWidth="300" onAction="#openApprenant"/>
-        <Button text="📊 Dashboard avancé" prefWidth="300" onAction="#openDashboard"/>
+            <VBox spacing="10" styleClass="feature-card">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <Label text="Suivi Apprenants" styleClass="section-title"/>
+                <Label text="Gestion statut, dates, email et formation liée." wrapText="true"/>
+                <Button text="Ouvrir" onAction="#openApprenant"/>
+            </VBox>
 
-        <Separator prefWidth="260"/>
+            <VBox spacing="10" styleClass="feature-card">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <Label text="Analytics Dashboard" styleClass="section-title"/>
+                <Label text="KPIs, graphique, export CSV et PDF via API." wrapText="true"/>
+                <Button text="Ouvrir" onAction="#openDashboard"/>
+            </VBox>
+        </HBox>
+    </center>
 
-        <Button text="❌ Quitter" prefWidth="300" onAction="#quitter" styleClass="secondary-btn"/>
-    </VBox>
-</AnchorPane>
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="bottom-actions">
+            <padding><Insets top="14" right="26" bottom="20" left="26"/></padding>
+            <Button text="Documentation API" onAction="#showApiInfo" styleClass="secondary-btn"/>
+            <Button text="Quitter" onAction="#quitter" styleClass="danger-btn"/>
+        </HBox>
+    </bottom>
+</BorderPane>

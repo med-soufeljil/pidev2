@@ -1,40 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefWidth="800" prefHeight="550"
+<BorderPane prefWidth="1200" prefHeight="760"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.FormationController"
             stylesheets="@Style.css"
             styleClass="page-root">
 
-    <VBox spacing="10" layoutX="20" layoutY="20" prefWidth="760">
-        <Label text="Gestion des Formations"/>
-        <Button text="⬅ Retour au menu principal" onAction="#retourMain"/>
-        <TextField fx:id="tfRecherche" promptText="🔍 Rechercher par titre..."/>
-        <TextField fx:id="tfTitre" promptText="Titre"/>
-        <TextField fx:id="tfDescription" promptText="Description"/>
-        <TextField fx:id="tfDuree" promptText="Durée (en heures)"/>
-        <ComboBox fx:id="cbNiveau" promptText="Niveau"/>
-        <ComboBox fx:id="cbCategorie" promptText="Catégorie"/>
-        <CheckBox fx:id="cbCertification" text="Certification"/>
-        <HBox spacing="10">
-            <Button text="Ajouter" onAction="#ajouter"/>
-            <Button text="Modifier" onAction="#modifier"/>
-            <Button text="Supprimer" onAction="#supprimer"/>
-            <Button text="Afficher" onAction="#afficher"/>
-        </HBox>
-        <TableView fx:id="tableFormation" prefHeight="250">
-            <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-                <TableColumn fx:id="colTitre" text="Titre" prefWidth="150"/>
-                <TableColumn fx:id="colDuree" text="Durée" prefWidth="80"/>
-                <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
-                <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
-                <TableColumn fx:id="colCertif" text="Certification" prefWidth="120"/>
-            </columns>
-        </TableView>
-    </VBox>
-</AnchorPane>
+    <top>
+        <VBox spacing="10" styleClass="top-bar">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            <Label text="Gestion avancée des formations" styleClass="page-title"/>
+            <HBox spacing="10">
+                <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+                <TextField fx:id="tfRecherche" promptText="Recherche multi-critères..." HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="cbSortBy" prefWidth="140"/>
+                <ComboBox fx:id="cbSortOrder" prefWidth="120"/>
+                <Button text="Actualiser" onAction="#afficher"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.58">
+            <VBox spacing="10" styleClass="card">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <Label text="Catalogue des formations" styleClass="section-title"/>
+                <TableView fx:id="tableFormation" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colTitre" text="Titre" prefWidth="220"/>
+                        <TableColumn fx:id="colDuree" text="Durée" prefWidth="90"/>
+                        <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
+                        <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
+                        <TableColumn fx:id="colCertif" text="Certif" prefWidth="90"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <VBox spacing="12" styleClass="card">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <Label text="Edition formation" styleClass="section-title"/>
+                <TextField fx:id="tfTitre" promptText="Titre"/>
+                <TextArea fx:id="tfDescription" promptText="Description" prefRowCount="3"/>
+                <TextField fx:id="tfDuree" promptText="Durée (heures)"/>
+                <HBox spacing="8">
+                    <ComboBox fx:id="cbNiveau" promptText="Niveau" HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="cbCategorie" promptText="Catégorie" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <CheckBox fx:id="cbCertification" text="Certification incluse"/>
+                <HBox spacing="8">
+                    <Button text="Ajouter" onAction="#ajouter"/>
+                    <Button text="Modifier" onAction="#modifier"/>
+                    <Button text="Supprimer" onAction="#supprimer" styleClass="danger-btn"/>
+                </HBox>
+
+                <Separator/>
+                <Label text="Evaluation & feedbacks" styleClass="section-title"/>
+                <Label text="Note moyenne"/>
+                <Label fx:id="lblAverageRating" text="0.0 / 5" styleClass="kpi-value"/>
+                <TextField fx:id="tfFeedbackAuteur" promptText="Votre nom"/>
+                <TextArea fx:id="taFeedback" promptText="Votre feedback" prefRowCount="2"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Note"/>
+                    <Slider fx:id="slRating" min="1" max="5" value="4" blockIncrement="1" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickLabels="true" showTickMarks="true" HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblRatingValue" text="4.0"/>
+                </HBox>
+                <Button text="Ajouter feedback" onAction="#addFeedback"/>
+
+                <TableView fx:id="tableFeedback" prefHeight="180">
+                    <columns>
+                        <TableColumn fx:id="colFeedbackAuteur" text="Auteur" prefWidth="90"/>
+                        <TableColumn fx:id="colFeedbackNote" text="Note" prefWidth="60"/>
+                        <TableColumn fx:id="colFeedbackComment" text="Commentaire" prefWidth="190"/>
+                        <TableColumn fx:id="colFeedbackDate" text="Date" prefWidth="130"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public final class SimplePdfExporter {
         sb.append("BT\n/F1 14 Tf\n50 780 Td\n");
 
         for (int i = 0; i < lines.size(); i++) {
-            String line = escapePdfText(lines.get(i));
+            String line = escapePdfText(toAscii(lines.get(i)));
             if (i == 0) {
                 sb.append("(").append(line).append(") Tj\n");
                 sb.append("/F1 11 Tf\n");
@@ -76,6 +77,12 @@ public final class SimplePdfExporter {
 
         sb.append("ET");
         return sb.toString();
+    }
+
+    private static String toAscii(String input) {
+        if (input == null) return "";
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("\\p{M}+", "");
+        return normalized.replaceAll("[^\\x20-\\x7E]", "?");
     }
 
     private static String escapePdfText(String text) {

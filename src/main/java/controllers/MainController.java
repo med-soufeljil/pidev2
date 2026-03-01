@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 public class MainController {
@@ -25,6 +26,19 @@ public class MainController {
     }
 
     @FXML
+    public void showApiInfo(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("API locale disponible");
+        alert.setHeaderText("Endpoints API");
+        alert.setContentText("GET http://localhost:8080/api/formations\n"
+                + "GET http://localhost:8080/api/apprenants\n"
+                + "GET http://localhost:8080/api/dashboard\n"
+                + "GET http://localhost:8080/api/dashboard/pdf\n"
+                + "GET http://localhost:8080/api/feedbacks?formationId=1");
+        alert.showAndWait();
+    }
+
+    @FXML
     public void quitter(ActionEvent event) {
         System.exit(0);
     }
@@ -37,7 +51,10 @@ public class MainController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Navigation");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 }
