@@ -151,3 +151,19 @@
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
 }
+
+
+.feedback-popup-table {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #9edfff;
+}
+
+.feedback-popup-table .column-header-background {
+    -fx-background-color: linear-gradient(to right, #bdefff, #d9f6ff);
+}
+
+.feedback-popup-table .table-row-cell:selected {
+    -fx-background-color: #cfeeff;
+}

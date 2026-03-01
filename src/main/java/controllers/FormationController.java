@@ -197,29 +197,35 @@ public class FormationController implements Initializable {
             return;
         }
         try {
-            var feedbacks = feedbackService.getByFormation(selected.getId_formation());
-            StringBuilder sb = new StringBuilder();
-            if (feedbacks.isEmpty()) {
-                sb.append("Aucun feedback pour cette formation.");
-            } else {
-                for (int i = 0; i < feedbacks.size(); i++) {
-                    FormationFeedback f = feedbacks.get(i);
-                    sb.append(i + 1).append(") ")
-                            .append(f.getAuthor()).append(" - ")
-                            .append(f.getRating()).append("/5\n")
-                            .append(f.getComment()).append("\n")
-                            .append("Date: ").append(f.getCreatedAt() == null ? "N/A" : f.getCreatedAt()).append("\n\n");
-                }
-            }
+            var feedbacks = FXCollections.observableArrayList(feedbackService.getByFormation(selected.getId_formation()));
 
-            TextArea area = new TextArea(sb.toString());
-            area.setEditable(false);
-            area.setWrapText(true);
-            area.setPrefSize(620, 420);
+            TableView<FormationFeedback> popupTable = new TableView<>(feedbacks);
+            popupTable.getStyleClass().add("feedback-popup-table");
+
+            TableColumn<FormationFeedback, String> auteurCol = new TableColumn<>("Auteur");
+            auteurCol.setPrefWidth(150);
+            auteurCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
+
+            TableColumn<FormationFeedback, Integer> noteCol = new TableColumn<>("Note");
+            noteCol.setPrefWidth(70);
+            noteCol.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getRating()).asObject());
+
+            TableColumn<FormationFeedback, String> commentaireCol = new TableColumn<>("Commentaire");
+            commentaireCol.setPrefWidth(330);
+            commentaireCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getComment()));
+
+            TableColumn<FormationFeedback, String> dateCol = new TableColumn<>("Date");
+            dateCol.setPrefWidth(170);
+            dateCol.setCellValueFactory(d -> new SimpleStringProperty(
+                    d.getValue().getCreatedAt() == null ? "N/A" : d.getValue().getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
+
+            popupTable.getColumns().setAll(auteurCol, noteCol, commentaireCol, dateCol);
+            popupTable.setPrefSize(760, 420);
 
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Feedbacks - " + selected.getTitre());
-            dialog.getDialogPane().setContent(area);
+            dialog.getDialogPane().setContent(popupTable);
+            dialog.getDialogPane().setPrefSize(790, 500);
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
             dialog.showAndWait();
 

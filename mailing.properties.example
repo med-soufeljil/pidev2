@@ -1,3 +1,4 @@
+# File path: /workspace/pidev/mailing.properties
 # Copy this file to mailing.properties and fill your real credentials
 # Token: use either mailersend.api.key or mailersend.token
 mailersend.token=mlsn_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
