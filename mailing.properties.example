@@ -1,5 +1,10 @@
 # Copy this file to mailing.properties and fill your real credentials
-# You can use either mailersend.api.key or mailersend.token
+# Token: use either mailersend.api.key or mailersend.token
 mailersend.token=mlsn_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-mailersend.from.email=verified-sender@yourdomain.com
+
+# Domain used to auto-build sender as noreply@<domain> if from.email is not provided
+mailersend.domain=test-r83ql3pyk6vgzw1j.mlsender.net
+
+# Optional explicit sender (must be verified on MailerSend)
+# mailersend.from.email=noreply@test-r83ql3pyk6vgzw1j.mlsender.net
 mailersend.from.name=PIDEV Formation

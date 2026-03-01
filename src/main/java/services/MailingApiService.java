@@ -12,6 +12,7 @@ import java.util.Properties;
 
 public class MailingApiService {
 
+    private static final String DEFAULT_MAILERSEND_DOMAIN = "test-r83ql3pyk6vgzw1j.mlsender.net";
     private String lastError = "";
     private static final Properties FILE_CONFIG = loadFileConfig();
 
@@ -34,12 +35,23 @@ public class MailingApiService {
                 FILE_CONFIG.getProperty("mailersend.token")
         );
 
+        String domain = pick(
+                envOrNull("MAILERSEND_DOMAIN"),
+                envOrNull("MAILSENDER_DOMAIN"),
+                System.getProperty("mailersend.domain"),
+                FILE_CONFIG.getProperty("mailersend.domain"),
+                DEFAULT_MAILERSEND_DOMAIN
+        );
+
         String fromEmail = pick(
                 envOrNull("MAILERSEND_FROM_EMAIL"),
                 envOrNull("MAILSENDER_FROM_EMAIL"),
                 System.getProperty("mailersend.from.email"),
                 FILE_CONFIG.getProperty("mailersend.from.email")
         );
+        if (isBlank(fromEmail) && !isBlank(domain)) {
+            fromEmail = "noreply@" + domain;
+        }
 
         String fromName = pick(
                 envOrNull("MAILERSEND_FROM_NAME"),
@@ -49,9 +61,9 @@ public class MailingApiService {
                 "PIDEV Formation"
         );
 
-        if (isBlank(apiKey) || isBlank(fromEmail)) {
-            lastError = "Configuration MailerSend manquante. Définissez MAILERSEND_API_KEY (ou MAILERSEND_TOKEN) + MAILERSEND_FROM_EMAIL "
-                    + "(ou MAILSENDER_*), ou ajoutez ./mailing.properties avec mailersend.api.key (ou mailersend.token) et mailersend.from.email.";
+        if (isBlank(apiKey)) {
+            lastError = "Configuration MailerSend manquante. Définissez MAILERSEND_API_KEY (ou MAILERSEND_TOKEN). "
+                    + "Vous pouvez aussi utiliser MAILSENDER_* alias, ou ./mailing.properties (mailersend.api.key / mailersend.token).";
             return false;
         }
 
