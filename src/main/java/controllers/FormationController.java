@@ -188,6 +188,16 @@ public class FormationController implements Initializable {
         }
     }
 
+
+    @FXML
+    void afficherFeedbacks() {
+        Formation selected = tableFormation.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alert("Feedback", "Sélectionnez une formation pour afficher ses feedbacks.");
+            return;
+        }
+        loadFeedback(selected.getId_formation());
+    }
     @FXML
     void retourMain() {
         try {

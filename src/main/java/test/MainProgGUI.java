@@ -22,6 +22,7 @@ public class MainProgGUI extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.setTitle("Workshop PIDEV");
         primaryStage.show();
     }

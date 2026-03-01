@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefWidth="1200" prefHeight="760"
+<BorderPane prefWidth="1366" prefHeight="768"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.FormationController"
@@ -72,7 +72,10 @@
                     <Slider fx:id="slRating" min="1" max="5" value="4" blockIncrement="1" majorTickUnit="1" minorTickCount="0" snapToTicks="true" showTickLabels="true" showTickMarks="true" HBox.hgrow="ALWAYS"/>
                     <Label fx:id="lblRatingValue" text="4.0"/>
                 </HBox>
-                <Button text="Ajouter feedback" onAction="#addFeedback"/>
+                <HBox spacing="8">
+                    <Button text="Ajouter feedback" onAction="#addFeedback"/>
+                    <Button text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn"/>
+                </HBox>
 
                 <TableView fx:id="tableFeedback" prefHeight="180">
                     <columns>

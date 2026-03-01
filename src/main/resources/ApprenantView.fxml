@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefWidth="1150" prefHeight="720"
+<BorderPane prefWidth="1366" prefHeight="768"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.ApprenantController"
@@ -58,6 +58,7 @@
                     <Button text="Modifier" onAction="#modifier"/>
                     <Button text="Supprimer" onAction="#supprimer" styleClass="danger-btn"/>
                     <Button text="Rafraîchir" onAction="#afficher" styleClass="secondary-btn"/>
+                    <Button text="Envoyer mail" onAction="#envoyerMail" styleClass="secondary-btn"/>
                 </HBox>
             </VBox>
         </SplitPane>

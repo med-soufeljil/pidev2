@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="14" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<VBox prefWidth="1366" prefHeight="768" spacing="14" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.DashboardController" stylesheets="@Style.css" styleClass="page-root">
     <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 

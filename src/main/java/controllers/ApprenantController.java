@@ -140,6 +140,28 @@ public class ApprenantController implements Initializable {
         }
     }
 
+
+    @FXML
+    public void envoyerMail() {
+        if (tfEmail.getText().isBlank() || tfNom.getText().isBlank() || tfPrenom.getText().isBlank()) {
+            alert("Mail", "Veuillez remplir nom, prénom et email avant l'envoi.");
+            return;
+        }
+        Formation formation = cbFormation.getValue();
+        String formationTitle = formation != null ? formation.getTitre() : "Formation";
+        boolean sent = mailingApiService.sendRegistrationEmail(
+                tfEmail.getText().trim(),
+                tfPrenom.getText().trim() + " " + tfNom.getText().trim(),
+                formationTitle
+        );
+        Alert info = new Alert(sent ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
+        info.setTitle("Mail inscription");
+        info.setHeaderText(sent ? "Email envoyé" : "Email non envoyé");
+        info.setContentText(sent
+                ? "Le mail d'inscription a été envoyé (ou mis en file locale)."
+                : "L'envoi du mail a échoué.");
+        info.showAndWait();
+    }
     @FXML
     public void retourMain() {
         try {
