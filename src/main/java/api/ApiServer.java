@@ -208,13 +208,13 @@ public class ApiServer {
 
     private void handleTopMarkets(HttpExchange exchange) throws IOException {
         if (!"GET".equals(exchange.getRequestMethod())) {
-            sendJson(exchange, 405, "{"error":"Method not allowed"}");
+            sendJson(exchange, 405, "{\"error\":\"Method not allowed\"}");
             return;
         }
         Map<String, String> query = parseQuery(exchange.getRequestURI());
         String tech = query.getOrDefault("tech", "").trim().toLowerCase();
         if (tech.isBlank()) {
-            sendJson(exchange, 400, "{"error":"tech query param is required"}");
+            sendJson(exchange, 400, "{\"error\":\"tech query param is required\"}");
             return;
         }
 
@@ -228,9 +228,11 @@ public class ApiServer {
         marketMap.put("dotnet", List.of("United States", "United Kingdom", "Sweden"));
 
         List<String> markets = marketMap.getOrDefault(tech, List.of("United States", "Germany", "France"));
-        StringBuilder json = new StringBuilder("{"tech":"").append(escape(tech)).append("","topMarkets":[");
+        StringBuilder json = new StringBuilder("{\"tech\":\"")
+                .append(escape(tech))
+                .append("\",\"topMarkets\":[");
         for (int i = 0; i < markets.size(); i++) {
-            json.append(""").append(escape(markets.get(i))).append(""");
+            json.append("\"").append(escape(markets.get(i))).append("\"");
             if (i < markets.size() - 1) json.append(',');
         }
         json.append("]}");

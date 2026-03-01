@@ -44,7 +44,7 @@
                 </TableView>
             </VBox>
 
-            <VBox spacing="12" styleClass="card">
+            <VBox fx:id="boxEdition" spacing="12" styleClass="card">
                 <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
                 <Label text="Edition formation" styleClass="section-title"/>
                 <TextField fx:id="tfTitre" promptText="Titre"/>
@@ -55,7 +55,7 @@
                     <ComboBox fx:id="cbCategorie" promptText="Catégorie" HBox.hgrow="ALWAYS"/>
                 </HBox>
                 <CheckBox fx:id="cbCertification" text="Certification incluse"/>
-                <HBox spacing="8">
+                <HBox fx:id="hbCrud" spacing="8">
                     <Button text="Ajouter" onAction="#ajouter"/>
                     <Button text="Modifier" onAction="#modifier"/>
                     <Button text="Supprimer" onAction="#supprimer" styleClass="danger-btn"/>
@@ -74,6 +74,7 @@
                 </HBox>
                 <HBox spacing="8">
                     <Button text="Ajouter feedback" onAction="#addFeedback"/>
+                    <Button fx:id="btnPostuler" text="Postuler" onAction="#postuler" styleClass="secondary-btn"/>
                     <Button text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn"/>
                 </HBox>
 

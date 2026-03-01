@@ -15,34 +15,40 @@
         <VBox spacing="10" styleClass="hero">
             <padding><Insets top="28" right="30" bottom="24" left="30"/></padding>
             <Label text="Système de Gestion des Formations" styleClass="hero-title"/>
-            <Label text="Plateforme avancée: formations, apprenants, feedbacks, APIs métier et intégrations externes." styleClass="hero-subtitle"/>
+            <Label text="Choisissez votre espace d'accès puis ouvrez le module souhaité." styleClass="hero-subtitle"/>
             <Label fx:id="lblSuggestion" styleClass="hero-chip" text="Suggestion externe: chargement..."/>
+            <Label fx:id="lblRole" styleClass="hero-chip" text="Rôle actuel: non défini"/>
         </VBox>
     </top>
 
     <center>
         <VBox spacing="14" alignment="CENTER">
-            <padding><Insets top="28" right="26" bottom="22" left="26"/></padding>
+            <padding><Insets top="20" right="26" bottom="22" left="26"/></padding>
+
+            <HBox spacing="12" alignment="CENTER">
+                <Button text="Entrer comme ADMIN" onAction="#selectAdmin"/>
+                <Button text="Entrer comme USER" onAction="#selectUser" styleClass="secondary-btn"/>
+            </HBox>
 
             <HBox spacing="18" alignment="CENTER">
                 <VBox spacing="10" styleClass="feature-card" prefWidth="280">
                     <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
-                    <Label text="📘 Gestion Formations" styleClass="section-title"/>
-                    <Label wrapText="true" text="Catalogue, tri, recherche avancée, évaluations et historique des feedbacks."/>
+                    <Label text="📘 Formations" styleClass="section-title"/>
+                    <Label wrapText="true" text="ADMIN: gestion complète. USER: consultation + postuler + feedback."/>
                     <Button text="Ouvrir module" onAction="#openFormation"/>
                 </VBox>
 
                 <VBox spacing="10" styleClass="feature-card" prefWidth="280">
                     <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
-                    <Label text="👨‍🎓 Gestion Apprenants" styleClass="section-title"/>
-                    <Label wrapText="true" text="Inscription complète, statut, dates et envoi automatique d'email API."/>
+                    <Label text="👨‍🎓 Apprenants" styleClass="section-title"/>
+                    <Label wrapText="true" text="Module réservé à l'ADMIN."/>
                     <Button text="Ouvrir module" onAction="#openApprenant"/>
                 </VBox>
 
                 <VBox spacing="10" styleClass="feature-card" prefWidth="280">
                     <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
-                    <Label text="📊 Dashboard & Exports" styleClass="section-title"/>
-                    <Label wrapText="true" text="KPIs temps réel et export PDF/CSV via endpoints API sécurisés."/>
+                    <Label text="📊 Dashboard" styleClass="section-title"/>
+                    <Label wrapText="true" text="Module réservé à l'ADMIN."/>
                     <Button text="Ouvrir module" onAction="#openDashboard"/>
                 </VBox>
             </HBox>

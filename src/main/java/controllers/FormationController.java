@@ -18,8 +18,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import services.FeedbackService;
 import services.FormationService;
+import utils.SessionContext;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -46,6 +49,10 @@ public class FormationController implements Initializable {
     @FXML private TableColumn<Formation, Niveau> colNiveau;
     @FXML private TableColumn<Formation, Categorie> colCategorie;
     @FXML private TableColumn<Formation, Boolean> colCertif;
+
+    @FXML private VBox boxEdition;
+    @FXML private HBox hbCrud;
+    @FXML private Button btnPostuler;
 
     @FXML private TextField tfFeedbackAuteur;
     @FXML private TextArea taFeedback;
@@ -98,6 +105,7 @@ public class FormationController implements Initializable {
         cbSortOrder.valueProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
 
         afficher();
+        applyRolePermissions();
     }
 
     @FXML
@@ -108,6 +116,7 @@ public class FormationController implements Initializable {
             mapFormToFormation(f);
             service.ajouter(f);
             afficher();
+        applyRolePermissions();
             clearForm();
         } catch (SQLException e) {
             alert("Erreur", e.getMessage());
@@ -127,6 +136,7 @@ public class FormationController implements Initializable {
             mapFormToFormation(f);
             service.modifier(f);
             afficher();
+        applyRolePermissions();
         } catch (SQLException e) {
             alert("Erreur", e.getMessage());
         }
@@ -143,6 +153,7 @@ public class FormationController implements Initializable {
         try {
             service.supprimer(f.getId_formation());
             afficher();
+        applyRolePermissions();
             clearForm();
             tableFeedback.getItems().clear();
             lblAverageRating.setText("0.0 / 5");
@@ -330,6 +341,45 @@ public class FormationController implements Initializable {
         tableFormation.setItems(sorted);
     }
 
+
+    @FXML
+    void postuler() {
+        if (!SessionContext.isUser()) {
+            alert("Postuler", "Ce bouton est destiné à l'espace USER.");
+            return;
+        }
+        Formation selected = tableFormation.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alert("Postuler", "Sélectionnez une formation pour postuler.");
+            return;
+        }
+        Alert info = new Alert(Alert.AlertType.INFORMATION);
+        info.setHeaderText("Postulation enregistrée");
+        info.setContentText("Votre demande de postulation pour la formation '" + selected.getTitre() + "' est enregistrée.");
+        info.showAndWait();
+    }
+
+    private void applyRolePermissions() {
+        boolean userMode = SessionContext.isUser();
+
+        tfTitre.setVisible(!userMode);
+        tfTitre.setManaged(!userMode);
+        tfDescription.setVisible(!userMode);
+        tfDescription.setManaged(!userMode);
+        tfDuree.setVisible(!userMode);
+        tfDuree.setManaged(!userMode);
+        cbNiveau.setVisible(!userMode);
+        cbNiveau.setManaged(!userMode);
+        cbCategorie.setVisible(!userMode);
+        cbCategorie.setManaged(!userMode);
+        cbCertification.setVisible(!userMode);
+        cbCertification.setManaged(!userMode);
+
+        if (hbCrud != null) hbCrud.setVisible(!userMode);
+        if (hbCrud != null) hbCrud.setManaged(!userMode);
+        if (btnPostuler != null) btnPostuler.setVisible(userMode);
+        if (btnPostuler != null) btnPostuler.setManaged(userMode);
+    }
     private void alert(String header, String content) {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setTitle("Gestion Formations");
