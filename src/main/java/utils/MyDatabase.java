@@ -33,18 +33,25 @@ public class MyDatabase {
         return connection;
     }
 
-    private void ensureSchema() throws SQLException {
+    private void ensureSchema() {
+        String create = "CREATE TABLE IF NOT EXISTS formation_feedback ("
+                + "id INT PRIMARY KEY AUTO_INCREMENT,"
+                + "id_formation INT NOT NULL,"
+                + "author VARCHAR(120) NOT NULL,"
+                + "rating INT NOT NULL,"
+                + "comment_text TEXT NOT NULL,"
+                + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)";
+
         try (Statement st = connection.createStatement()) {
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS formation_feedback ("
-                    + "id INT PRIMARY KEY AUTO_INCREMENT,"
-                    + "id_formation INT NOT NULL,"
-                    + "author VARCHAR(120) NOT NULL,"
-                    + "rating INT NOT NULL,"
-                    + "comment TEXT NOT NULL,"
-                    + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)" );
+            st.executeUpdate(create);
         } catch (SQLException ignored) {
-            // keep app running even if user has restricted permissions
         }
 
+        try (Statement st = connection.createStatement()) {
+            st.executeUpdate("ALTER TABLE formation_feedback ADD COLUMN comment_text TEXT NULL");
+            st.executeUpdate("UPDATE formation_feedback SET comment_text = comment WHERE comment_text IS NULL");
+        } catch (SQLException ignored) {
+            // compatibility with existing schema/user rights
+        }
     }
 }

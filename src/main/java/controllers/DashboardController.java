@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import utils.ApiRuntime;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.SQLException;
@@ -66,7 +67,7 @@ public class DashboardController {
         if (destination == null) return;
 
         try {
-            URL url = new URL("http://localhost:8080/api/dashboard/pdf");
+            URL url = new URL(ApiRuntime.getBaseUrl() + "/api/dashboard/pdf");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(3000);

@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import utils.ApiRuntime;
 
 public class MainController {
 
@@ -30,11 +31,13 @@ public class MainController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("API locale disponible");
         alert.setHeaderText("Endpoints API");
-        alert.setContentText("GET http://localhost:8080/api/formations\n"
-                + "GET http://localhost:8080/api/apprenants\n"
-                + "GET http://localhost:8080/api/dashboard\n"
-                + "GET http://localhost:8080/api/dashboard/pdf\n"
-                + "GET http://localhost:8080/api/feedbacks?formationId=1");
+        String base = ApiRuntime.getBaseUrl();
+        alert.setContentText("GET " + base + "/api/formations\n"
+                + "GET " + base + "/api/apprenants\n"
+                + "GET " + base + "/api/dashboard\n"
+                + "GET " + base + "/api/dashboard/pdf\n"
+                + "GET " + base + "/api/feedbacks?formationId=1\n"
+                + "GET " + base + "/api/health");
         alert.showAndWait();
     }
 

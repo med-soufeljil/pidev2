@@ -1,127 +1,126 @@
 .page-root {
-    -fx-font-family: "Inter", "Segoe UI", "Arial", sans-serif;
-    -fx-background-color: linear-gradient(to bottom right, #f4f7ff, #e9f0ff);
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #87CEFA, #E8F7FF);
 }
 
 .hero {
-    -fx-background-color: linear-gradient(to right, #1f3c88, #2d5fc1);
-    -fx-background-radius: 0 0 18 18;
+    -fx-background-color: linear-gradient(to right, #00BFFF, #1E90FF);
+    -fx-background-radius: 0 0 20 20;
 }
 
 .hero-title {
     -fx-text-fill: white;
-    -fx-font-size: 31px;
-    -fx-font-weight: 800;
+    -fx-font-size: 30px;
+    -fx-font-weight: 900;
 }
 
 .hero-subtitle {
-    -fx-text-fill: #e7eeff;
+    -fx-text-fill: #EAF6FF;
     -fx-font-size: 13px;
 }
 
 .page-title {
-    -fx-font-size: 25px;
+    -fx-font-size: 24px;
     -fx-font-weight: 800;
-    -fx-text-fill: #1f2a44;
+    -fx-text-fill: #0A3D62;
 }
 
 .section-title {
     -fx-font-size: 16px;
     -fx-font-weight: 800;
-    -fx-text-fill: #253b68;
+    -fx-text-fill: #0A3D62;
 }
 
 .top-bar {
-    -fx-background-color: #ffffffdd;
-    -fx-background-radius: 0 0 16 16;
-    -fx-border-color: #d6e0f7;
+    -fx-background-color: rgba(255,255,255,0.9);
+    -fx-background-radius: 0 0 14 14;
+    -fx-border-color: #B7E6FF;
     -fx-border-width: 0 0 1 0;
 }
 
 .card, .feature-card {
-    -fx-background-color: #ffffff;
+    -fx-background-color: white;
     -fx-background-radius: 14;
+    -fx-border-color: #C3EAFF;
     -fx-border-radius: 14;
-    -fx-border-color: #d8e2f8;
-    -fx-effect: dropshadow(gaussian, rgba(26,53,112,0.08), 12, 0.2, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(0, 102, 153, 0.12), 12, 0.2, 0, 2);
 }
 
 .label {
-    -fx-text-fill: #2a3c63;
+    -fx-text-fill: #13496D;
 }
 
 .text-field,
 .text-area,
 .combo-box,
 .date-picker {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #c9d7f2;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #9DDFFF;
     -fx-border-radius: 9;
     -fx-background-radius: 9;
-    -fx-padding: 9 12;
+    -fx-padding: 8 12;
 }
 
 .text-area .content {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #FFFFFF;
     -fx-background-radius: 9;
 }
 
 .button {
-    -fx-background-color: linear-gradient(to bottom, #4d83f6, #3366d3);
+    -fx-background-color: linear-gradient(to bottom, #00BFFF, #1E90FF);
     -fx-text-fill: white;
     -fx-font-weight: 700;
-    -fx-background-radius: 10;
-    -fx-padding: 9 16;
-    -fx-cursor: hand;
+    -fx-background-radius: 9;
+    -fx-padding: 8 16;
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #3f78ee, #2b5bc1);
+    -fx-background-color: linear-gradient(to bottom, #1EC9FF, #2A9DFF);
 }
 
 .secondary-btn {
-    -fx-background-color: #ffffff;
-    -fx-text-fill: #1f325a;
-    -fx-border-color: #b9cbed;
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #0A3D62;
+    -fx-border-color: #8FD8FF;
     -fx-border-width: 1;
 }
 
 .danger-btn {
-    -fx-background-color: linear-gradient(to bottom, #ef5a6f, #d63e53);
-    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(to bottom, #FF6B81, #F24D63);
+    -fx-text-fill: #FFFFFF;
 }
 
 .table-view {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #FFFFFF;
     -fx-background-radius: 12;
-    -fx-border-color: #cfdbf3;
     -fx-border-radius: 12;
+    -fx-border-color: #B9E7FF;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #e0e9ff;
+    -fx-background-color: #BDEBFF;
     -fx-background-radius: 12 12 0 0;
 }
 
 .table-view .column-header .label {
-    -fx-text-fill: #1f2f53;
+    -fx-text-fill: #0A3D62;
     -fx-font-weight: 800;
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #d8e5ff;
+    -fx-background-color: #D9F2FF;
 }
 
 .kpi-value {
-    -fx-text-fill: #204589;
     -fx-font-size: 20px;
     -fx-font-weight: 800;
+    -fx-text-fill: #0077B6;
 }
 
 .pie-chart {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #B9E7FF;
     -fx-background-radius: 12;
-    -fx-border-color: #cfdbf3;
     -fx-border-radius: 12;
     -fx-padding: 10;
 }

@@ -35,6 +35,7 @@ public class ApiServer {
         server.createContext("/api/dashboard", this::handleDashboard);
         server.createContext("/api/dashboard/pdf", this::handleDashboardPdf);
         server.createContext("/api/feedbacks", this::handleFeedbacks);
+        server.createContext("/api/health", this::handleHealth);
         server.setExecutor(Executors.newFixedThreadPool(6));
         server.start();
         System.out.println("API server started on http://localhost:" + port);
@@ -171,6 +172,14 @@ public class ApiServer {
         }
     }
 
+
+    private void handleHealth(HttpExchange exchange) throws IOException {
+        if (!"GET".equals(exchange.getRequestMethod())) {
+            sendJson(exchange, 405, "{\"error\":\"Method not allowed\"}");
+            return;
+        }
+        sendJson(exchange, 200, "{\"status\":\"ok\"}");
+    }
     private Map<String, String> parseQuery(URI uri) {
         Map<String, String> map = new HashMap<>();
         String query = uri.getRawQuery();

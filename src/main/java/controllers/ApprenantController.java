@@ -77,7 +77,7 @@ public class ApprenantController implements Initializable {
             colStatut.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatut()));
             colFormation.setCellValueFactory(data -> new SimpleStringProperty(getTitreFormation(data.getValue().getId_formation())));
 
-            afficher();
+            refreshTable();
             tableApprenant.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
                 if (newSel != null) fillForm(newSel);
             });
@@ -97,7 +97,7 @@ public class ApprenantController implements Initializable {
             if (!validateForm()) return;
             Apprenant a = buildFromForm(new Apprenant());
             service.ajouter(a);
-            afficher();
+            refreshTable();
             clearFields();
         } catch (SQLException e) {
             alert("Ajout", e.getMessage());
@@ -115,7 +115,7 @@ public class ApprenantController implements Initializable {
             if (!validateForm()) return;
             buildFromForm(selected);
             service.modifier(selected);
-            afficher();
+            refreshTable();
         } catch (SQLException e) {
             alert("Modification", e.getMessage());
         }
@@ -130,7 +130,7 @@ public class ApprenantController implements Initializable {
         }
         try {
             service.supprimer(selected.getIdApprenant());
-            afficher();
+            refreshTable();
             clearFields();
         } catch (SQLException e) {
             alert("Suppression", e.getMessage());
@@ -150,9 +150,17 @@ public class ApprenantController implements Initializable {
     }
 
     @FXML
-    public void afficher() throws SQLException {
-        filteredList = new FilteredList<>(FXCollections.observableArrayList(service.recuperer()), p -> true);
-        applyFilterSort();
+    public void afficher() {
+        refreshTable();
+    }
+
+    private void refreshTable() {
+        try {
+            filteredList = new FilteredList<>(FXCollections.observableArrayList(service.recuperer()), p -> true);
+            applyFilterSort();
+        } catch (SQLException e) {
+            alert("Chargement", e.getMessage());
+        }
     }
 
     private void applyFilterSort() {
