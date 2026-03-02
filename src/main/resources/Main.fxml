@@ -17,7 +17,7 @@
             stylesheets="@Style.css"
             prefHeight="900"
             prefWidth="1400"
-            styleClass="page-root">
+            styleClass="page-root main-root" id="rootPane">
 
     <left>
         <VBox spacing="20" styleClass="sidebar" prefWidth="300">
