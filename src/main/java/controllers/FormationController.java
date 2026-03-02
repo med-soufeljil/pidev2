@@ -36,6 +36,7 @@ public class FormationController implements Initializable {
     @FXML private TextField tfRecherche;
     @FXML private ComboBox<String> cbSortBy;
     @FXML private ComboBox<String> cbSortOrder;
+    @FXML private Label lblCount;
 
     @FXML private TextField tfTitre, tfDuree;
     @FXML private TextArea tfDescription;
@@ -300,6 +301,7 @@ public class FormationController implements Initializable {
         SortedList<Formation> sorted = new SortedList<>(filteredData);
         sorted.setComparator(comparator);
         tableFormation.setItems(sorted);
+        if (lblCount != null) lblCount.setText(String.valueOf(sorted.size()));
     }
 
     @FXML

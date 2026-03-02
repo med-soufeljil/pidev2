@@ -43,6 +43,7 @@ public class ApprenantController implements Initializable {
     @FXML private TableColumn<Apprenant, String> colStatut;
     @FXML private TableColumn<Apprenant, String> colFormation;
     @FXML private TableColumn<Apprenant, Void> colAction;
+    @FXML private Label lblCount;
 
     private final ApprenantService service = new ApprenantService();
     private final FormationService formationService = new FormationService();
@@ -225,6 +226,7 @@ public class ApprenantController implements Initializable {
         SortedList<Apprenant> sorted = new SortedList<>(filteredList);
         sorted.setComparator(comparator);
         tableApprenant.setItems(sorted);
+        if (lblCount != null) lblCount.setText(String.valueOf(sorted.size()));
     }
 
     private void applyPendingFormationSelection() {

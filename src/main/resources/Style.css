@@ -372,3 +372,17 @@
     -fx-font-size: 11px;
     -fx-font-weight: 800;
 }
+
+.badge-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #2f6b92;
+}
+
+.badge-count {
+    -fx-background-color: #0a6dd8;
+    -fx-text-fill: white;
+    -fx-padding: 3 10 3 10;
+    -fx-background-radius: 12;
+    -fx-font-weight: 800;
+}
