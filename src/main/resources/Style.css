@@ -286,9 +286,15 @@
 .action-add-btn,
 .action-edit-btn,
 .action-delete-btn {
-    -fx-min-width: 130;
+    -fx-min-width: 34;
+    -fx-pref-width: 34;
+    -fx-max-width: 34;
+    -fx-min-height: 30;
+    -fx-pref-height: 30;
+    -fx-font-size: 14px;
     -fx-font-weight: 800;
     -fx-background-radius: 8;
+    -fx-padding: 0;
 }
 
 .action-add-btn {

@@ -13,7 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -79,12 +79,12 @@ public class ApprenantController implements Initializable {
 
     private void initActionColumn() {
         colAction.setCellFactory(param -> new TableCell<>() {
-            private final VBox box = new VBox(6);
-            private final Button editBtn = new Button("✎ Modifier");
-            private final Button delBtn = new Button("✖ Supprimer");
+            private final HBox box = new HBox(6);
+            private final Button editBtn = new Button("✎");
+            private final Button delBtn = new Button("🗑");
             {
-                editBtn.getStyleClass().add("action-edit-btn");
-                delBtn.getStyleClass().add("action-delete-btn");
+                editBtn.getStyleClass().addAll("action-edit-btn", "action-icon-btn");
+                delBtn.getStyleClass().addAll("action-delete-btn", "action-icon-btn");
                 box.getStyleClass().add("action-column-box");
                 editBtn.setOnAction(e -> {
                     Apprenant a = getTableView().getItems().get(getIndex());

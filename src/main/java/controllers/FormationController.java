@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -102,13 +103,13 @@ public class FormationController implements Initializable {
 
     private void initActionColumn() {
         colPostulerAction.setCellFactory(param -> new TableCell<>() {
-            private final VBox box = new VBox(6);
+            private final HBox box = new HBox(6);
             private final Button editBtn = new Button("✎");
-            private final Button delBtn = new Button("✖");
+            private final Button delBtn = new Button("🗑");
             private final Button postulerBtn = new Button("Postuler");
             {
-                editBtn.getStyleClass().add("action-edit-btn");
-                delBtn.getStyleClass().add("action-delete-btn");
+                editBtn.getStyleClass().addAll("action-edit-btn", "action-icon-btn");
+                delBtn.getStyleClass().addAll("action-delete-btn", "action-icon-btn");
                 postulerBtn.getStyleClass().add("postuler-row-btn");
                 box.getStyleClass().add("action-column-box");
                 editBtn.setOnAction(e -> {
