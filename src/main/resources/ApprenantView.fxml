@@ -20,47 +20,33 @@
                 <TextField fx:id="tfRecherche" promptText="Recherche..." HBox.hgrow="ALWAYS"/>
                 <ComboBox fx:id="cbSortBy" prefWidth="140"/>
                 <ComboBox fx:id="cbSortOrder" prefWidth="120"/>
+                <Button text="➕" onAction="#ajouter"/>
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.6">
-            <VBox spacing="10" styleClass="card">
-                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
-                <Label text="Liste des apprenants" styleClass="section-title"/>
-                <TableView fx:id="tableApprenant" VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-                        <TableColumn fx:id="colNom" text="Nom" prefWidth="130"/>
-                        <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="130"/>
-                        <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
-                        <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
-                        <TableColumn fx:id="colFormation" text="Formation" prefWidth="180"/>
-                    </columns>
-                </TableView>
-            </VBox>
-
-            <VBox spacing="10" styleClass="card">
-                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
-                <Label text="Fiche apprenant" styleClass="section-title"/>
-                <TextField fx:id="tfNom" promptText="Nom"/>
-                <TextField fx:id="tfPrenom" promptText="Prénom"/>
-                <TextField fx:id="tfEmail" promptText="Email"/>
-                <ComboBox fx:id="cbStatut" promptText="Statut"/>
-                <HBox spacing="8">
-                    <DatePicker fx:id="dpDebut" promptText="Date début" HBox.hgrow="ALWAYS"/>
-                    <DatePicker fx:id="dpFin" promptText="Date fin" HBox.hgrow="ALWAYS"/>
-                </HBox>
-                <ComboBox fx:id="cbFormation" promptText="Formation"/>
-                <HBox spacing="8">
-                    <Button text="Ajouter" onAction="#ajouter"/>
-                    <Button text="Modifier" onAction="#modifier"/>
-                    <Button text="Supprimer" onAction="#supprimer" styleClass="danger-btn"/>
-                    <Button text="Rafraîchir" onAction="#afficher" styleClass="secondary-btn"/>
-                    <Button text="Envoyer mail" onAction="#envoyerMail" styleClass="secondary-btn"/>
-                </HBox>
-            </VBox>
-        </SplitPane>
+        <VBox spacing="10" styleClass="card">
+            <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+            <Label text="Liste des apprenants" styleClass="section-title"/>
+            <TableView fx:id="tableApprenant" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colNom" text="Nom" prefWidth="130"/>
+                    <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="130"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
+                    <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
+                    <TableColumn fx:id="colFormation" text="Formation" prefWidth="180"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="140"/>
+                </columns>
+            </TableView>
+        </VBox>
     </center>
+
+    <bottom>
+        <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="bottom-actions">
+            <padding><Insets top="10" right="16" bottom="14" left="16"/></padding>
+            <Button text="Envoyer mail" onAction="#envoyerMail" styleClass="secondary-btn"/>
+        </HBox>
+    </bottom>
 </BorderPane>

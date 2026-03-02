@@ -13,6 +13,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import services.ApprenantService;
 import services.FormationService;
@@ -21,17 +23,13 @@ import utils.SessionContext;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class ApprenantController implements Initializable {
 
-    @FXML private TextField tfNom, tfPrenom, tfEmail, tfRecherche;
-    @FXML private ComboBox<String> cbStatut;
-    @FXML private DatePicker dpDebut, dpFin;
-    @FXML private ComboBox<Formation> cbFormation;
+    @FXML private TextField tfRecherche;
     @FXML private ComboBox<String> cbSortBy;
     @FXML private ComboBox<String> cbSortOrder;
 
@@ -42,6 +40,7 @@ public class ApprenantController implements Initializable {
     @FXML private TableColumn<Apprenant, String> colEmail;
     @FXML private TableColumn<Apprenant, String> colStatut;
     @FXML private TableColumn<Apprenant, String> colFormation;
+    @FXML private TableColumn<Apprenant, Void> colAction;
 
     private final ApprenantService service = new ApprenantService();
     private final FormationService formationService = new FormationService();
@@ -53,21 +52,6 @@ public class ApprenantController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         try {
             formations = formationService.recuperer();
-            cbFormation.setItems(FXCollections.observableArrayList(formations));
-            cbFormation.setConverter(new javafx.util.StringConverter<>() {
-                @Override
-                public String toString(Formation f) {
-                    return f != null ? f.getTitre() : "";
-                }
-
-                @Override
-                public Formation fromString(String s) {
-                    return cbFormation.getItems().stream().filter(f -> f.getTitre().equals(s)).findFirst().orElse(null);
-                }
-            });
-
-            cbStatut.setItems(FXCollections.observableArrayList("ACTIF", "EN_PAUSE", "TERMINE"));
-            cbStatut.setValue("ACTIF");
             cbSortBy.setItems(FXCollections.observableArrayList("Nom", "Prénom", "Statut"));
             cbSortBy.setValue("Nom");
             cbSortOrder.setItems(FXCollections.observableArrayList("Asc", "Desc"));
@@ -79,13 +63,10 @@ public class ApprenantController implements Initializable {
             colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
             colStatut.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatut()));
             colFormation.setCellValueFactory(data -> new SimpleStringProperty(getTitreFormation(data.getValue().getId_formation())));
+            initActionColumn();
 
             refreshTable();
             applyPendingFormationSelection();
-            tableApprenant.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
-                if (newSel != null) fillForm(newSel);
-            });
-
             tfRecherche.textProperty().addListener((obs, o, n) -> applyFilterSort());
             cbSortBy.valueProperty().addListener((obs, o, n) -> applyFilterSort());
             cbSortOrder.valueProperty().addListener((obs, o, n) -> applyFilterSort());
@@ -95,118 +76,99 @@ public class ApprenantController implements Initializable {
         }
     }
 
+    private void initActionColumn() {
+        colAction.setCellFactory(param -> new TableCell<>() {
+            private final VBox box = new VBox(6);
+            private final Button editBtn = new Button("✏");
+            private final Button delBtn = new Button("🗑");
+            {
+                editBtn.getStyleClass().add("action-icon-btn");
+                delBtn.getStyleClass().add("danger-btn");
+                editBtn.setOnAction(e -> {
+                    Apprenant a = getTableView().getItems().get(getIndex());
+                    openFormDialog(a);
+                });
+                delBtn.setOnAction(e -> {
+                    Apprenant a = getTableView().getItems().get(getIndex());
+                    try { service.supprimer(a.getIdApprenant()); refreshTable(); } catch (SQLException ex) { alert("Suppression", ex.getMessage()); }
+                });
+                box.getChildren().addAll(editBtn, delBtn);
+            }
 
-    private void applyPendingFormationSelection() {
-        if (!SessionContext.hasPendingFormation() || cbFormation.getItems() == null) {
-            return;
-        }
-
-        Integer formationId = SessionContext.getPendingFormationId();
-        if (formationId == null) {
-            return;
-        }
-
-        cbFormation.getItems().stream()
-                .filter(f -> f.getId_formation() == formationId)
-                .findFirst()
-                .ifPresent(cbFormation::setValue);
-
-        if (cbFormation.getValue() != null) {
-            Alert info = new Alert(Alert.AlertType.INFORMATION);
-            info.setTitle("Postulation");
-            info.setHeaderText("Formation présélectionnée");
-            String title = SessionContext.getPendingFormationTitle() == null ? "" : SessionContext.getPendingFormationTitle();
-            info.setContentText("La formation '" + title + "' a été remplie automatiquement.");
-            info.showAndWait();
-        }
-
-        SessionContext.clearPendingFormation();
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : box);
+            }
+        });
     }
 
     @FXML
     public void ajouter() {
-        try {
-            if (!validateForm()) return;
-            Apprenant a = buildFromForm(new Apprenant());
-            service.ajouter(a);
-            sendRegistrationEmail(a);
-            refreshTable();
-            clearFields();
-        } catch (SQLException e) {
-            alert("Ajout", e.getMessage());
-        }
+        openFormDialog(null);
     }
 
-    @FXML
-    public void modifier() {
-        Apprenant selected = tableApprenant.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            alert("Modification", "Sélectionnez un apprenant.");
-            return;
-        }
+    private void openFormDialog(Apprenant initial) {
         try {
-            if (!validateForm()) return;
-            buildFromForm(selected);
-            service.modifier(selected);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ApprenantFormView.fxml"));
+            Parent root = loader.load();
+            ApprenantFormController c = loader.getController();
+            c.setFormations(formations);
+            c.setInitial(initial);
+            if (initial == null && SessionContext.hasPendingFormation()) {
+                c.setPendingFormationId(SessionContext.getPendingFormationId());
+            }
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.setTitle(initial == null ? "Ajouter apprenant" : "Modifier apprenant");
+            stage.showAndWait();
+
+            Apprenant result = c.getResult();
+            if (result == null) return;
+            if (initial == null) {
+                service.ajouter(result);
+                sendRegistrationEmail(result);
+            } else {
+                initial.setNom(result.getNom());
+                initial.setPrenom(result.getPrenom());
+                initial.setEmail(result.getEmail());
+                initial.setStatut(result.getStatut());
+                initial.setDateDebut(result.getDateDebut());
+                initial.setDateFin(result.getDateFin());
+                initial.setId_formation(result.getId_formation());
+                service.modifier(initial);
+            }
             refreshTable();
-        } catch (SQLException e) {
-            alert("Modification", e.getMessage());
+        } catch (Exception e) {
+            alert("Formulaire", e.getMessage());
         }
     }
-
-    @FXML
-    public void supprimer() {
-        Apprenant selected = tableApprenant.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            alert("Suppression", "Sélectionnez un apprenant.");
-            return;
-        }
-        try {
-            service.supprimer(selected.getIdApprenant());
-            refreshTable();
-            clearFields();
-        } catch (SQLException e) {
-            alert("Suppression", e.getMessage());
-        }
-    }
-
 
     @FXML
     public void envoyerMail() {
-        if (tfEmail.getText().isBlank() || tfNom.getText().isBlank() || tfPrenom.getText().isBlank()) {
-            alert("Mail", "Veuillez remplir nom, prénom et email avant l'envoi.");
-            return;
-        }
-        Formation formation = cbFormation.getValue();
+        Apprenant selected = tableApprenant.getSelectionModel().getSelectedItem();
+        if (selected == null) { alert("Mail", "Sélectionnez un apprenant."); return; }
+        Formation formation = formations.stream().filter(f -> f.getId_formation() == selected.getId_formation()).findFirst().orElse(null);
         String formationTitle = formation != null ? formation.getTitre() : "Formation";
-        boolean sent = mailingApiService.sendRegistrationEmail(
-                tfEmail.getText().trim(),
-                tfPrenom.getText().trim() + " " + tfNom.getText().trim(),
-                formationTitle
-        );
+        boolean sent = mailingApiService.sendRegistrationEmail(selected.getEmail(), selected.getPrenom() + " " + selected.getNom(), formationTitle);
         Alert info = new Alert(sent ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
-        info.setTitle("Mail inscription");
         info.setHeaderText(sent ? "Email envoyé" : "Email non envoyé");
-        info.setContentText(sent
-                ? "Le mail d'inscription a été envoyé via MailerSend."
-                : "L'envoi du mail a échoué: " + mailingApiService.getLastError());
+        info.setContentText(sent ? "Mail envoyé avec succès." : "Echec envoi: " + mailingApiService.getLastError());
         info.showAndWait();
     }
+
     @FXML
     public void retourMain() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
-            Stage stage = (Stage) tfNom.getScene().getWindow();
+            Stage stage = (Stage) tableApprenant.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
             alert("Navigation", e.getMessage());
         }
-    }
-
-    @FXML
-    public void afficher() {
-        refreshTable();
     }
 
     private void refreshTable() {
@@ -240,81 +202,22 @@ public class ApprenantController implements Initializable {
         tableApprenant.setItems(sorted);
     }
 
-    private String safe(String s) {
-        return s == null ? "" : s.toLowerCase();
+    private void applyPendingFormationSelection() {
+        if (!SessionContext.hasPendingFormation()) return;
+        openFormDialog(null);
+        SessionContext.clearPendingFormation();
     }
 
-    private void fillForm(Apprenant a) {
-        tfNom.setText(a.getNom());
-        tfPrenom.setText(a.getPrenom());
-        tfEmail.setText(a.getEmail());
-        cbStatut.setValue(a.getStatut());
-        dpDebut.setValue(a.getDateDebut());
-        dpFin.setValue(a.getDateFin());
-        cbFormation.getItems().stream()
-                .filter(f -> f.getId_formation() == a.getId_formation())
-                .findFirst()
-                .ifPresent(cbFormation::setValue);
-    }
-
-    private Apprenant buildFromForm(Apprenant a) {
-        a.setNom(tfNom.getText().trim());
-        a.setPrenom(tfPrenom.getText().trim());
-        a.setEmail(tfEmail.getText().trim());
-        a.setStatut(cbStatut.getValue());
-        a.setDateDebut(dpDebut.getValue());
-        a.setDateFin(dpFin.getValue());
-        a.setId_formation(cbFormation.getValue().getId_formation());
-        return a;
-    }
-
-    private boolean validateForm() {
-        if (tfNom.getText().isBlank() || tfPrenom.getText().isBlank() || tfEmail.getText().isBlank()
-                || cbStatut.getValue() == null || cbFormation.getValue() == null || dpDebut.getValue() == null) {
-            alert("Validation", "Tous les champs obligatoires doivent être remplis.");
-            return false;
-        }
-        if (!tfEmail.getText().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
-            alert("Validation", "Email invalide.");
-            return false;
-        }
-        LocalDate end = dpFin.getValue();
-        if (end != null && end.isBefore(dpDebut.getValue())) {
-            alert("Validation", "La date de fin doit être >= date début.");
-            return false;
-        }
-        return true;
-    }
+    private String safe(String s) { return s == null ? "" : s.toLowerCase(); }
 
     private String getTitreFormation(int idFormation) {
         return formations.stream().filter(f -> f.getId_formation() == idFormation).map(Formation::getTitre).findFirst().orElse("N/A");
     }
 
-
     private void sendRegistrationEmail(Apprenant apprenant) {
-        Formation formation = cbFormation.getValue();
+        Formation formation = formations.stream().filter(f -> f.getId_formation() == apprenant.getId_formation()).findFirst().orElse(null);
         String formationTitle = formation != null ? formation.getTitre() : "Formation";
-        boolean sent = mailingApiService.sendRegistrationEmail(
-                apprenant.getEmail(),
-                apprenant.getPrenom() + " " + apprenant.getNom(),
-                formationTitle
-        );
-        if (!sent) {
-            Alert warn = new Alert(Alert.AlertType.WARNING);
-            warn.setTitle("Notification");
-            warn.setHeaderText("Inscription enregistrée");
-            warn.setContentText("L'appel MailerSend a échoué. Vérifiez vos variables d'environnement MailerSend.");
-            warn.showAndWait();
-        }
-    }
-    private void clearFields() {
-        tfNom.clear();
-        tfPrenom.clear();
-        tfEmail.clear();
-        cbStatut.setValue("ACTIF");
-        dpDebut.setValue(null);
-        dpFin.setValue(null);
-        cbFormation.setValue(null);
+        mailingApiService.sendRegistrationEmail(apprenant.getEmail(), apprenant.getPrenom() + " " + apprenant.getNom(), formationTitle);
     }
 
     private void alert(String header, String message) {

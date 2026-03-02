@@ -20,9 +20,9 @@
             <Label text="Modules" styleClass="section-title"/>
             <Label fx:id="lblRole" styleClass="hero-chip" text="Rôle actuel"/>
 
-            <Button fx:id="btnFormation" text="📘 Gestion Formations" onAction="#openFormation" maxWidth="1.7976931348623157E308"/>
-            <Button fx:id="btnApprenant" text="👨‍🎓 Gestion Apprenants" onAction="#openApprenant" maxWidth="1.7976931348623157E308"/>
-            <Button fx:id="btnDashboard" text="📊 Dashboard" onAction="#openDashboard" maxWidth="1.7976931348623157E308"/>
+            <Button fx:id="btnFormation" text="📘 Gestion Formations" onAction="#openFormation" styleClass="left-menu-btn" maxWidth="1.7976931348623157E308"/>
+            <Button fx:id="btnApprenant" text="👨‍🎓 Gestion Apprenants" onAction="#openApprenant" styleClass="left-menu-btn" maxWidth="1.7976931348623157E308"/>
+            <Button fx:id="btnDashboard" text="📊 Dashboard" onAction="#openDashboard" styleClass="left-menu-btn" maxWidth="1.7976931348623157E308"/>
 
             <Button text="⬅ Changer espace" onAction="#backToRoleSelection" styleClass="secondary-btn" maxWidth="1.7976931348623157E308"/>
             <Button text="Quitter" onAction="#quitter" styleClass="danger-btn" maxWidth="1.7976931348623157E308"/>
@@ -35,10 +35,13 @@
             <Label text="Bienvenue dans votre espace" styleClass="hero-title"/>
             <Label fx:id="lblWelcome" text="Bienvenue" styleClass="page-title"/>
             <Label fx:id="lblSuggestion" styleClass="hero-chip" text="Suggestion externe: chargement..."/>
-            <HBox spacing="10" styleClass="card">
-                <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-                <Label text="Utilisez le menu gauche pour naviguer entre les modules disponibles selon votre rôle." wrapText="true"/>
-            </HBox>
+            <VBox spacing="10" styleClass="card">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <Label text="Bienvenue sur la plateforme de gestion des formations."/>
+                <Label text="✔ Gérer les formations, postulations, feedbacks et reporting."/>
+                <Label text="✔ Accès conditionné selon votre rôle ADMIN/USER."/>
+                <Label text="✔ API et exports disponibles pour le pilotage."/>
+            </VBox>
         </VBox>
     </center>
 </BorderPane>

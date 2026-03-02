@@ -17,10 +17,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.TableCell;
-import javafx.stage.Stage;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import services.FeedbackService;
 import services.FormationService;
 import utils.SessionContext;
@@ -51,10 +50,8 @@ public class FormationController implements Initializable {
     @FXML private TableColumn<Formation, Categorie> colCategorie;
     @FXML private TableColumn<Formation, Boolean> colCertif;
     @FXML private TableColumn<Formation, Void> colPostulerAction;
-    @FXML private TableColumn<Formation, Void> colDeleteAction;
 
     @FXML private VBox boxEdition;
-    @FXML private HBox hbCrud;
     @FXML private Button btnPostuler;
     @FXML private Button btnAfficherFeedbacks;
 
@@ -75,9 +72,6 @@ public class FormationController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cbNiveau.setItems(FXCollections.observableArrayList(Niveau.values()));
-        cbCategorie.setItems(FXCollections.observableArrayList(Categorie.values()));
-
         cbSortBy.setItems(FXCollections.observableArrayList("Titre", "Durée", "Niveau"));
         cbSortBy.setValue("Titre");
         cbSortOrder.setItems(FXCollections.observableArrayList("Asc", "Desc"));
@@ -89,141 +83,115 @@ public class FormationController implements Initializable {
         colNiveau.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getNiveau()));
         colCategorie.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCategorie()));
         colCertif.setCellValueFactory(data -> new SimpleBooleanProperty(data.getValue().isCertification()));
-        if (colPostulerAction != null) {
-            colPostulerAction.setCellFactory(param -> new TableCell<>() {
-                private final Button rowAction = new Button();
-                {
-                    rowAction.setOnAction(event -> {
-                        Formation formation = getTableView().getItems().get(getIndex());
-                        if (SessionContext.isUser()) {
-                            postulerForFormation(formation);
-                        } else {
-                            openEditDialogForFormation(formation);
-                        }
-                    });
-                }
+        initActionColumn();
 
-                @Override
-                protected void updateItem(Void item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                        return;
-                    }
-                    if (SessionContext.isUser()) {
-                        rowAction.setText("Postuler");
-                        rowAction.getStyleClass().setAll("postuler-row-btn");
-                    } else {
-                        rowAction.setText("✏");
-                        rowAction.getStyleClass().setAll("secondary-btn");
-                    }
-                    setGraphic(rowAction);
-                }
-            });
-        }
-        if (colDeleteAction != null) {
-            colDeleteAction.setCellFactory(param -> new TableCell<>() {
-                private final Button deleteBtn = new Button("🗑");
-                {
-                    deleteBtn.getStyleClass().setAll("danger-btn");
-                    deleteBtn.setOnAction(event -> {
-                        Formation formation = getTableView().getItems().get(getIndex());
-                        tableFormation.getSelectionModel().select(formation);
-                        supprimer();
-                    });
-                }
-
-                @Override
-                protected void updateItem(Void item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || SessionContext.isUser()) {
-                        setGraphic(null);
-                    } else {
-                        setGraphic(deleteBtn);
-                    }
-                }
-            });
-        }
-
-        colFeedbackAuteur.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getAuthor()));
-        colFeedbackNote.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getRating()).asObject());
-        colFeedbackComment.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getComment()));
-        colFeedbackDate.setCellValueFactory(data -> new SimpleStringProperty(
-                data.getValue().getCreatedAt() == null ? "" : data.getValue().getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
-
-        tableFormation.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
-            if (newSel != null) {
-                remplirChamps(newSel);
-                loadFeedback(newSel.getId_formation());
+        tfRecherche.textProperty().addListener((obs, o, n) -> applyFiltersAndSort());
+        cbSortBy.valueProperty().addListener((obs, o, n) -> applyFiltersAndSort());
+        cbSortOrder.valueProperty().addListener((obs, o, n) -> applyFiltersAndSort());
+        tableFormation.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
+            if (n != null) {
+                try {
+                    lblAverageRating.setText(String.format("%.1f / 5", feedbackService.getAverageRating(n.getId_formation())));
+                } catch (SQLException ignored) {}
             }
         });
-
-        slRating.valueProperty().addListener((obs, old, val) -> lblRatingValue.setText(String.format("%.1f", val.doubleValue())));
-        tfRecherche.textProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
-        cbSortBy.valueProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
-        cbSortOrder.valueProperty().addListener((obs, oldVal, newVal) -> applyFiltersAndSort());
 
         afficher();
         applyRolePermissions();
     }
 
+    private void initActionColumn() {
+        colPostulerAction.setCellFactory(param -> new TableCell<>() {
+            private final VBox box = new VBox(6);
+            private final Button addBtn = new Button("➕");
+            private final Button editBtn = new Button("✏");
+            private final Button delBtn = new Button("🗑");
+            private final Button postulerBtn = new Button("Postuler");
+            {
+                addBtn.getStyleClass().add("action-icon-btn");
+                editBtn.getStyleClass().add("action-icon-btn");
+                delBtn.getStyleClass().add("danger-btn");
+                postulerBtn.getStyleClass().add("postuler-row-btn");
+                addBtn.setOnAction(e -> ajouter());
+                editBtn.setOnAction(e -> {
+                    Formation f = getTableView().getItems().get(getIndex());
+                    openFormationFormDialog(f);
+                });
+                delBtn.setOnAction(e -> {
+                    Formation f = getTableView().getItems().get(getIndex());
+                    tableFormation.getSelectionModel().select(f);
+                    supprimer();
+                });
+                postulerBtn.setOnAction(e -> postulerForFormation(getTableView().getItems().get(getIndex())));
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) { setGraphic(null); return; }
+                box.getChildren().clear();
+                if (SessionContext.isAdmin()) {
+                    box.getChildren().addAll(addBtn, editBtn, delBtn);
+                } else {
+                    box.getChildren().add(postulerBtn);
+                }
+                setGraphic(box);
+            }
+        });
+    }
+
     @FXML
     void ajouter() {
-        if (!SessionContext.isAdmin()) {
-            alert("Accès", "Seul l'admin peut ajouter.");
-            return;
-        }
-        FormData data = showFormationFormDialog("Ajouter une formation", null);
-        if (data == null) return;
-        try {
-            Formation f = new Formation();
-            applyFormDataToFormation(f, data);
-            service.ajouter(f);
-            afficher();
-        } catch (SQLException e) {
-            alert("Erreur", e.getMessage());
-        }
+        if (!SessionContext.isAdmin()) return;
+        openFormationFormDialog(null);
     }
 
     @FXML
     void modifier() {
         Formation f = tableFormation.getSelectionModel().getSelectedItem();
-        if (f == null) {
-            alert("Aucune sélection", "Sélectionnez une formation à modifier.");
-            return;
-        }
-        openEditDialogForFormation(f);
+        if (f != null) openFormationFormDialog(f);
     }
 
-    private void openEditDialogForFormation(Formation f) {
-        if (!SessionContext.isAdmin()) {
-            alert("Accès", "Seul l'admin peut modifier.");
-            return;
-        }
-        FormData data = showFormationFormDialog("Modifier la formation", f);
-        if (data == null) return;
+    private void openFormationFormDialog(Formation initial) {
         try {
-            applyFormDataToFormation(f, data);
-            service.modifier(f);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FormationFormView.fxml"));
+            Parent root = loader.load();
+            FormationFormController controller = loader.getController();
+            controller.setInitial(initial);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.setTitle(initial == null ? "Ajouter formation" : "Modifier formation");
+            stage.showAndWait();
+
+            Formation result = controller.getResult();
+            if (result == null) return;
+            if (initial == null) {
+                service.ajouter(result);
+            } else {
+                initial.setTitre(result.getTitre());
+                initial.setDescription(result.getDescription());
+                initial.setDuree(result.getDuree());
+                initial.setNiveau(result.getNiveau());
+                initial.setCategorie(result.getCategorie());
+                initial.setCertification(result.isCertification());
+                service.modifier(initial);
+            }
             afficher();
-        } catch (SQLException e) {
-            alert("Erreur", e.getMessage());
+        } catch (Exception e) {
+            alert("Formulaire", e.getMessage());
         }
     }
 
     @FXML
     void supprimer() {
+        if (!SessionContext.isAdmin()) return;
         Formation f = tableFormation.getSelectionModel().getSelectedItem();
-        if (f == null) {
-            alert("Aucune sélection", "Sélectionnez une formation à supprimer.");
-            return;
-        }
-
+        if (f == null) return;
         try {
             service.supprimer(f.getId_formation());
             afficher();
-            tableFeedback.getItems().clear();
-            lblAverageRating.setText("0.0 / 5");
         } catch (SQLException e) {
             alert("Erreur", e.getMessage());
         }
@@ -234,6 +202,7 @@ public class FormationController implements Initializable {
         try {
             filteredData = new FilteredList<>(FXCollections.observableArrayList(service.recuperer()), p -> true);
             applyFiltersAndSort();
+            tableFormation.refresh();
         } catch (SQLException e) {
             alert("Erreur DB", e.getMessage());
         }
@@ -243,187 +212,73 @@ public class FormationController implements Initializable {
     void addFeedback() {
         Formation selected = tableFormation.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            alert("Feedback", "Sélectionnez une formation avant d'ajouter un feedback.");
+            alert("Feedback", "Sélectionnez une formation.");
             return;
         }
-
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Ajouter un feedback");
-        TextField authorField = new TextField();
-        authorField.setPromptText("Votre nom");
-        TextArea commentArea = new TextArea();
-        commentArea.setPromptText("Votre feedback");
-        commentArea.setPrefRowCount(3);
-        Slider ratingSlider = new Slider(1, 5, 4);
-        ratingSlider.setMajorTickUnit(1);
-        ratingSlider.setMinorTickCount(0);
-        ratingSlider.setShowTickLabels(true);
-        ratingSlider.setShowTickMarks(true);
-        ratingSlider.setSnapToTicks(true);
-
-        VBox box = new VBox(10, new Label("Auteur"), authorField, new Label("Commentaire"), commentArea, new Label("Note"), ratingSlider);
-        dialog.getDialogPane().setContent(box);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        if (dialog.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
-        if (authorField.getText().isBlank() || commentArea.getText().isBlank()) {
-            alert("Feedback", "Auteur et commentaire sont obligatoires.");
-            return;
-        }
-
-        FormationFeedback feedback = new FormationFeedback();
-        feedback.setFormationId(selected.getId_formation());
-        feedback.setAuthor(authorField.getText().trim());
-        feedback.setComment(commentArea.getText().trim());
-        feedback.setRating((int) Math.round(ratingSlider.getValue()));
-
         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FeedbackFormView.fxml"));
+            Parent root = loader.load();
+            FeedbackFormController controller = loader.getController();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter feedback");
+            stage.showAndWait();
+
+            if (!controller.isSaved()) return;
+            FormationFeedback feedback = new FormationFeedback();
+            feedback.setFormationId(selected.getId_formation());
+            feedback.setAuthor(controller.getAuteur());
+            feedback.setComment(controller.getCommentaire());
+            feedback.setRating(controller.getNote());
             feedbackService.addFeedback(feedback);
-            loadFeedback(selected.getId_formation());
-        } catch (SQLException e) {
-            alert("Erreur feedback", e.getMessage());
+            lblAverageRating.setText(String.format("%.1f / 5", feedbackService.getAverageRating(selected.getId_formation())));
+        } catch (Exception e) {
+            alert("Feedback", e.getMessage());
         }
     }
 
     @FXML
     void afficherFeedbacks() {
+        if (!SessionContext.isAdmin()) return;
         Formation selected = tableFormation.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            alert("Feedback", "Sélectionnez une formation pour afficher ses feedbacks.");
-            return;
-        }
+        if (selected == null) return;
         try {
             var feedbacks = FXCollections.observableArrayList(feedbackService.getByFormation(selected.getId_formation()));
-
             TableView<FormationFeedback> popupTable = new TableView<>(feedbacks);
             popupTable.getStyleClass().add("feedback-popup-table");
 
             TableColumn<FormationFeedback, String> auteurCol = new TableColumn<>("Auteur");
-            auteurCol.setPrefWidth(150);
             auteurCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
-
             TableColumn<FormationFeedback, Integer> noteCol = new TableColumn<>("Note");
-            noteCol.setPrefWidth(70);
             noteCol.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getRating()).asObject());
-
             TableColumn<FormationFeedback, String> commentaireCol = new TableColumn<>("Commentaire");
-            commentaireCol.setPrefWidth(330);
             commentaireCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getComment()));
-
             TableColumn<FormationFeedback, String> dateCol = new TableColumn<>("Date");
-            dateCol.setPrefWidth(170);
             dateCol.setCellValueFactory(d -> new SimpleStringProperty(
                     d.getValue().getCreatedAt() == null ? "N/A" : d.getValue().getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
-
             popupTable.getColumns().setAll(auteurCol, noteCol, commentaireCol, dateCol);
-            popupTable.setPrefSize(760, 420);
 
             Dialog<Void> dialog = new Dialog<>();
             dialog.setTitle("Feedbacks - " + selected.getTitre());
             dialog.getDialogPane().setContent(popupTable);
-            dialog.getDialogPane().setPrefSize(790, 500);
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
             dialog.showAndWait();
-
-            loadFeedback(selected.getId_formation());
         } catch (SQLException e) {
             alert("Feedback", e.getMessage());
         }
     }
+
     @FXML
     void retourMain() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
-            Stage stage = (Stage) tfTitre.getScene().getWindow();
+            Stage stage = (Stage) tableFormation.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
             alert("Navigation", e.getMessage());
         }
-    }
-
-    private void loadFeedback(int formationId) {
-        try {
-            tableFeedback.setItems(FXCollections.observableArrayList(feedbackService.getByFormation(formationId)));
-            lblAverageRating.setText(String.format("%.1f / 5", feedbackService.getAverageRating(formationId)));
-        } catch (SQLException e) {
-            alert("Feedback", e.getMessage());
-        }
-    }
-
-    private void applyFormDataToFormation(Formation f, FormData data) {
-        f.setTitre(data.titre().trim());
-        f.setDescription(data.description().trim());
-        f.setDuree(data.duree());
-        f.setNiveau(data.niveau());
-        f.setCategorie(data.categorie());
-        f.setCertification(data.certification());
-    }
-
-    private FormData showFormationFormDialog(String title, Formation initial) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(title);
-
-        TextField titreField = new TextField(initial != null ? initial.getTitre() : "");
-        TextArea descField = new TextArea(initial != null ? initial.getDescription() : "");
-        descField.setPrefRowCount(3);
-        TextField dureeField = new TextField(initial != null ? String.valueOf(initial.getDuree()) : "");
-        ComboBox<Niveau> niveauField = new ComboBox<>(FXCollections.observableArrayList(Niveau.values()));
-        ComboBox<Categorie> categorieField = new ComboBox<>(FXCollections.observableArrayList(Categorie.values()));
-        CheckBox certifField = new CheckBox("Certification incluse");
-
-        if (initial != null) {
-            niveauField.setValue(initial.getNiveau());
-            categorieField.setValue(initial.getCategorie());
-            certifField.setSelected(initial.isCertification());
-        }
-
-        VBox box = new VBox(8,
-                new Label("Titre"), titreField,
-                new Label("Description"), descField,
-                new Label("Durée (heures)"), dureeField,
-                new Label("Niveau"), niveauField,
-                new Label("Catégorie"), categorieField,
-                certifField);
-
-        dialog.getDialogPane().setContent(box);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        if (dialog.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
-            return null;
-        }
-
-        String titre = titreField.getText() == null ? "" : titreField.getText().trim();
-        String desc = descField.getText() == null ? "" : descField.getText().trim();
-        if (titre.isBlank() || desc.isBlank() || dureeField.getText().isBlank()) {
-            alert("Champs manquants", "Veuillez remplir tous les champs.");
-            return null;
-        }
-        if (!titre.matches("[a-zA-ZÀ-ÿ0-9\s-]+")) {
-            alert("Titre invalide", "Le titre contient des caractères non autorisés.");
-            return null;
-        }
-
-        int duree;
-        try {
-            duree = Integer.parseInt(dureeField.getText().trim());
-        } catch (NumberFormatException ex) {
-            alert("Durée invalide", "La durée doit être un nombre entier.");
-            return null;
-        }
-        if (duree <= 0) {
-            alert("Durée invalide", "La durée doit être > 0.");
-            return null;
-        }
-        if (niveauField.getValue() == null || categorieField.getValue() == null) {
-            alert("Champs manquants", "Niveau et catégorie sont obligatoires.");
-            return null;
-        }
-        return new FormData(titre, desc, duree, niveauField.getValue(), categorieField.getValue(), certifField.isSelected());
-    }
-
-    private void remplirChamps(Formation f) {
-        // Le formulaire d'édition s'ouvre désormais dans une popup dédiée (add/modify).
     }
 
     private void applyFiltersAndSort() {
@@ -435,12 +290,11 @@ public class FormationController implements Initializable {
                 || f.getNiveau().name().toLowerCase().contains(text)
                 || f.getCategorie().name().toLowerCase().contains(text));
 
-        Comparator<Formation> comparator;
-        switch (cbSortBy.getValue()) {
-            case "Durée" -> comparator = Comparator.comparingInt(Formation::getDuree);
-            case "Niveau" -> comparator = Comparator.comparing(f -> f.getNiveau().name());
-            default -> comparator = Comparator.comparing(Formation::getTitre, String.CASE_INSENSITIVE_ORDER);
-        }
+        Comparator<Formation> comparator = switch (cbSortBy.getValue()) {
+            case "Durée" -> Comparator.comparingInt(Formation::getDuree);
+            case "Niveau" -> Comparator.comparing(f -> f.getNiveau().name());
+            default -> Comparator.comparing(Formation::getTitre, String.CASE_INSENSITIVE_ORDER);
+        };
         if ("Desc".equals(cbSortOrder.getValue())) comparator = comparator.reversed();
 
         SortedList<Formation> sorted = new SortedList<>(filteredData);
@@ -448,25 +302,14 @@ public class FormationController implements Initializable {
         tableFormation.setItems(sorted);
     }
 
-
     @FXML
     void postuler() {
-        if (!SessionContext.isUser()) {
-            alert("Postuler", "Ce bouton est destiné à l'espace USER.");
-            return;
-        }
         Formation selected = tableFormation.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            alert("Postuler", "Sélectionnez une formation pour postuler.");
-            return;
-        }
-        postulerForFormation(selected);
+        if (selected != null) postulerForFormation(selected);
     }
 
     private void postulerForFormation(Formation selected) {
-        if (selected == null) {
-            return;
-        }
+        if (!SessionContext.isUser() || selected == null) return;
         SessionContext.setPendingFormation(selected.getId_formation(), selected.getTitre());
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/ApprenantView.fxml"));
@@ -474,38 +317,18 @@ public class FormationController implements Initializable {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
-            alert("Postuler", "Impossible d'ouvrir le formulaire apprenant: " + e.getMessage());
+            alert("Postuler", e.getMessage());
         }
     }
 
     private void applyRolePermissions() {
         boolean userMode = SessionContext.isUser();
-
-        tfTitre.setVisible(false);
-        tfTitre.setManaged(false);
-        tfDescription.setVisible(false);
-        tfDescription.setManaged(false);
-        tfDuree.setVisible(false);
-        tfDuree.setManaged(false);
-        cbNiveau.setVisible(false);
-        cbNiveau.setManaged(false);
-        cbCategorie.setVisible(false);
-        cbCategorie.setManaged(false);
-        cbCertification.setVisible(false);
-        cbCertification.setManaged(false);
-
-        if (hbCrud != null) hbCrud.setVisible(false);
-        if (hbCrud != null) hbCrud.setManaged(false);
-        if (btnPostuler != null) btnPostuler.setVisible(userMode);
-        if (btnPostuler != null) btnPostuler.setManaged(userMode);
         if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setVisible(!userMode);
         if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setManaged(!userMode);
-        if (tableFeedback != null) tableFeedback.setVisible(!userMode);
-        if (tableFeedback != null) tableFeedback.setManaged(!userMode);
-        if (colPostulerAction != null) colPostulerAction.setVisible(true);
-        if (colDeleteAction != null) colDeleteAction.setVisible(!userMode);
-        if (tableFormation != null) tableFormation.refresh();
+        if (tableFeedback != null) tableFeedback.setVisible(false);
+        if (tableFeedback != null) tableFeedback.setManaged(false);
     }
+
     private void alert(String header, String content) {
         Alert a = new Alert(Alert.AlertType.ERROR);
         a.setTitle("Gestion Formations");
@@ -513,7 +336,4 @@ public class FormationController implements Initializable {
         a.setContentText(content);
         a.showAndWait();
     }
-
-
-    private record FormData(String titre, String description, int duree, Niveau niveau, Categorie categorie, boolean certification) {}
 }

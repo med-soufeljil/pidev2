@@ -15,6 +15,6 @@
     <Label text="Choisissez votre espace" styleClass="page-title"/>
     <HBox spacing="14" alignment="CENTER">
         <Button text="Entrer comme ADMIN" onAction="#enterAdmin"/>
-        <Button text="Entrer comme USER" onAction="#enterUser" styleClass="secondary-btn"/>
+        <Button text="Entrer comme USER" onAction="#enterUser"/>
     </HBox>
 </VBox>

@@ -6,10 +6,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,9 +35,12 @@ public class DashboardController {
     @FXML private Label lblAvgDuree;
     @FXML private Label lblCertif;
     @FXML private PieChart pieChart;
+    @FXML private BarChart<String, Number> barChart;
 
     @FXML private TextField tfTech;
-    @FXML private ListView<String> listMarkets;
+    @FXML private Label lblMarket1;
+    @FXML private Label lblMarket2;
+    @FXML private Label lblMarket3;
 
     private final DashboardService dashboardService = new DashboardService();
     private DashboardStats stats;
@@ -44,22 +48,29 @@ public class DashboardController {
     @FXML
     public void initialize() {
         ApiRuntime.ensureStarted();
-        refresh();
+        loadData();
     }
 
-    @FXML
-    public void refresh() {
+    private void loadData() {
         try {
             stats = dashboardService.loadStats();
             lblTotalFormations.setText(String.valueOf(stats.getTotalFormations()));
             lblTotalApprenants.setText(String.valueOf(stats.getTotalApprenants()));
             lblAvgDuree.setText(String.format("%.2f h", stats.getAverageDuration()));
             lblCertif.setText(String.valueOf(stats.getCertifiedFormations()));
+
             int nonCertif = Math.max(0, stats.getTotalFormations() - stats.getCertifiedFormations());
             pieChart.setData(FXCollections.observableArrayList(
                     new PieChart.Data("Certifiées", stats.getCertifiedFormations()),
                     new PieChart.Data("Non certifiées", nonCertif)
             ));
+
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.getData().add(new XYChart.Data<>("Formations", stats.getTotalFormations()));
+            series.getData().add(new XYChart.Data<>("Apprenants", stats.getTotalApprenants()));
+            series.getData().add(new XYChart.Data<>("Certifiées", stats.getCertifiedFormations()));
+            barChart.setData(FXCollections.observableArrayList(series));
+
         } catch (SQLException e) {
             error("Chargement dashboard", e.getMessage());
         }
@@ -69,94 +80,81 @@ public class DashboardController {
     public void findTopMarkets() {
         String tech = tfTech.getText() == null ? "" : tfTech.getText().trim();
         if (tech.isEmpty()) {
-            error("Top markets", "Veuillez saisir une technologie (ex: java, spring, react).");
+            error("Top markets", "Veuillez saisir une technologie.");
             return;
         }
-
         try {
             URL url = new URL(ApiRuntime.getBaseUrl() + "/api/market/top?tech=" + tech.replace(" ", "%20"));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setConnectTimeout(3000);
-            conn.setReadTimeout(5000);
-
             int code = conn.getResponseCode();
-            if (code != 200) {
-                throw new IOException("API market/top returned status " + code);
-            }
-
             String body;
-            try (InputStream in = conn.getInputStream()) {
-                body = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            try (InputStream in = (code >= 200 && code < 300) ? conn.getInputStream() : conn.getErrorStream()) {
+                body = in == null ? "" : new String(in.readAllBytes(), StandardCharsets.UTF_8);
             }
-
-            listMarkets.setItems(FXCollections.observableArrayList(parseMarkets(body)));
-        } catch (IOException e) {
-            error("Top markets", "Erreur API: " + e.getMessage());
+            if (code < 200 || code >= 300) {
+                error("Top markets", body.isBlank() ? "Erreur API." : body);
+                return;
+            }
+            List<String> entries = parseStringArray(body);
+            lblMarket1.setText(entries.size() > 0 ? entries.get(0) : "-");
+            lblMarket2.setText(entries.size() > 1 ? entries.get(1) : "-");
+            lblMarket3.setText(entries.size() > 2 ? entries.get(2) : "-");
+        } catch (Exception e) {
+            error("Top markets", e.getMessage());
         }
-    }
-
-    private List<String> parseMarkets(String json) {
-        List<String> result = new ArrayList<>();
-        int start = json.indexOf("[\"");
-        int end = json.indexOf("\"]", start);
-        if (start == -1 || end == -1) {
-            return result;
-        }
-        String raw = json.substring(start + 2, end);
-        for (String item : raw.split("\",\"")) {
-            result.add(item);
-        }
-        return result;
     }
 
     @FXML
     public void exportPdf() {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Exporter le dashboard en PDF (API)");
-        chooser.setInitialFileName("dashboard-report.pdf");
+        chooser.setTitle("Enregistrer PDF");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
-        File destination = chooser.showSaveDialog(pieChart.getScene().getWindow());
-        if (destination == null) return;
+        File file = chooser.showSaveDialog(getStage());
+        if (file == null) return;
 
         try {
             URL url = new URL(ApiRuntime.getBaseUrl() + "/api/dashboard/pdf");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setConnectTimeout(3000);
-            conn.setReadTimeout(5000);
-
             int code = conn.getResponseCode();
-            if (code != 200) {
-                throw new IOException("API dashboard/pdf returned status " + code);
+            if (code < 200 || code >= 300) {
+                String body;
+                try (InputStream in = conn.getErrorStream()) {
+                    body = in == null ? "" : new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                }
+                error("Export PDF", body.isBlank() ? "Echec export PDF." : body);
+                return;
             }
             try (InputStream in = conn.getInputStream()) {
-                Files.copy(in, destination.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                Files.write(file.toPath(), in.readAllBytes());
             }
-            ok("Export PDF", "PDF généré via API: " + destination.getAbsolutePath());
-        } catch (IOException e) {
-            error("Export PDF", "Erreur API PDF: " + e.getMessage());
+            info("Export PDF", "PDF exporté: " + file.getAbsolutePath());
+        } catch (Exception e) {
+            error("Export PDF", e.getMessage());
         }
     }
 
     @FXML
     public void exportCsv() {
-        if (stats == null) refresh();
+        if (stats == null) {
+            error("Export CSV", "Aucune donnée à exporter.");
+            return;
+        }
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Exporter les statistiques en CSV");
-        chooser.setInitialFileName("dashboard-report.csv");
+        chooser.setTitle("Enregistrer CSV");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
-        File file = chooser.showSaveDialog(pieChart.getScene().getWindow());
+        File file = chooser.showSaveDialog(getStage());
         if (file == null) return;
 
         String csv = "metric,value\n"
                 + "total_formations," + stats.getTotalFormations() + "\n"
                 + "total_apprenants," + stats.getTotalApprenants() + "\n"
-                + "average_duration," + String.format("%.2f", stats.getAverageDuration()) + "\n"
+                + "average_duration," + stats.getAverageDuration() + "\n"
                 + "certified_formations," + stats.getCertifiedFormations() + "\n";
         try {
             Files.writeString(file.toPath(), csv, StandardCharsets.UTF_8);
-            ok("Export CSV", "CSV généré: " + file.getAbsolutePath());
+            info("Export CSV", "CSV exporté: " + file.getAbsolutePath());
         } catch (IOException e) {
             error("Export CSV", e.getMessage());
         }
@@ -166,25 +164,45 @@ public class DashboardController {
     public void retourMain() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
-            Stage stage = (Stage) pieChart.getScene().getWindow();
+            Stage stage = getStage();
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             error("Navigation", e.getMessage());
         }
     }
 
-    private void error(String header, String content) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setHeaderText(header);
-        a.setContentText(content);
-        a.showAndWait();
+    private Stage getStage() {
+        return (Stage) lblTotalFormations.getScene().getWindow();
     }
 
-    private void ok(String header, String content) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setHeaderText(header);
-        a.setContentText(content);
-        a.showAndWait();
+    private void error(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void info(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private List<String> parseStringArray(String jsonArray) {
+        List<String> out = new ArrayList<>();
+        if (jsonArray == null) return out;
+        String s = jsonArray.trim();
+        if (!s.startsWith("[") || !s.endsWith("]")) return out;
+        s = s.substring(1, s.length() - 1).trim();
+        if (s.isEmpty()) return out;
+        String[] parts = s.split(",");
+        for (String p : parts) {
+            String x = p.trim();
+            if (x.startsWith("\"") && x.endsWith("\"")) x = x.substring(1, x.length() - 1);
+            out.add(x.replace("\\\"", "\""));
+        }
+        return out;
     }
 }

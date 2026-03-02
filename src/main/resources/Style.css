@@ -196,3 +196,37 @@
     -fx-background-color: linear-gradient(to bottom, #39b4ff, #1b82ea);
     -fx-effect: dropshadow(gaussian, rgba(9,85,170,0.30), 8, 0.25, 0, 1);
 }
+
+
+.kpi-card {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f4fbff);
+    -fx-background-radius: 16;
+    -fx-border-color: #9edfff;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,100,170,0.16), 12, 0.2, 0, 2);
+}
+
+.action-icon-btn {
+    -fx-background-color: linear-gradient(to bottom, #27b6ff, #1f85ff);
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 10;
+    -fx-min-width: 42;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #2a91e8;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: white;
+}
+
+.hero-chip {
+    -fx-font-weight: 700;
+}
+
+.left-menu-btn {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 12;
+}
