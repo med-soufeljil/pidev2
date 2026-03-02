@@ -30,6 +30,12 @@
 
             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                <Label text="Top markets (tech)" styleClass="section-title"/>
+                <TextField fx:id="tfTech" promptText="java / spring / react ..." prefWidth="240"/>
+                <Button text="Trouver Top 3" onAction="#findTopMarkets"/>
+                <Label fx:id="lblMarket1" text="-" styleClass="market-chip"/>
+                <Label fx:id="lblMarket2" text="-" styleClass="market-chip"/>
+                <Label fx:id="lblMarket3" text="-" styleClass="market-chip"/>
                 <Button text="Export PDF (API)" onAction="#exportPdf"/>
                 <Button text="Export CSV" onAction="#exportCsv" styleClass="secondary-btn"/>
                 <Button text="Retour" onAction="#retourMain" styleClass="danger-btn"/>
@@ -41,16 +47,6 @@
                     <xAxis><CategoryAxis/></xAxis>
                     <yAxis><NumberAxis/></yAxis>
                 </BarChart>
-            </HBox>
-
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
-                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                <Label text="Top markets (tech)" styleClass="section-title"/>
-                <TextField fx:id="tfTech" promptText="java / spring / react ..." prefWidth="280"/>
-                <Button text="Trouver Top 3" onAction="#findTopMarkets"/>
-                <Label fx:id="lblMarket1" text="-" styleClass="market-chip"/>
-                <Label fx:id="lblMarket2" text="-" styleClass="market-chip"/>
-                <Label fx:id="lblMarket3" text="-" styleClass="market-chip"/>
             </HBox>
         </VBox>
     </content>
