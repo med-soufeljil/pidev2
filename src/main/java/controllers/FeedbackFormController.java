@@ -4,12 +4,19 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
+import utils.ApiRuntime;
 import javafx.stage.Stage;
 
 public class FeedbackFormController {
     @FXML private TextField tfAuteur;
     @FXML private TextArea taCommentaire;
     @FXML private Slider slNote;
+    @FXML private Label lblStars;
 
     private String auteur;
     private String commentaire;
@@ -17,8 +24,14 @@ public class FeedbackFormController {
     private boolean saved;
 
     @FXML
+    public void initialize() {
+        slNote.valueProperty().addListener((o,ov,nv)-> lblStars.setText(toStars((int)Math.round(nv.doubleValue()))));
+    }
+
+    @FXML
     public void save() {
         if (tfAuteur.getText().isBlank() || taCommentaire.getText().isBlank()) return;
+        if (!isCommentClean(taCommentaire.getText().trim())) return;
         auteur = tfAuteur.getText().trim();
         commentaire = taCommentaire.getText().trim();
         note = (int) Math.round(slNote.getValue());
@@ -34,4 +47,23 @@ public class FeedbackFormController {
     public String getAuteur() { return auteur; }
     public String getCommentaire() { return commentaire; }
     public int getNote() { return note; }
+
+    private String toStars(int value){
+        int v=Math.max(0,Math.min(5,value));
+        return "★".repeat(v)+"☆".repeat(5-v);
+    }
+
+    private boolean isCommentClean(String text) {
+        try {
+            URL url = new URL(ApiRuntime.getBaseUrl() + "/api/moderation/badwords?text=" + java.net.URLEncoder.encode(text, StandardCharsets.UTF_8));
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            try (InputStream in = conn.getInputStream()) {
+                String body = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                return body.contains(""clean":true");
+            }
+        } catch (Exception ignored) {
+            return true;
+        }
+    }
 }

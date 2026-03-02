@@ -9,7 +9,8 @@
     <Label text="Ajouter un feedback" styleClass="section-title"/>
     <TextField fx:id="tfAuteur" promptText="Auteur"/>
     <TextArea fx:id="taCommentaire" promptText="Commentaire" prefRowCount="3"/>
-    <Slider fx:id="slNote" min="1" max="5" value="4" majorTickUnit="1" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
+    <Label fx:id="lblStars" text="★★★☆☆" styleClass="section-title"/>
+    <Slider fx:id="slNote" min="0" max="5" value="3" majorTickUnit="1" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
     <HBox spacing="8">
         <Button text="Valider" onAction="#save"/>
         <Button text="Annuler" onAction="#cancel" styleClass="secondary-btn"/>

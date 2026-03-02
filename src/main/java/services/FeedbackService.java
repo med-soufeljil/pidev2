@@ -37,8 +37,8 @@ public class FeedbackService {
     }
 
     public List<FormationFeedback> getByFormation(int formationId) throws SQLException {
-        String primarySql = "SELECT id, id_formation, author, rating, comment_text, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
-        String fallbackSql = "SELECT id, id_formation, author, rating, comment, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
+        String primarySql = "SELECT id, id_formation, author, rating, comment_text AS comment_value, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
+        String fallbackSql = "SELECT id, id_formation, author, rating, comment AS comment_value, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
 
         SQLException last = null;
         for (String sql : new String[]{primarySql, fallbackSql}) {
@@ -52,13 +52,7 @@ public class FeedbackService {
                         fb.setFormationId(rs.getInt("id_formation"));
                         fb.setAuthor(rs.getString("author"));
                         fb.setRating(rs.getInt("rating"));
-                        String comment;
-                        try {
-                            comment = rs.getString("comment_text");
-                        } catch (SQLException ignored) {
-                            comment = rs.getString("comment");
-                        }
-                        fb.setComment(comment);
+                        fb.setComment(rs.getString("comment_value"));
                         Timestamp ts = rs.getTimestamp("created_at");
                         fb.setCreatedAt(ts != null ? ts.toLocalDateTime() : null);
                         result.add(fb);

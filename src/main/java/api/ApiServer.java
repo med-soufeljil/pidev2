@@ -41,6 +41,7 @@ public class ApiServer {
         server.createContext("/api/external/suggestion", this::handleExternalSuggestion);
         server.createContext("/api/market/top", this::handleTopMarkets);
         server.createContext("/api/health", this::handleHealth);
+        server.createContext("/api/moderation/badwords", this::handleBadWordsModeration);
         server.setExecutor(Executors.newFixedThreadPool(6));
         server.start();
         System.out.println("API server started on http://localhost:" + port);
@@ -244,6 +245,25 @@ public class ApiServer {
         }
         json.append("]}");
         sendJson(exchange, 200, json.toString());
+    }
+
+
+    private void handleBadWordsModeration(HttpExchange exchange) throws IOException {
+        if (!"GET".equals(exchange.getRequestMethod())) {
+            sendJson(exchange, 405, "{\"error\":\"Method not allowed\"}");
+            return;
+        }
+        Map<String, String> query = parseQuery(exchange.getRequestURI());
+        String text = query.getOrDefault("text", "").toLowerCase();
+        List<String> banned = List.of("shit", "fuck", "bitch", "con", "merde", "pute", "salope");
+        List<String> found = new ArrayList<>();
+        for (String w : banned) {
+            if (text.contains(w)) found.add(w);
+        }
+        String json = "{\"clean\":" + found.isEmpty() + ",\"found\":["
+                + String.join(",", found.stream().map(x -> "\"" + escape(x) + "\"").toList())
+                + "]}";
+        sendJson(exchange, 200, json);
     }
 
     private void handleHealth(HttpExchange exchange) throws IOException {

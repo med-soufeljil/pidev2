@@ -1,24 +1,29 @@
 package controllers;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import utils.SessionContext;
 
 public class RoleSelectionController {
+    @FXML private ComboBox<String> cbRole;
 
     @FXML
-    public void enterAdmin(ActionEvent event) {
-        openMainForRole(SessionContext.Role.ADMIN, event);
+    public void initialize() {
+        cbRole.setItems(FXCollections.observableArrayList("ADMIN", "USER"));
     }
 
     @FXML
-    public void enterUser(ActionEvent event) {
-        openMainForRole(SessionContext.Role.USER, event);
+    public void enterSelectedRole(ActionEvent event) {
+        String role = cbRole.getValue();
+        if (role == null) return;
+        openMainForRole("ADMIN".equals(role) ? SessionContext.Role.ADMIN : SessionContext.Role.USER, event);
     }
 
     private void openMainForRole(SessionContext.Role role, ActionEvent event) {

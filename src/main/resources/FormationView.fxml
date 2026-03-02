@@ -20,6 +20,7 @@
                 <TextField fx:id="tfRecherche" promptText="Recherche multi-critères..." HBox.hgrow="ALWAYS"/>
                 <ComboBox fx:id="cbSortBy" prefWidth="140"/>
                 <ComboBox fx:id="cbSortOrder" prefWidth="120"/>
+                <Button text="＋" onAction="#ajouter" styleClass="secondary-btn"/>
             </HBox>
         </VBox>
     </top>
@@ -37,7 +38,7 @@
                         <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
                         <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
                         <TableColumn fx:id="colCertif" text="Certif" prefWidth="90"/>
-                        <TableColumn fx:id="colPostulerAction" text="Action" prefWidth="210"/>
+                        <TableColumn fx:id="colPostulerAction" text="Action" prefWidth="170"/>
                     </columns>
                 </TableView>
             </VBox>

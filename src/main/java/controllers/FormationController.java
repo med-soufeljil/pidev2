@@ -103,17 +103,14 @@ public class FormationController implements Initializable {
     private void initActionColumn() {
         colPostulerAction.setCellFactory(param -> new TableCell<>() {
             private final VBox box = new VBox(6);
-            private final Button addBtn = new Button("＋ Ajouter");
-            private final Button editBtn = new Button("✎ Modifier");
-            private final Button delBtn = new Button("✖ Supprimer");
+            private final Button editBtn = new Button("✎");
+            private final Button delBtn = new Button("✖");
             private final Button postulerBtn = new Button("Postuler");
             {
-                addBtn.getStyleClass().add("action-add-btn");
                 editBtn.getStyleClass().add("action-edit-btn");
                 delBtn.getStyleClass().add("action-delete-btn");
                 postulerBtn.getStyleClass().add("postuler-row-btn");
                 box.getStyleClass().add("action-column-box");
-                addBtn.setOnAction(e -> ajouter());
                 editBtn.setOnAction(e -> {
                     Formation f = getTableView().getItems().get(getIndex());
                     openFormationFormDialog(f);
@@ -132,7 +129,7 @@ public class FormationController implements Initializable {
                 if (empty) { setGraphic(null); return; }
                 box.getChildren().clear();
                 if (SessionContext.isAdmin()) {
-                    box.getChildren().addAll(addBtn, editBtn, delBtn);
+                    box.getChildren().addAll(editBtn, delBtn);
                 } else {
                     box.getChildren().add(postulerBtn);
                 }
@@ -251,10 +248,10 @@ public class FormationController implements Initializable {
 
             TableColumn<FormationFeedback, String> auteurCol = new TableColumn<>("Auteur");
             auteurCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
-            TableColumn<FormationFeedback, Integer> noteCol = new TableColumn<>("Note");
-            noteCol.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getRating()).asObject());
+            TableColumn<FormationFeedback, String> noteCol = new TableColumn<>("Note");
+            noteCol.setCellValueFactory(d -> new SimpleStringProperty(stars(d.getValue().getRating()) + " (" + d.getValue().getRating() + "/5)"));
             TableColumn<FormationFeedback, String> commentaireCol = new TableColumn<>("Commentaire");
-            commentaireCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getComment()));
+            commentaireCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getComment() == null ? "" : d.getValue().getComment()));
             TableColumn<FormationFeedback, String> dateCol = new TableColumn<>("Date");
             dateCol.setCellValueFactory(d -> new SimpleStringProperty(
                     d.getValue().getCreatedAt() == null ? "N/A" : d.getValue().getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
@@ -328,6 +325,11 @@ public class FormationController implements Initializable {
         if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setManaged(!userMode);
         if (tableFeedback != null) tableFeedback.setVisible(false);
         if (tableFeedback != null) tableFeedback.setManaged(false);
+    }
+
+    private String stars(int rating) {
+        int v = Math.max(0, Math.min(5, rating));
+        return "★".repeat(v) + "☆".repeat(5 - v);
     }
 
     private void alert(String header, String content) {

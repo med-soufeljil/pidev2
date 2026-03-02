@@ -131,6 +131,14 @@ public class ApprenantController implements Initializable {
             if (initial == null) {
                 service.ajouter(result);
                 sendRegistrationEmail(result);
+                if (SessionContext.isUser()) {
+                    Parent rootBack = FXMLLoader.load(getClass().getResource("/FormationView.fxml"));
+                    Stage mainStage = (Stage) tableApprenant.getScene().getWindow();
+                    mainStage.setScene(new Scene(rootBack));
+                    mainStage.show();
+                    SessionContext.clearPendingFormation();
+                    return;
+                }
             } else {
                 initial.setNom(result.getNom());
                 initial.setPrenom(result.getPrenom());

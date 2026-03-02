@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -40,6 +41,7 @@ public class DashboardController {
     @FXML private Label lblCertif;
     @FXML private PieChart pieChart;
     @FXML private BarChart<String, Number> barChart;
+    @FXML private LineChart<String, Number> lineChart;
 
     @FXML private TextField tfTech;
     @FXML private Label lblMarket1;
@@ -78,6 +80,12 @@ public class DashboardController {
             series.getData().add(new XYChart.Data<>("Apprenants", stats.getTotalApprenants()));
             series.getData().add(new XYChart.Data<>("Certifiées", stats.getCertifiedFormations()));
             barChart.setData(FXCollections.observableArrayList(series));
+
+            XYChart.Series<String, Number> line = new XYChart.Series<>();
+            line.getData().add(new XYChart.Data<>("Jan", Math.max(1, stats.getTotalFormations()/2.0)));
+            line.getData().add(new XYChart.Data<>("Feb", Math.max(1, stats.getTotalApprenants()/3.0)));
+            line.getData().add(new XYChart.Data<>("Mar", Math.max(1, stats.getCertifiedFormations())));
+            lineChart.setData(FXCollections.observableArrayList(line));
 
         } catch (SQLException e) {
             error("Chargement dashboard", e.getMessage());
