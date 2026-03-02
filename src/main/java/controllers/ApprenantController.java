@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.application.Platform;
 import services.ApprenantService;
 import services.FormationService;
 import services.MailingApiService;
@@ -144,6 +145,9 @@ public class ApprenantController implements Initializable {
                     } else if (tableApprenant != null && tableApprenant.getScene() != null) {
                         mainStage = (Stage) tableApprenant.getScene().getWindow();
                     }
+                    if (mainStage == null && result != null && stage.getScene() != null) {
+                        mainStage = (Stage) stage.getScene().getWindow();
+                    }
                     if (mainStage != null) {
                         mainStage.setScene(new Scene(rootBack));
                         mainStage.show();
@@ -225,8 +229,11 @@ public class ApprenantController implements Initializable {
 
     private void applyPendingFormationSelection() {
         if (!SessionContext.hasPendingFormation()) return;
-        openFormDialog(null);
-        SessionContext.clearPendingFormation();
+        Platform.runLater(() -> {
+            if (SessionContext.hasPendingFormation()) {
+                openFormDialog(null);
+            }
+        });
     }
 
     private String safe(String s) { return s == null ? "" : s.toLowerCase(); }

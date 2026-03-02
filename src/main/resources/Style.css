@@ -320,3 +320,95 @@
 .chart-legend-item .label {
     -fx-text-fill: #111111;
 }
+
+.form-page {
+    -fx-background-color: linear-gradient(to bottom, #e9f8ff, #f8fcff);
+}
+
+.form-actions {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 8 0 0 0;
+}
+
+.form-primary-btn,
+.form-secondary-btn {
+    -fx-min-width: 140;
+    -fx-pref-height: 36;
+}
+
+.table-view {
+    -fx-padding: 6;
+    -fx-cell-size: 42px;
+}
+
+.table-view .table-cell {
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: #0b3e63;
+    -fx-font-size: 13px;
+    -fx-padding: 0 10;
+}
+
+.table-view .column-header {
+    -fx-size: 40px;
+}
+
+.table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-table-cell-border-color: transparent;
+    -fx-border-color: transparent transparent #edf7ff transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f7fcff;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #e7f5ff;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #2a91e8;
+}
+
+.action-column-box {
+    -fx-alignment: CENTER;
+    -fx-spacing: 8;
+}
+
+.action-add-btn,
+.action-edit-btn,
+.action-delete-btn,
+.postuler-row-btn {
+    -fx-pref-height: 30;
+}
+
+.postuler-row-btn {
+    -fx-min-width: 86;
+    -fx-font-size: 12px;
+}
+
+.dashboard-root .chart,
+.chart-card .chart {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f6fbff);
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+}
+
+.dashboard-root .chart-title {
+    -fx-text-fill: #0a3d62;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+.dashboard-root .axis-label,
+.dashboard-root .axis .text,
+.dashboard-root .chart-legend .label,
+.dashboard-root .default-color0.chart-pie-label,
+.dashboard-root .default-color1.chart-pie-label {
+    -fx-text-fill: #13496d;
+    -fx-fill: #13496d;
+}
+
+.dashboard-kpi {
+    -fx-min-height: 110;
+}
