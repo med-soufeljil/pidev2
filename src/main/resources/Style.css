@@ -412,3 +412,15 @@
 .dashboard-kpi {
     -fx-min-height: 110;
 }
+
+.dashboard-header {
+    -fx-background-radius: 0 0 14 14;
+}
+
+.dashboard-content {
+    -fx-background-color: transparent;
+}
+
+.dashboard-actions {
+    -fx-wrap-text: false;
+}
