@@ -18,7 +18,7 @@ public class MainProgGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         ApiRuntime.ensureStarted();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/RoleSelectionView.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

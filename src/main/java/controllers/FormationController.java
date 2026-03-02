@@ -51,6 +51,7 @@ public class FormationController implements Initializable {
     @FXML private TableColumn<Formation, Categorie> colCategorie;
     @FXML private TableColumn<Formation, Boolean> colCertif;
     @FXML private TableColumn<Formation, Void> colPostulerAction;
+    @FXML private TableColumn<Formation, Void> colDeleteAction;
 
     @FXML private VBox boxEdition;
     @FXML private HBox hbCrud;
@@ -90,12 +91,15 @@ public class FormationController implements Initializable {
         colCertif.setCellValueFactory(data -> new SimpleBooleanProperty(data.getValue().isCertification()));
         if (colPostulerAction != null) {
             colPostulerAction.setCellFactory(param -> new TableCell<>() {
-                private final Button applyButton = new Button("Postuler");
+                private final Button rowAction = new Button();
                 {
-                    applyButton.getStyleClass().add("postuler-row-btn");
-                    applyButton.setOnAction(event -> {
+                    rowAction.setOnAction(event -> {
                         Formation formation = getTableView().getItems().get(getIndex());
-                        postulerForFormation(formation);
+                        if (SessionContext.isUser()) {
+                            postulerForFormation(formation);
+                        } else {
+                            openEditDialogForFormation(formation);
+                        }
                     });
                 }
 
@@ -104,10 +108,38 @@ public class FormationController implements Initializable {
                     super.updateItem(item, empty);
                     if (empty) {
                         setGraphic(null);
+                        return;
+                    }
+                    if (SessionContext.isUser()) {
+                        rowAction.setText("Postuler");
+                        rowAction.getStyleClass().setAll("postuler-row-btn");
                     } else {
-                        applyButton.setVisible(SessionContext.isUser());
-                        applyButton.setManaged(SessionContext.isUser());
-                        setGraphic(SessionContext.isUser() ? applyButton : null);
+                        rowAction.setText("✏");
+                        rowAction.getStyleClass().setAll("secondary-btn");
+                    }
+                    setGraphic(rowAction);
+                }
+            });
+        }
+        if (colDeleteAction != null) {
+            colDeleteAction.setCellFactory(param -> new TableCell<>() {
+                private final Button deleteBtn = new Button("🗑");
+                {
+                    deleteBtn.getStyleClass().setAll("danger-btn");
+                    deleteBtn.setOnAction(event -> {
+                        Formation formation = getTableView().getItems().get(getIndex());
+                        tableFormation.getSelectionModel().select(formation);
+                        supprimer();
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || SessionContext.isUser()) {
+                        setGraphic(null);
+                    } else {
+                        setGraphic(deleteBtn);
                     }
                 }
             });
@@ -137,14 +169,17 @@ public class FormationController implements Initializable {
 
     @FXML
     void ajouter() {
+        if (!SessionContext.isAdmin()) {
+            alert("Accès", "Seul l'admin peut ajouter.");
+            return;
+        }
+        FormData data = showFormationFormDialog("Ajouter une formation", null);
+        if (data == null) return;
         try {
-            if (!valideFormulaire()) return;
             Formation f = new Formation();
-            mapFormToFormation(f);
+            applyFormDataToFormation(f, data);
             service.ajouter(f);
             afficher();
-        applyRolePermissions();
-            clearForm();
         } catch (SQLException e) {
             alert("Erreur", e.getMessage());
         }
@@ -157,13 +192,20 @@ public class FormationController implements Initializable {
             alert("Aucune sélection", "Sélectionnez une formation à modifier.");
             return;
         }
+        openEditDialogForFormation(f);
+    }
 
+    private void openEditDialogForFormation(Formation f) {
+        if (!SessionContext.isAdmin()) {
+            alert("Accès", "Seul l'admin peut modifier.");
+            return;
+        }
+        FormData data = showFormationFormDialog("Modifier la formation", f);
+        if (data == null) return;
         try {
-            if (!valideFormulaire()) return;
-            mapFormToFormation(f);
+            applyFormDataToFormation(f, data);
             service.modifier(f);
             afficher();
-        applyRolePermissions();
         } catch (SQLException e) {
             alert("Erreur", e.getMessage());
         }
@@ -180,8 +222,6 @@ public class FormationController implements Initializable {
         try {
             service.supprimer(f.getId_formation());
             afficher();
-        applyRolePermissions();
-            clearForm();
             tableFeedback.getItems().clear();
             lblAverageRating.setText("0.0 / 5");
         } catch (SQLException e) {
@@ -206,26 +246,44 @@ public class FormationController implements Initializable {
             alert("Feedback", "Sélectionnez une formation avant d'ajouter un feedback.");
             return;
         }
-        if (tfFeedbackAuteur.getText().isBlank() || taFeedback.getText().isBlank()) {
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Ajouter un feedback");
+        TextField authorField = new TextField();
+        authorField.setPromptText("Votre nom");
+        TextArea commentArea = new TextArea();
+        commentArea.setPromptText("Votre feedback");
+        commentArea.setPrefRowCount(3);
+        Slider ratingSlider = new Slider(1, 5, 4);
+        ratingSlider.setMajorTickUnit(1);
+        ratingSlider.setMinorTickCount(0);
+        ratingSlider.setShowTickLabels(true);
+        ratingSlider.setShowTickMarks(true);
+        ratingSlider.setSnapToTicks(true);
+
+        VBox box = new VBox(10, new Label("Auteur"), authorField, new Label("Commentaire"), commentArea, new Label("Note"), ratingSlider);
+        dialog.getDialogPane().setContent(box);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        if (dialog.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
+        if (authorField.getText().isBlank() || commentArea.getText().isBlank()) {
             alert("Feedback", "Auteur et commentaire sont obligatoires.");
             return;
         }
 
         FormationFeedback feedback = new FormationFeedback();
         feedback.setFormationId(selected.getId_formation());
-        feedback.setAuthor(tfFeedbackAuteur.getText().trim());
-        feedback.setComment(taFeedback.getText().trim());
-        feedback.setRating((int) Math.round(slRating.getValue()));
+        feedback.setAuthor(authorField.getText().trim());
+        feedback.setComment(commentArea.getText().trim());
+        feedback.setRating((int) Math.round(ratingSlider.getValue()));
 
         try {
             feedbackService.addFeedback(feedback);
-            taFeedback.clear();
             loadFeedback(selected.getId_formation());
         } catch (SQLException e) {
             alert("Erreur feedback", e.getMessage());
         }
     }
-
 
     @FXML
     void afficherFeedbacks() {
@@ -293,57 +351,79 @@ public class FormationController implements Initializable {
         }
     }
 
-    private void mapFormToFormation(Formation f) {
-        f.setTitre(tfTitre.getText().trim());
-        f.setDescription(tfDescription.getText().trim());
-        f.setDuree(Integer.parseInt(tfDuree.getText().trim()));
-        f.setNiveau(cbNiveau.getValue());
-        f.setCategorie(cbCategorie.getValue());
-        f.setCertification(cbCertification.isSelected());
+    private void applyFormDataToFormation(Formation f, FormData data) {
+        f.setTitre(data.titre().trim());
+        f.setDescription(data.description().trim());
+        f.setDuree(data.duree());
+        f.setNiveau(data.niveau());
+        f.setCategorie(data.categorie());
+        f.setCertification(data.certification());
+    }
+
+    private FormData showFormationFormDialog(String title, Formation initial) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(title);
+
+        TextField titreField = new TextField(initial != null ? initial.getTitre() : "");
+        TextArea descField = new TextArea(initial != null ? initial.getDescription() : "");
+        descField.setPrefRowCount(3);
+        TextField dureeField = new TextField(initial != null ? String.valueOf(initial.getDuree()) : "");
+        ComboBox<Niveau> niveauField = new ComboBox<>(FXCollections.observableArrayList(Niveau.values()));
+        ComboBox<Categorie> categorieField = new ComboBox<>(FXCollections.observableArrayList(Categorie.values()));
+        CheckBox certifField = new CheckBox("Certification incluse");
+
+        if (initial != null) {
+            niveauField.setValue(initial.getNiveau());
+            categorieField.setValue(initial.getCategorie());
+            certifField.setSelected(initial.isCertification());
+        }
+
+        VBox box = new VBox(8,
+                new Label("Titre"), titreField,
+                new Label("Description"), descField,
+                new Label("Durée (heures)"), dureeField,
+                new Label("Niveau"), niveauField,
+                new Label("Catégorie"), categorieField,
+                certifField);
+
+        dialog.getDialogPane().setContent(box);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        if (dialog.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            return null;
+        }
+
+        String titre = titreField.getText() == null ? "" : titreField.getText().trim();
+        String desc = descField.getText() == null ? "" : descField.getText().trim();
+        if (titre.isBlank() || desc.isBlank() || dureeField.getText().isBlank()) {
+            alert("Champs manquants", "Veuillez remplir tous les champs.");
+            return null;
+        }
+        if (!titre.matches("[a-zA-ZÀ-ÿ0-9\s-]+")) {
+            alert("Titre invalide", "Le titre contient des caractères non autorisés.");
+            return null;
+        }
+
+        int duree;
+        try {
+            duree = Integer.parseInt(dureeField.getText().trim());
+        } catch (NumberFormatException ex) {
+            alert("Durée invalide", "La durée doit être un nombre entier.");
+            return null;
+        }
+        if (duree <= 0) {
+            alert("Durée invalide", "La durée doit être > 0.");
+            return null;
+        }
+        if (niveauField.getValue() == null || categorieField.getValue() == null) {
+            alert("Champs manquants", "Niveau et catégorie sont obligatoires.");
+            return null;
+        }
+        return new FormData(titre, desc, duree, niveauField.getValue(), categorieField.getValue(), certifField.isSelected());
     }
 
     private void remplirChamps(Formation f) {
-        tfTitre.setText(f.getTitre());
-        tfDescription.setText(f.getDescription());
-        tfDuree.setText(String.valueOf(f.getDuree()));
-        cbNiveau.setValue(f.getNiveau());
-        cbCategorie.setValue(f.getCategorie());
-        cbCertification.setSelected(f.isCertification());
-    }
-
-    private void clearForm() {
-        tfTitre.clear();
-        tfDescription.clear();
-        tfDuree.clear();
-        cbNiveau.setValue(null);
-        cbCategorie.setValue(null);
-        cbCertification.setSelected(false);
-    }
-
-    private boolean valideFormulaire() {
-        if (tfTitre.getText().isBlank() || tfDescription.getText().isBlank() || tfDuree.getText().isBlank()) {
-            alert("Champs manquants", "Veuillez remplir tous les champs.");
-            return false;
-        }
-        if (!tfTitre.getText().matches("[a-zA-ZÀ-ÿ0-9\\s-]+")) {
-            alert("Titre invalide", "Le titre contient des caractères non autorisés.");
-            return false;
-        }
-        try {
-            int d = Integer.parseInt(tfDuree.getText().trim());
-            if (d <= 0) {
-                alert("Durée invalide", "La durée doit être > 0.");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            alert("Durée invalide", "La durée doit être un nombre entier.");
-            return false;
-        }
-        if (cbNiveau.getValue() == null || cbCategorie.getValue() == null) {
-            alert("Champs manquants", "Niveau et catégorie sont obligatoires.");
-            return false;
-        }
-        return true;
+        // Le formulaire d'édition s'ouvre désormais dans une popup dédiée (add/modify).
     }
 
     private void applyFiltersAndSort() {
@@ -401,28 +481,30 @@ public class FormationController implements Initializable {
     private void applyRolePermissions() {
         boolean userMode = SessionContext.isUser();
 
-        tfTitre.setVisible(!userMode);
-        tfTitre.setManaged(!userMode);
-        tfDescription.setVisible(!userMode);
-        tfDescription.setManaged(!userMode);
-        tfDuree.setVisible(!userMode);
-        tfDuree.setManaged(!userMode);
-        cbNiveau.setVisible(!userMode);
-        cbNiveau.setManaged(!userMode);
-        cbCategorie.setVisible(!userMode);
-        cbCategorie.setManaged(!userMode);
-        cbCertification.setVisible(!userMode);
-        cbCertification.setManaged(!userMode);
+        tfTitre.setVisible(false);
+        tfTitre.setManaged(false);
+        tfDescription.setVisible(false);
+        tfDescription.setManaged(false);
+        tfDuree.setVisible(false);
+        tfDuree.setManaged(false);
+        cbNiveau.setVisible(false);
+        cbNiveau.setManaged(false);
+        cbCategorie.setVisible(false);
+        cbCategorie.setManaged(false);
+        cbCertification.setVisible(false);
+        cbCertification.setManaged(false);
 
-        if (hbCrud != null) hbCrud.setVisible(!userMode);
-        if (hbCrud != null) hbCrud.setManaged(!userMode);
+        if (hbCrud != null) hbCrud.setVisible(false);
+        if (hbCrud != null) hbCrud.setManaged(false);
         if (btnPostuler != null) btnPostuler.setVisible(userMode);
         if (btnPostuler != null) btnPostuler.setManaged(userMode);
         if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setVisible(!userMode);
         if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setManaged(!userMode);
         if (tableFeedback != null) tableFeedback.setVisible(!userMode);
         if (tableFeedback != null) tableFeedback.setManaged(!userMode);
-        if (colPostulerAction != null) colPostulerAction.setVisible(userMode);
+        if (colPostulerAction != null) colPostulerAction.setVisible(true);
+        if (colDeleteAction != null) colDeleteAction.setVisible(!userMode);
+        if (tableFormation != null) tableFormation.refresh();
     }
     private void alert(String header, String content) {
         Alert a = new Alert(Alert.AlertType.ERROR);
@@ -431,4 +513,7 @@ public class FormationController implements Initializable {
         a.setContentText(content);
         a.showAndWait();
     }
+
+
+    private record FormData(String titre, String description, int duree, Niveau niveau, Categorie categorie, boolean certification) {}
 }

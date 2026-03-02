@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane prefWidth="1366" prefHeight="768"
             xmlns="http://javafx.com/javafx"
@@ -11,54 +14,31 @@
             stylesheets="@Style.css"
             styleClass="page-root">
 
-    <top>
-        <VBox spacing="10" styleClass="hero">
-            <padding><Insets top="28" right="30" bottom="24" left="30"/></padding>
-            <Label text="Système de Gestion des Formations" styleClass="hero-title"/>
-            <Label text="Choisissez votre espace d'accès puis ouvrez le module souhaité." styleClass="hero-subtitle"/>
-            <Label fx:id="lblSuggestion" styleClass="hero-chip" text="Suggestion externe: chargement..."/>
-            <Label fx:id="lblRole" styleClass="hero-chip" text="Rôle actuel: non défini"/>
+    <left>
+        <VBox spacing="12" prefWidth="280" styleClass="card">
+            <padding><Insets top="24" right="16" bottom="24" left="16"/></padding>
+            <Label text="Modules" styleClass="section-title"/>
+            <Label fx:id="lblRole" styleClass="hero-chip" text="Rôle actuel"/>
+
+            <Button fx:id="btnFormation" text="📘 Gestion Formations" onAction="#openFormation" maxWidth="1.7976931348623157E308"/>
+            <Button fx:id="btnApprenant" text="👨‍🎓 Gestion Apprenants" onAction="#openApprenant" maxWidth="1.7976931348623157E308"/>
+            <Button fx:id="btnDashboard" text="📊 Dashboard" onAction="#openDashboard" maxWidth="1.7976931348623157E308"/>
+
+            <Button text="⬅ Changer espace" onAction="#backToRoleSelection" styleClass="secondary-btn" maxWidth="1.7976931348623157E308"/>
+            <Button text="Quitter" onAction="#quitter" styleClass="danger-btn" maxWidth="1.7976931348623157E308"/>
         </VBox>
-    </top>
+    </left>
 
     <center>
-        <VBox spacing="14" alignment="CENTER">
-            <padding><Insets top="20" right="26" bottom="22" left="26"/></padding>
-
-            <HBox spacing="12" alignment="CENTER">
-                <Button text="Entrer comme ADMIN" onAction="#selectAdmin"/>
-                <Button text="Entrer comme USER" onAction="#selectUser" styleClass="secondary-btn"/>
-            </HBox>
-
-            <HBox spacing="18" alignment="CENTER">
-                <VBox spacing="10" styleClass="feature-card" prefWidth="280">
-                    <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
-                    <Label text="📘 Formations" styleClass="section-title"/>
-                    <Label wrapText="true" text="ADMIN: gestion complète. USER: consultation + postuler + feedback."/>
-                    <Button text="Ouvrir module" onAction="#openFormation"/>
-                </VBox>
-
-                <VBox spacing="10" styleClass="feature-card" prefWidth="280">
-                    <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
-                    <Label text="👨‍🎓 Apprenants" styleClass="section-title"/>
-                    <Label wrapText="true" text="Module réservé à l'ADMIN."/>
-                    <Button text="Ouvrir module" onAction="#openApprenant"/>
-                </VBox>
-
-                <VBox spacing="10" styleClass="feature-card" prefWidth="280">
-                    <padding><Insets top="20" right="18" bottom="20" left="18"/></padding>
-                    <Label text="📊 Dashboard" styleClass="section-title"/>
-                    <Label wrapText="true" text="Module réservé à l'ADMIN."/>
-                    <Button text="Ouvrir module" onAction="#openDashboard"/>
-                </VBox>
+        <VBox spacing="12" alignment="CENTER_LEFT">
+            <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+            <Label text="Bienvenue dans votre espace" styleClass="hero-title"/>
+            <Label fx:id="lblWelcome" text="Bienvenue" styleClass="page-title"/>
+            <Label fx:id="lblSuggestion" styleClass="hero-chip" text="Suggestion externe: chargement..."/>
+            <HBox spacing="10" styleClass="card">
+                <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+                <Label text="Utilisez le menu gauche pour naviguer entre les modules disponibles selon votre rôle." wrapText="true"/>
             </HBox>
         </VBox>
     </center>
-
-    <bottom>
-        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="bottom-actions">
-            <padding><Insets top="8" right="26" bottom="18" left="26"/></padding>
-            <Button text="Quitter" onAction="#quitter" styleClass="danger-btn"/>
-        </HBox>
-    </bottom>
 </BorderPane>

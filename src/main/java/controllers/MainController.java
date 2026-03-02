@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import services.ExternalPublicApiService;
@@ -15,40 +16,47 @@ import utils.SessionContext;
 
 public class MainController {
 
-    @FXML
-    private Label lblSuggestion;
-    @FXML
-    private Label lblRole;
+    @FXML private Label lblSuggestion;
+    @FXML private Label lblRole;
+    @FXML private Label lblWelcome;
+    @FXML private Button btnFormation;
+    @FXML private Button btnApprenant;
+    @FXML private Button btnDashboard;
 
     @FXML
     public void initialize() {
         ApiRuntime.ensureStarted();
         String suggestion = new ExternalPublicApiService().fetchSuggestionTitle();
         lblSuggestion.setText("Suggestion externe: " + suggestion);
-        lblRole.setText("Rôle actuel: non défini");
-    }
 
-    @FXML
-    public void selectAdmin() {
-        SessionContext.setCurrentRole(SessionContext.Role.ADMIN);
-        lblRole.setText("Rôle actuel: ADMIN");
-    }
+        if (SessionContext.getCurrentRole() == null) {
+            SessionContext.setCurrentRole(SessionContext.Role.USER);
+        }
 
-    @FXML
-    public void selectUser() {
-        SessionContext.setCurrentRole(SessionContext.Role.USER);
-        lblRole.setText("Rôle actuel: USER");
+        if (SessionContext.isAdmin()) {
+            lblRole.setText("Rôle actuel: ADMIN");
+            lblWelcome.setText("Espace Admin - Gestion complète des modules");
+            btnApprenant.setVisible(true);
+            btnApprenant.setManaged(true);
+            btnDashboard.setVisible(true);
+            btnDashboard.setManaged(true);
+        } else {
+            lblRole.setText("Rôle actuel: USER");
+            lblWelcome.setText("Espace User - Consultation formations et postulation");
+            btnApprenant.setVisible(false);
+            btnApprenant.setManaged(false);
+            btnDashboard.setVisible(false);
+            btnDashboard.setManaged(false);
+        }
     }
 
     @FXML
     public void openFormation(ActionEvent event) {
-        if (!ensureRoleSelected()) return;
         openInCurrentWindow(event, "/FormationView.fxml", "Gestion des Formations");
     }
 
     @FXML
     public void openApprenant(ActionEvent event) {
-        if (!ensureRoleSelected()) return;
         if (SessionContext.isUser()) {
             showWarning("Accès refusé", "L'espace USER ne peut pas accéder au module Apprenants.");
             return;
@@ -58,7 +66,6 @@ public class MainController {
 
     @FXML
     public void openDashboard(ActionEvent event) {
-        if (!ensureRoleSelected()) return;
         if (SessionContext.isUser()) {
             showWarning("Accès refusé", "L'espace USER ne peut pas accéder au dashboard admin.");
             return;
@@ -67,16 +74,14 @@ public class MainController {
     }
 
     @FXML
-    public void quitter(ActionEvent event) {
-        System.exit(0);
+    public void backToRoleSelection(ActionEvent event) {
+        SessionContext.setCurrentRole(null);
+        openInCurrentWindow(event, "/RoleSelectionView.fxml", "Choix de l'espace");
     }
 
-    private boolean ensureRoleSelected() {
-        if (SessionContext.getCurrentRole() == null) {
-            showWarning("Choix du rôle", "Veuillez choisir ADMIN ou USER avant d'entrer.");
-            return false;
-        }
-        return true;
+    @FXML
+    public void quitter(ActionEvent event) {
+        System.exit(0);
     }
 
     private void showWarning(String header, String content) {
