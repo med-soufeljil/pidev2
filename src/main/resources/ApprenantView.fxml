@@ -18,7 +18,7 @@
     <Label text="Gestion des Apprenants" styleClass="title-label"/>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+        <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn compact-btn"/>
         <TextField fx:id="tfRecherche" promptText="🔍 Rechercher un apprenant..." prefWidth="320"/>
         <Label text="Trier:"/>
         <ComboBox fx:id="cbSortBy" prefWidth="140"/>
@@ -28,9 +28,9 @@
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="Ajouter" onAction="#ajouter"/>
-        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn"/>
-        <Button text="Envoyer mail" onAction="#envoyerMail" styleClass="secondary-btn"/>
+        <Button text="Ajouter" onAction="#ajouter" styleClass="compact-btn"/>
+        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn compact-btn"/>
+        <Button text="Envoyer mail" onAction="#envoyerMail" styleClass="secondary-btn compact-btn"/>
     </HBox>
 
     <TableView fx:id="tableApprenant" prefHeight="520" VBox.vgrow="ALWAYS">

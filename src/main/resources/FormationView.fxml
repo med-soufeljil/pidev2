@@ -18,7 +18,7 @@
     <Label text="Gestion des Formations" styleClass="title-label"/>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+        <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn compact-btn"/>
         <TextField fx:id="tfRecherche" promptText="🔍 Rechercher une formation..." prefWidth="340"/>
         <Label text="Trier:"/>
         <ComboBox fx:id="cbSortBy" prefWidth="130"/>
@@ -28,10 +28,9 @@
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="Ajouter" onAction="#ajouter"/>
-        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn"/>
-        <Button text="Supprimer" onAction="#supprimer" styleClass="danger-btn"/>
-        <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn"/>
+        <Button text="Ajouter" onAction="#ajouter" styleClass="compact-btn"/>
+        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn compact-btn"/>
+        <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn compact-btn"/>
     </HBox>
 
     <SplitPane dividerPositions="0.73" VBox.vgrow="ALWAYS">

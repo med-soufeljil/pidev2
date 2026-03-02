@@ -397,3 +397,23 @@
 .table-row-cell:selected .postuler-row-btn .text {
     -fx-fill: white;
 }
+
+.compact-btn {
+    -fx-padding: 6 12;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 8;
+}
+
+.table-row-cell:selected .action-edit-btn {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e6f4ff;
+}
+
+.table-row-cell:selected .action-delete-btn {
+    -fx-background-color: linear-gradient(to bottom, #ff7a92, #eb4f67);
+}
+
+.table-row-cell:selected .action-icon-btn {
+    -fx-opacity: 1;
+}

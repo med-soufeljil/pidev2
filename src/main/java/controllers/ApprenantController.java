@@ -14,6 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -82,12 +84,13 @@ public class ApprenantController implements Initializable {
     private void initActionColumn() {
         colAction.setCellFactory(param -> new TableCell<>() {
             private final HBox box = new HBox(6);
-            private final Button editBtn = new Button("✏");
+            private final Button editBtn = new Button();
             private final Button delBtn = new Button("🗑");
             {
                 editBtn.getStyleClass().addAll("action-edit-btn", "action-icon-btn");
                 delBtn.getStyleClass().addAll("action-delete-btn", "action-icon-btn");
                 box.getStyleClass().add("action-column-box");
+                configureEditIcon(editBtn);
                 editBtn.setOnAction(e -> {
                     Apprenant a = getTableView().getItems().get(getIndex());
                     openFormDialog(a);
@@ -177,6 +180,19 @@ public class ApprenantController implements Initializable {
             refreshTable();
         } catch (Exception e) {
             alert("Formulaire", e.getMessage());
+        }
+    }
+
+
+    private void configureEditIcon(Button editBtn) {
+        try {
+            Image image = new Image("https://icon-icons.com/icons2/1154/PNG/512/1486564394-edit_81508.png", 14, 14, true, true);
+            ImageView view = new ImageView(image);
+            view.setFitWidth(14);
+            view.setFitHeight(14);
+            editBtn.setGraphic(view);
+        } catch (Exception ignored) {
+            editBtn.setText("✎");
         }
     }
 
