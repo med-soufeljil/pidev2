@@ -3,11 +3,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="14" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.ApprenantFormController" stylesheets="@Style.css" styleClass="page-root form-page">
+<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ApprenantFormController" stylesheets="@Style.css" styleClass="page-root">
     <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
     <Label text="Formulaire apprenant" styleClass="section-title"/>
-    <Label text="Complétez les informations pour finaliser la postulation." styleClass="hero-subtitle"/>
     <TextField fx:id="tfNom" promptText="Nom"/>
     <TextField fx:id="tfPrenom" promptText="Prénom"/>
     <TextField fx:id="tfEmail" promptText="Email"/>
@@ -17,8 +16,8 @@
         <DatePicker fx:id="dpFin" promptText="Date fin" HBox.hgrow="ALWAYS"/>
     </HBox>
     <ComboBox fx:id="cbFormation" promptText="Formation"/>
-    <HBox spacing="12" styleClass="form-actions">
-        <Button text="Enregistrer" onAction="#save" styleClass="form-primary-btn"/>
-        <Button text="Annuler" onAction="#cancel" styleClass="secondary-btn form-secondary-btn"/>
+    <HBox spacing="8">
+        <Button text="Enregistrer" onAction="#save"/>
+        <Button text="Annuler" onAction="#cancel" styleClass="secondary-btn"/>
     </HBox>
 </VBox>
