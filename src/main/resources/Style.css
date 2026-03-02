@@ -281,6 +281,7 @@
 
 .action-column-box {
     -fx-padding: 2 0 2 0;
+    -fx-alignment: CENTER;
 }
 
 .action-add-btn,
@@ -575,7 +576,8 @@
 }
 
 .main-root .sidebar-btn {
-    -fx-max-width: Infinity;
+    -fx-pref-width: 248;
+    -fx-max-width: 248;
     -fx-background-color: rgba(255, 255, 255, 0.08);
     -fx-background-radius: 10;
     -fx-padding: 12 14;
@@ -690,8 +692,7 @@
 
 
 .dashboard-action-btn {
-    -fx-min-width: 240;
-    -fx-pref-width: 240;
+    -fx-padding: 10 16;
 }
 
 /* ===== Global dark mode (requested palette) ===== */

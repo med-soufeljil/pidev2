@@ -59,15 +59,15 @@
                     <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                     <Label text="Actions" styleClass="panel-title"/>
                     <TextField fx:id="tfTech" promptText="java / spring / react ..."/>
-                    <Button text="Trouver Top 3" onAction="#findTopMarkets" styleClass="dashboard-action-btn" maxWidth="1.7976931348623157E308"/>
+                    <Button text="Trouver Top 3" onAction="#findTopMarkets" styleClass="dashboard-action-btn"/>
                     <HBox spacing="8">
                         <Label fx:id="lblMarket1" text="-" styleClass="market-chip"/>
                         <Label fx:id="lblMarket2" text="-" styleClass="market-chip"/>
                         <Label fx:id="lblMarket3" text="-" styleClass="market-chip"/>
                     </HBox>
-                    <Button text="Exporter rapport PDF" onAction="#exportPdf" styleClass="dashboard-action-btn" maxWidth="1.7976931348623157E308"/>
-                    <Button text="Exporter CSV" onAction="#exportCsv" styleClass="dashboard-action-btn" maxWidth="1.7976931348623157E308"/>
-                    <Button text="Rafraîchir dashboard" onAction="#refreshDashboard" styleClass="dashboard-action-btn" maxWidth="1.7976931348623157E308"/>
+                    <Button text="Exporter rapport PDF" onAction="#exportPdf" styleClass="dashboard-action-btn"/>
+                    <Button text="Exporter CSV" onAction="#exportCsv" styleClass="dashboard-action-btn"/>
+                    <Button text="Rafraîchir dashboard" onAction="#refreshDashboard" styleClass="dashboard-action-btn"/>
                 </VBox>
             </HBox>
         </VBox>

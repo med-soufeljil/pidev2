@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -147,6 +148,7 @@ public class FormationController implements Initializable {
                     box.getChildren().add(postulerBtn);
                 }
                 setGraphic(box);
+                setAlignment(Pos.CENTER);
             }
         });
     }
