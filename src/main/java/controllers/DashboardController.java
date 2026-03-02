@@ -8,7 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.chart.LineChart;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import services.DashboardService;
 import utils.ApiRuntime;
@@ -39,7 +40,7 @@ public class DashboardController {
     @FXML private Label lblAvgDuree;
     @FXML private Label lblCertif;
     @FXML private PieChart pieChart;
-    @FXML private LineChart<String, Number> lineChart;
+    @FXML private BarChart<String, Number> barFeedbacks;
     @FXML private PieChart pieSecondary;
 
     @FXML private TextField tfTech;
@@ -55,7 +56,14 @@ public class DashboardController {
         ApiRuntime.ensureStarted();
         Platform.runLater(() -> {
             Stage stage = getStage();
-            if (stage != null) stage.setMaximized(true);
+            if (stage != null) {
+                var bounds = Screen.getPrimary().getVisualBounds();
+                stage.setX(bounds.getMinX());
+                stage.setY(bounds.getMinY());
+                stage.setWidth(bounds.getWidth());
+                stage.setHeight(bounds.getHeight());
+                stage.setMaximized(true);
+            }
         });
         loadData();
     }
@@ -76,28 +84,20 @@ public class DashboardController {
                 ));
             }
 
-            XYChart.Series<String, Number> seriesTotal = new XYChart.Series<>();
-            seriesTotal.setName("Total formations");
-            seriesTotal.getData().add(new XYChart.Data<>("M-2", Math.max(1, stats.getTotalFormations() - 2)));
-            seriesTotal.getData().add(new XYChart.Data<>("M-1", Math.max(1, stats.getTotalFormations() - 1)));
-            seriesTotal.getData().add(new XYChart.Data<>("M", stats.getTotalFormations()));
-
-            XYChart.Series<String, Number> seriesCertif = new XYChart.Series<>();
-            seriesCertif.setName("Formations certifiées");
-            seriesCertif.getData().add(new XYChart.Data<>("M-2", Math.max(0, stats.getCertifiedFormations() - 1)));
-            seriesCertif.getData().add(new XYChart.Data<>("M-1", stats.getCertifiedFormations()));
-            seriesCertif.getData().add(new XYChart.Data<>("M", Math.min(stats.getTotalFormations(), stats.getCertifiedFormations() + 1)));
-
-            if (lineChart != null) {
-                lineChart.setData(FXCollections.observableArrayList(seriesTotal, seriesCertif));
+            XYChart.Series<String, Number> feedbackSeries = new XYChart.Series<>();
+            feedbackSeries.setName("Nombre de feedbacks");
+            var feedbacksByFormation = dashboardService.loadFeedbacksByFormation();
+            feedbacksByFormation.forEach((formationTitle, totalFeedbacks) ->
+                    feedbackSeries.getData().add(new XYChart.Data<>(formationTitle, totalFeedbacks)));
+            if (barFeedbacks != null) {
+                barFeedbacks.setData(FXCollections.observableArrayList(feedbackSeries));
             }
 
             if (pieSecondary != null) {
-                pieSecondary.setData(FXCollections.observableArrayList(
-                        new PieChart.Data("Formations", stats.getTotalFormations()),
-                        new PieChart.Data("Apprenants", stats.getTotalApprenants()),
-                        new PieChart.Data("Certifiées", stats.getCertifiedFormations())
-                ));
+                var statusCounts = dashboardService.loadFormationStatusCounts();
+                var statusData = FXCollections.<PieChart.Data>observableArrayList();
+                statusCounts.forEach((status, total) -> statusData.add(new PieChart.Data(status, total)));
+                pieSecondary.setData(statusData);
             }
 
         } catch (SQLException e) {

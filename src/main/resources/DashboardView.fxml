@@ -4,7 +4,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -66,15 +66,15 @@
             <HBox spacing="16">
                 <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
                     <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                    <Label text="Évolution des indicateurs" styleClass="panel-title"/>
-                    <LineChart fx:id="lineChart" prefHeight="260" legendVisible="true" animated="false">
+                    <Label text="Nombre de feedbacks par formation" styleClass="panel-title"/>
+                    <BarChart fx:id="barFeedbacks" prefHeight="260" legendVisible="true" animated="false">
                         <xAxis>
-                            <CategoryAxis label="Période"/>
+                            <CategoryAxis label="Formation"/>
                         </xAxis>
                         <yAxis>
-                            <NumberAxis label="Valeur"/>
+                            <NumberAxis label="Feedbacks"/>
                         </yAxis>
-                    </LineChart>
+                    </BarChart>
                 </VBox>
 
                 <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
