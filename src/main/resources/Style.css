@@ -230,3 +230,24 @@
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 10 12;
 }
+
+
+.market-chip {
+    -fx-background-color: #eaf6ff;
+    -fx-text-fill: #0a3d62;
+    -fx-padding: 6 10;
+    -fx-background-radius: 14;
+    -fx-border-color: #9edfff;
+    -fx-border-radius: 14;
+    -fx-font-weight: 800;
+}
+
+.bar-chart .axis .text {
+    -fx-fill: #111111;
+}
+
+.bar-chart .chart-title,
+.bar-chart .axis-label,
+.bar-chart .chart-legend .label {
+    -fx-text-fill: #111111;
+}

@@ -22,10 +22,10 @@
             <Label text="Dashboard décisionnel" styleClass="page-title"/>
 
             <HBox spacing="12">
-                <VBox styleClass="kpi-card" prefWidth="260"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations"/><Label fx:id="lblTotalFormations" styleClass="kpi-value"/></VBox>
-                <VBox styleClass="kpi-card" prefWidth="260"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Apprenants"/><Label fx:id="lblTotalApprenants" styleClass="kpi-value"/></VBox>
-                <VBox styleClass="kpi-card" prefWidth="260"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Durée moyenne"/><Label fx:id="lblAvgDuree" styleClass="kpi-value"/></VBox>
-                <VBox styleClass="kpi-card" prefWidth="260"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations certifiées"/><Label fx:id="lblCertif" styleClass="kpi-value"/></VBox>
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations"/><Label fx:id="lblTotalFormations" styleClass="kpi-value"/></VBox>
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Apprenants"/><Label fx:id="lblTotalApprenants" styleClass="kpi-value"/></VBox>
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Durée moyenne"/><Label fx:id="lblAvgDuree" styleClass="kpi-value"/></VBox>
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations certifiées"/><Label fx:id="lblCertif" styleClass="kpi-value"/></VBox>
             </HBox>
 
             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
@@ -36,8 +36,8 @@
             </HBox>
 
             <HBox spacing="14">
-                <PieChart fx:id="pieChart" title="Certifications" prefWidth="520" prefHeight="300"/>
-                <BarChart fx:id="barChart" title="Vue comparative" prefWidth="700" prefHeight="300">
+                <PieChart fx:id="pieChart" title="Certifications" prefWidth="460" prefHeight="260"/>
+                <BarChart fx:id="barChart" title="Vue comparative" prefWidth="620" prefHeight="260">
                     <xAxis><CategoryAxis/></xAxis>
                     <yAxis><NumberAxis/></yAxis>
                 </BarChart>
@@ -48,9 +48,9 @@
                 <Label text="Top markets (tech)" styleClass="section-title"/>
                 <TextField fx:id="tfTech" promptText="java / spring / react ..." prefWidth="280"/>
                 <Button text="Trouver Top 3" onAction="#findTopMarkets"/>
-                <Label fx:id="lblMarket1" text="-" styleClass="hero-chip"/>
-                <Label fx:id="lblMarket2" text="-" styleClass="hero-chip"/>
-                <Label fx:id="lblMarket3" text="-" styleClass="hero-chip"/>
+                <Label fx:id="lblMarket1" text="-" styleClass="market-chip"/>
+                <Label fx:id="lblMarket2" text="-" styleClass="market-chip"/>
+                <Label fx:id="lblMarket3" text="-" styleClass="market-chip"/>
             </HBox>
         </VBox>
     </content>
