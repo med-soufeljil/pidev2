@@ -69,6 +69,7 @@ public class ApprenantController implements Initializable {
             colStatut.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatut()));
             colFormation.setCellValueFactory(data -> new SimpleStringProperty(getTitreFormation(data.getValue().getId_formation())));
             initActionColumn();
+            tableApprenant.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
             refreshTable();
             applyPendingFormationSelection();

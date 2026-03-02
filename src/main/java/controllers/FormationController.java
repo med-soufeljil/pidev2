@@ -88,6 +88,7 @@ public class FormationController implements Initializable {
         colCategorie.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCategorie()));
         colCertif.setCellValueFactory(data -> new SimpleBooleanProperty(data.getValue().isCertification()));
         initActionColumn();
+        tableFormation.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         tfRecherche.textProperty().addListener((obs, o, n) -> applyFiltersAndSort());
         cbSortBy.valueProperty().addListener((obs, o, n) -> applyFiltersAndSort());
