@@ -10,12 +10,15 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -91,6 +94,7 @@ public class DashboardController {
                     feedbackSeries.getData().add(new XYChart.Data<>(formationTitle, totalFeedbacks)));
             if (barFeedbacks != null) {
                 barFeedbacks.setData(FXCollections.observableArrayList(feedbackSeries));
+                applyFeedbackBarLabels(feedbackSeries);
             }
 
             if (pieSecondary != null) {
@@ -103,6 +107,33 @@ public class DashboardController {
         } catch (SQLException e) {
             error("Chargement dashboard", e.getMessage());
         }
+    }
+
+
+    private void applyFeedbackBarLabels(XYChart.Series<String, Number> feedbackSeries) {
+        for (XYChart.Data<String, Number> data : feedbackSeries.getData()) {
+            if (data.getNode() != null) {
+                attachBarLabel(data, data.getNode());
+            }
+            data.nodeProperty().addListener((obs, oldNode, node) -> attachBarLabel(data, node));
+        }
+    }
+
+    private void attachBarLabel(XYChart.Data<String, Number> data, Node node) {
+        if (node == null) return;
+        String valueText = String.valueOf(data.getYValue().intValue());
+        Tooltip.install(node, new Tooltip(valueText + " feedback(s)"));
+        Text label = new Text(valueText);
+        label.getStyleClass().add("bar-value-label");
+        node.parentProperty().addListener((pObs, oldParent, newParent) -> {
+            if (newParent instanceof javafx.scene.Group group && !group.getChildren().contains(label)) {
+                group.getChildren().add(label);
+            }
+        });
+        node.boundsInParentProperty().addListener((bObs, oldBounds, bounds) -> {
+            label.setLayoutX(Math.round(bounds.getMinX() + bounds.getWidth() / 2 - 8));
+            label.setLayoutY(Math.round(bounds.getMinY() - 6));
+        });
     }
 
     @FXML

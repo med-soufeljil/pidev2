@@ -366,3 +366,9 @@
 .line-chart .chart-series-line {
     -fx-stroke-width: 2.4px;
 }
+
+.bar-value-label {
+    -fx-fill: #0a3d62;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+}

@@ -67,9 +67,9 @@
                 <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
                     <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                     <Label text="Nombre de feedbacks par formation" styleClass="panel-title"/>
-                    <BarChart fx:id="barFeedbacks" prefHeight="260" legendVisible="true" animated="false">
+                    <BarChart fx:id="barFeedbacks" prefHeight="300" legendVisible="true" animated="false" categoryGap="16" barGap="4">
                         <xAxis>
-                            <CategoryAxis label="Formation"/>
+                            <CategoryAxis label="Formation" tickLabelRotation="-25"/>
                         </xAxis>
                         <yAxis>
                             <NumberAxis label="Feedbacks"/>
