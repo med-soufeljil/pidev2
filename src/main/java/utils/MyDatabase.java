@@ -3,16 +3,7 @@ package utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-<<<<<<< HEAD
 import java.sql.Statement;
-
-public class MyDatabase {
-    private final String USER = "root";
-    private final String PASSWORD = "";
-    private final String URL = "jdbc:mysql://localhost:3306/pidev";
-    public Connection connection;
-    public static MyDatabase instance = new MyDatabase();
-=======
 
 public class MyDatabase {
 
@@ -21,12 +12,10 @@ public class MyDatabase {
     private final String PASSWORD = "";
     private Connection connection;
     private static MyDatabase instance;
->>>>>>> feature-mohamed
 
     private MyDatabase() {
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-<<<<<<< HEAD
             ensureSchema();
             System.out.println("Connected to database successfully");
         } catch (SQLException e) {
@@ -38,23 +27,12 @@ public class MyDatabase {
         if (instance == null) {
             instance = new MyDatabase();
         }
-=======
-            System.out.println("Connected");
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-    public static MyDatabase getInstance() {
-        if(instance == null)
-            instance = new MyDatabase();
->>>>>>> feature-mohamed
         return instance;
     }
 
     public Connection getConnection() {
         return connection;
     }
-<<<<<<< HEAD
 
     private void ensureSchema() {
         String create = "CREATE TABLE IF NOT EXISTS formation_feedback ("
@@ -77,6 +55,4 @@ public class MyDatabase {
             // compatibility with existing schema/user rights
         }
     }
-=======
->>>>>>> feature-mohamed
 }

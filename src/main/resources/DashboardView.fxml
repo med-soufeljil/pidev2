@@ -3,75 +3,69 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" fitToHeight="true" pannable="true"
-            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            stylesheets="@Style.css" fx:controller="controllers.DashboardController">
-    <content>
-        <VBox prefWidth="1366" minHeight="768" spacing="16" styleClass="page-root dashboard-root">
-            <padding><Insets top="18" right="20" bottom="20" left="20"/></padding>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.DashboardController"
+      spacing="16" styleClass="content-area" stylesheets="@style.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
-            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="top-bar">
-                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
-                <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
-                <VBox spacing="2">
-                    <Label text="Dashboard décisionnel" styleClass="page-title"/>
-                    <Label text="Vue globale des indicateurs et tendances de la plateforme" styleClass="hero-subtitle"/>
-                </VBox>
-            </HBox>
+    <Label text="Dashboard Exécutif" styleClass="title-label"/>
 
-            <HBox spacing="12">
-                <VBox styleClass="kpi-card dashboard-kpi" HBox.hgrow="ALWAYS"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations"/><Label fx:id="lblTotalFormations" styleClass="kpi-value"/></VBox>
-                <VBox styleClass="kpi-card dashboard-kpi" HBox.hgrow="ALWAYS"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Apprenants"/><Label fx:id="lblTotalApprenants" styleClass="kpi-value"/></VBox>
-                <VBox styleClass="kpi-card dashboard-kpi" HBox.hgrow="ALWAYS"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Durée moyenne"/><Label fx:id="lblAvgDuree" styleClass="kpi-value"/></VBox>
-                <VBox styleClass="kpi-card dashboard-kpi" HBox.hgrow="ALWAYS"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations certifiées"/><Label fx:id="lblCertif" styleClass="kpi-value"/></VBox>
-            </HBox>
-
-            <HBox spacing="14" alignment="TOP_LEFT">
-                <VBox spacing="10" styleClass="card chart-card" HBox.hgrow="ALWAYS">
-                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                    <Label text="Répartition certifications" styleClass="section-title"/>
-                    <PieChart fx:id="pieChart" title="Certifications" prefHeight="300"/>
-                </VBox>
-                <VBox spacing="10" styleClass="card chart-card" HBox.hgrow="ALWAYS">
-                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                    <Label text="Comparaison globale" styleClass="section-title"/>
-                    <BarChart fx:id="barChart" title="Vue comparative" prefHeight="300">
-                        <xAxis><CategoryAxis/></xAxis>
-                        <yAxis><NumberAxis/></yAxis>
-                    </BarChart>
-                </VBox>
-            </HBox>
-
-            <VBox spacing="10" styleClass="card chart-card">
-                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                <Label text="Tendance" styleClass="section-title"/>
-                <LineChart fx:id="lineChart" title="Évolution mensuelle" prefHeight="250">
-                    <xAxis><CategoryAxis/></xAxis>
-                    <yAxis><NumberAxis/></yAxis>
-                </LineChart>
-            </VBox>
-
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
-                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                <Label text="Top markets (tech)" styleClass="section-title"/>
-                <TextField fx:id="tfTech" promptText="java / spring / react ..." prefWidth="240"/>
-                <Button text="Trouver Top 3" onAction="#findTopMarkets"/>
-                <Label fx:id="lblMarket1" text="-" styleClass="market-chip"/>
-                <Label fx:id="lblMarket2" text="-" styleClass="market-chip"/>
-                <Label fx:id="lblMarket3" text="-" styleClass="market-chip"/>
-                <Button text="Export PDF (API)" onAction="#exportPdf"/>
-                <Button text="Export CSV" onAction="#exportCsv" styleClass="secondary-btn"/>
-            </HBox>
+    <HBox spacing="12">
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Candidats" styleClass="kpi-label"/>
+            <Label fx:id="lblCandidates" text="0" styleClass="kpi-number"/>
         </VBox>
-    </content>
-</ScrollPane>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Offres" styleClass="kpi-label"/>
+            <Label fx:id="lblOffers" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Recrutements" styleClass="kpi-label"/>
+            <Label fx:id="lblRecruitments" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Réunions" styleClass="kpi-label"/>
+            <Label fx:id="lblMeetings" text="0" styleClass="kpi-number"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="16">
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Statistique des offres par type" styleClass="panel-title"/>
+            <PieChart fx:id="pieOffresType" prefHeight="240" legendVisible="true"/>
+        </VBox>
+
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Applications par statut" styleClass="panel-title"/>
+            <PieChart fx:id="pieApplicationsStatut" prefHeight="240" legendVisible="true"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="16">
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Applications par offre" styleClass="panel-title"/>
+            <BarChart fx:id="barApplicationsByOffer" prefHeight="260" legendVisible="false" animated="false">
+                <xAxis>
+                    <CategoryAxis label="Offre"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Applications"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Actions" styleClass="panel-title"/>
+            <Button text="Exporter rapport PDF" onAction="#exportPdf"/>
+            <Button text="Rafraîchir dashboard" onAction="#refreshDashboard"/>
+        </VBox>
+    </HBox>
+</VBox>
