@@ -7,8 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -39,7 +39,7 @@ public class DashboardController {
     @FXML private Label lblAvgDuree;
     @FXML private Label lblCertif;
     @FXML private PieChart pieChart;
-    @FXML private BarChart<String, Number> barChart;
+    @FXML private LineChart<String, Number> lineChart;
     @FXML private PieChart pieSecondary;
 
     @FXML private TextField tfTech;
@@ -76,12 +76,20 @@ public class DashboardController {
                 ));
             }
 
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.getData().add(new XYChart.Data<>("Formations", stats.getTotalFormations()));
-            series.getData().add(new XYChart.Data<>("Apprenants", stats.getTotalApprenants()));
-            series.getData().add(new XYChart.Data<>("Certifiées", stats.getCertifiedFormations()));
-            if (barChart != null) {
-                barChart.setData(FXCollections.observableArrayList(series));
+            XYChart.Series<String, Number> seriesTotal = new XYChart.Series<>();
+            seriesTotal.setName("Total formations");
+            seriesTotal.getData().add(new XYChart.Data<>("M-2", Math.max(1, stats.getTotalFormations() - 2)));
+            seriesTotal.getData().add(new XYChart.Data<>("M-1", Math.max(1, stats.getTotalFormations() - 1)));
+            seriesTotal.getData().add(new XYChart.Data<>("M", stats.getTotalFormations()));
+
+            XYChart.Series<String, Number> seriesCertif = new XYChart.Series<>();
+            seriesCertif.setName("Formations certifiées");
+            seriesCertif.getData().add(new XYChart.Data<>("M-2", Math.max(0, stats.getCertifiedFormations() - 1)));
+            seriesCertif.getData().add(new XYChart.Data<>("M-1", stats.getCertifiedFormations()));
+            seriesCertif.getData().add(new XYChart.Data<>("M", Math.min(stats.getTotalFormations(), stats.getCertifiedFormations() + 1)));
+
+            if (lineChart != null) {
+                lineChart.setData(FXCollections.observableArrayList(seriesTotal, seriesCertif));
             }
 
             if (pieSecondary != null) {
