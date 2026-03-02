@@ -60,7 +60,7 @@ public class FeedbackFormController {
             conn.setRequestMethod("GET");
             try (InputStream in = conn.getInputStream()) {
                 String body = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-                return body.contains(""clean":true");
+                return body.contains("\"clean\":true");
             }
         } catch (Exception ignored) {
             return true;
