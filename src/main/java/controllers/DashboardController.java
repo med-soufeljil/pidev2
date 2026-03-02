@@ -1,6 +1,7 @@
 package controllers;
 
 import dto.DashboardStats;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,6 +52,10 @@ public class DashboardController {
     @FXML
     public void initialize() {
         ApiRuntime.ensureStarted();
+        Platform.runLater(() -> {
+            Stage stage = getStage();
+            if (stage != null) stage.setMaximized(true);
+        });
         loadData();
     }
 

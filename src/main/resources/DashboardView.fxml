@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" pannable="true"
+<ScrollPane fitToWidth="true" fitToHeight="true" pannable="true"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             stylesheets="@Style.css" fx:controller="controllers.DashboardController">
     <content>
-        <VBox prefWidth="1366" spacing="16" styleClass="page-root">
+        <VBox prefWidth="1366" prefHeight="768" minHeight="768" spacing="16" styleClass="page-root">
             <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
             <Label text="Dashboard décisionnel" styleClass="page-title"/>

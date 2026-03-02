@@ -269,3 +269,11 @@
 .chart-legend .label {
     -fx-text-fill: #111111;
 }
+
+
+.pie-chart .chart-pie-label,
+.pie-chart .chart-pie-label-line,
+.chart-pie-label {
+    -fx-fill: #111111;
+    -fx-stroke: #111111;
+}
