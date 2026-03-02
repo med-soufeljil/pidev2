@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import services.ApprenantService;
 import services.FormationService;
 import services.MailingApiService;
@@ -122,6 +123,9 @@ public class ApprenantController implements Initializable {
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
+            if (tableApprenant != null && tableApprenant.getScene() != null) {
+                stage.initOwner(tableApprenant.getScene().getWindow());
+            }
             stage.setScene(new Scene(root));
             stage.setTitle(initial == null ? "Ajouter apprenant" : "Modifier apprenant");
             stage.showAndWait();
@@ -133,9 +137,17 @@ public class ApprenantController implements Initializable {
                 sendRegistrationEmail(result);
                 if (SessionContext.isUser()) {
                     Parent rootBack = FXMLLoader.load(getClass().getResource("/FormationView.fxml"));
-                    Stage mainStage = (Stage) tableApprenant.getScene().getWindow();
-                    mainStage.setScene(new Scene(rootBack));
-                    mainStage.show();
+                    Stage mainStage = null;
+                    Window owner = stage.getOwner();
+                    if (owner instanceof Stage) {
+                        mainStage = (Stage) owner;
+                    } else if (tableApprenant != null && tableApprenant.getScene() != null) {
+                        mainStage = (Stage) tableApprenant.getScene().getWindow();
+                    }
+                    if (mainStage != null) {
+                        mainStage.setScene(new Scene(rootBack));
+                        mainStage.show();
+                    }
                     SessionContext.clearPendingFormation();
                     return;
                 }

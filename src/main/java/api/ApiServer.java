@@ -255,7 +255,7 @@ public class ApiServer {
         }
         Map<String, String> query = parseQuery(exchange.getRequestURI());
         String text = query.getOrDefault("text", "").toLowerCase();
-        List<String> banned = List.of("shit", "fuck", "bitch", "con", "merde", "pute", "salope");
+        List<String> banned = List.of("shit", "fuck", "fucking", "bitch", "asshole", "bastard", "con", "connard", "merde", "pute", "salope", "encule", "enculé", "fdp", "ta gueule");
         List<String> found = new ArrayList<>();
         for (String w : banned) {
             if (text.contains(w)) found.add(w);

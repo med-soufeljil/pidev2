@@ -37,11 +37,12 @@ public class FeedbackService {
     }
 
     public List<FormationFeedback> getByFormation(int formationId) throws SQLException {
-        String primarySql = "SELECT id, id_formation, author, rating, comment_text AS comment_value, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
-        String fallbackSql = "SELECT id, id_formation, author, rating, comment AS comment_value, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
+        String primarySql = "SELECT id, id_formation, author, rating, COALESCE(comment_text, comment) AS comment_value, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
+        String fallbackSql = "SELECT id, id_formation, author, rating, comment_text AS comment_value, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
+        String fallbackSql2 = "SELECT id, id_formation, author, rating, comment AS comment_value, created_at FROM formation_feedback WHERE id_formation=? ORDER BY created_at DESC";
 
         SQLException last = null;
-        for (String sql : new String[]{primarySql, fallbackSql}) {
+        for (String sql : new String[]{primarySql, fallbackSql, fallbackSql2}) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setInt(1, formationId);
                 try (ResultSet rs = ps.executeQuery()) {

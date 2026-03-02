@@ -251,6 +251,7 @@ public class FormationController implements Initializable {
             TableColumn<FormationFeedback, String> noteCol = new TableColumn<>("Note");
             noteCol.setCellValueFactory(d -> new SimpleStringProperty(stars(d.getValue().getRating()) + " (" + d.getValue().getRating() + "/5)"));
             TableColumn<FormationFeedback, String> commentaireCol = new TableColumn<>("Commentaire");
+            commentaireCol.setPrefWidth(360);
             commentaireCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getComment() == null ? "" : d.getValue().getComment()));
             TableColumn<FormationFeedback, String> dateCol = new TableColumn<>("Date");
             dateCol.setCellValueFactory(d -> new SimpleStringProperty(

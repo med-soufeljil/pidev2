@@ -5,6 +5,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -60,7 +61,15 @@ public class FeedbackFormController {
             conn.setRequestMethod("GET");
             try (InputStream in = conn.getInputStream()) {
                 String body = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-                return body.contains("\"clean\":true");
+                boolean clean = body.contains("\"clean\":true");
+                if (!clean) {
+                    Alert a = new Alert(Alert.AlertType.WARNING);
+                    a.setTitle("Modération");
+                    a.setHeaderText("Attention");
+                    a.setContentText("Votre commentaire contient des mots interdits (FR/EN). Merci de reformuler.");
+                    a.showAndWait();
+                }
+                return clean;
             }
         } catch (Exception ignored) {
             return true;
