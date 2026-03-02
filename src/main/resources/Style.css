@@ -251,3 +251,14 @@
 .bar-chart .chart-legend .label {
     -fx-text-fill: #111111;
 }
+
+
+.top-market-popup {
+    -fx-padding: 16;
+    -fx-min-width: 360;
+}
+
+.top-market-popup .label {
+    -fx-text-fill: #0a3d62;
+    -fx-font-weight: 700;
+}

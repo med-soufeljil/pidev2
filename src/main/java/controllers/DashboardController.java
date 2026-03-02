@@ -10,8 +10,11 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import services.DashboardService;
@@ -100,6 +103,7 @@ public class DashboardController {
             lblMarket1.setText(entries.size() > 0 ? entries.get(0) : "-");
             lblMarket2.setText(entries.size() > 1 ? entries.get(1) : "-");
             lblMarket3.setText(entries.size() > 2 ? entries.get(2) : "-");
+            showTopMarketsPopup(tech, entries);
         } catch (Exception e) {
             error("Top markets", e.getMessage());
         }
@@ -170,6 +174,23 @@ public class DashboardController {
         } catch (Exception e) {
             error("Navigation", e.getMessage());
         }
+    }
+
+    private void showTopMarketsPopup(String tech, List<String> entries) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Résultat Top Markets");
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/Style.css").toExternalForm());
+
+        VBox box = new VBox(8);
+        box.getStyleClass().addAll("card", "top-market-popup");
+        box.getChildren().add(new Label("Top 3 marchés pour: " + tech));
+        box.getChildren().add(new Label("1) " + (entries.size() > 0 ? entries.get(0) : "-")));
+        box.getChildren().add(new Label("2) " + (entries.size() > 1 ? entries.get(1) : "-")));
+        box.getChildren().add(new Label("3) " + (entries.size() > 2 ? entries.get(2) : "-")));
+
+        dialog.getDialogPane().setContent(box);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        dialog.showAndWait();
     }
 
     private Stage getStage() {
