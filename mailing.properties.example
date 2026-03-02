@@ -1,0 +1,11 @@
+# File path: /workspace/pidev/mailing.properties
+# Copy this file to mailing.properties and fill your real credentials
+# Token: use either mailersend.api.key or mailersend.token
+mailersend.token=mlsn_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Domain used to auto-build sender as noreply@<domain> if from.email is not provided
+mailersend.domain=test-r83ql3pyk6vgzw1j.mlsender.net
+
+# Optional explicit sender (must be verified on MailerSend)
+# mailersend.from.email=noreply@test-r83ql3pyk6vgzw1j.mlsender.net
+mailersend.from.name=PIDEV Formation

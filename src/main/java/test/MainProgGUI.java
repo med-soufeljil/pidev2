@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import utils.ApiRuntime;
 
 import java.io.IOException;
 
@@ -16,10 +17,12 @@ public class MainProgGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
+        ApiRuntime.ensureStarted();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/RoleSelectionView.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.setTitle("Workshop PIDEV");
         primaryStage.show();
     }

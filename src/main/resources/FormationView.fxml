@@ -1,40 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefWidth="800" prefHeight="550"
+<BorderPane prefWidth="1366" prefHeight="768"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.FormationController"
             stylesheets="@Style.css"
-            styleClass="root">
+            styleClass="page-root">
 
-    <VBox spacing="10" layoutX="20" layoutY="20" prefWidth="760">
-        <Label text="Gestion des Formations"/>
-        <Button text="⬅ Retour au menu principal" onAction="#retourMain"/>
-        <TextField fx:id="tfRecherche" promptText="🔍 Rechercher par titre..."/>
-        <TextField fx:id="tfTitre" promptText="Titre"/>
-        <TextField fx:id="tfDescription" promptText="Description"/>
-        <TextField fx:id="tfDuree" promptText="Durée (en heures)"/>
-        <ComboBox fx:id="cbNiveau" promptText="Niveau"/>
-        <ComboBox fx:id="cbCategorie" promptText="Catégorie"/>
-        <CheckBox fx:id="cbCertification" text="Certification"/>
-        <HBox spacing="10">
-            <Button text="Ajouter" onAction="#ajouter"/>
-            <Button text="Modifier" onAction="#modifier"/>
-            <Button text="Supprimer" onAction="#supprimer"/>
-            <Button text="Afficher" onAction="#afficher"/>
-        </HBox>
-        <TableView fx:id="tableFormation" prefHeight="250">
-            <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-                <TableColumn fx:id="colTitre" text="Titre" prefWidth="150"/>
-                <TableColumn fx:id="colDuree" text="Durée" prefWidth="80"/>
-                <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
-                <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
-                <TableColumn fx:id="colCertif" text="Certification" prefWidth="120"/>
-            </columns>
-        </TableView>
-    </VBox>
-</AnchorPane>
+    <top>
+        <VBox spacing="10" styleClass="top-bar">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            <Label text="Gestion avancée des formations" styleClass="page-title"/>
+            <HBox spacing="10">
+                <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+                <TextField fx:id="tfRecherche" promptText="Recherche multi-critères..." HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="cbSortBy" prefWidth="140"/>
+                <ComboBox fx:id="cbSortOrder" prefWidth="120"/>
+                <Button text="＋" onAction="#ajouter" styleClass="secondary-btn"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.67">
+            <VBox spacing="10" styleClass="card">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <Label text="Catalogue des formations" styleClass="section-title"/>
+                <TableView fx:id="tableFormation" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colTitre" text="Titre" prefWidth="220"/>
+                        <TableColumn fx:id="colDuree" text="Durée" prefWidth="90"/>
+                        <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
+                        <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
+                        <TableColumn fx:id="colCertif" text="Certif" prefWidth="90"/>
+                        <TableColumn fx:id="colPostulerAction" text="Action" prefWidth="170"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <VBox fx:id="boxEdition" spacing="12" styleClass="card">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <Label text="Feedbacks" styleClass="section-title"/>
+                <Label text="Note moyenne"/>
+                <Label fx:id="lblAverageRating" text="0.0 / 5" styleClass="kpi-value"/>
+                <Button text="Ajouter feedback" onAction="#addFeedback"/>
+                <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn"/>
+
+                <!-- Champs gardés pour compatibilité controller, masqués via controller -->
+                <TextField fx:id="tfTitre" visible="false" managed="false"/>
+                <TextArea fx:id="tfDescription" visible="false" managed="false"/>
+                <TextField fx:id="tfDuree" visible="false" managed="false"/>
+                <ComboBox fx:id="cbNiveau" visible="false" managed="false"/>
+                <ComboBox fx:id="cbCategorie" visible="false" managed="false"/>
+                <CheckBox fx:id="cbCertification" visible="false" managed="false"/>
+                <HBox fx:id="hbCrud" visible="false" managed="false"/>
+                <Button fx:id="btnPostuler" text="Postuler" onAction="#postuler" visible="false" managed="false"/>
+                <TextField fx:id="tfFeedbackAuteur" visible="false" managed="false"/>
+                <TextArea fx:id="taFeedback" visible="false" managed="false"/>
+                <Slider fx:id="slRating" visible="false" managed="false"/>
+                <Label fx:id="lblRatingValue" text="4.0" visible="false" managed="false"/>
+                <TableView fx:id="tableFeedback" visible="false" managed="false">
+                    <columns>
+                        <TableColumn fx:id="colFeedbackAuteur" text="Auteur"/>
+                        <TableColumn fx:id="colFeedbackNote" text="Note"/>
+                        <TableColumn fx:id="colFeedbackComment" text="Commentaire"/>
+                        <TableColumn fx:id="colFeedbackDate" text="Date"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>

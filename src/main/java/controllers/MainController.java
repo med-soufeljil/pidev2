@@ -1,79 +1,108 @@
-// Le package permet d’organiser les classes dans des dossiers logiques.
-// Ici, cette classe appartient au package "controllers".
 package controllers;
 
-// Importation de la classe ActionEvent qui représente un événement déclenché
-// par une action utilisateur (clic sur un bouton, menu, etc.).
 import javafx.event.ActionEvent;
-
-// Importation de l’annotation FXML qui permet de lier le contrôleur au fichier FXML.
 import javafx.fxml.FXML;
-
-// Importation de FXMLLoader qui sert à charger un fichier FXML.
 import javafx.fxml.FXMLLoader;
-
-// Importation de Parent, qui représente la racine (conteneur principal) d’une interface graphique.
+import javafx.scene.Node;
 import javafx.scene.Parent;
-
-// Importation de Scene, qui représente le contenu graphique d’une fenêtre.
 import javafx.scene.Scene;
-
-// Importation de Stage, qui représente une fenêtre JavaFX.
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import services.ExternalPublicApiService;
+import utils.ApiRuntime;
+import utils.SessionContext;
 
-// Déclaration de la classe MainController.
-// Cette classe est le contrôleur de l’interface principale (MainView.fxml par exemple).
 public class MainController {
 
-    // @FXML indique que cette méthode est liée à un élément du fichier FXML
-    // (par exemple un bouton avec onAction="#openFormation").
+    @FXML private Label lblSuggestion;
+    @FXML private Label lblRole;
+    @FXML private Label lblWelcome;
+    @FXML private Button btnFormation;
+    @FXML private Button btnApprenant;
+    @FXML private Button btnDashboard;
+
+    @FXML
+    public void initialize() {
+        ApiRuntime.ensureStarted();
+        String suggestion = new ExternalPublicApiService().fetchSuggestionTitle();
+        lblSuggestion.setText("Suggestion externe: " + suggestion);
+
+        if (SessionContext.getCurrentRole() == null) {
+            SessionContext.setCurrentRole(SessionContext.Role.USER);
+        }
+
+        if (SessionContext.isAdmin()) {
+            lblRole.setText("Rôle actuel: ADMIN");
+            lblWelcome.setText("Espace Admin - Gestion complète des modules");
+            btnApprenant.setVisible(true);
+            btnApprenant.setManaged(true);
+            btnDashboard.setVisible(true);
+            btnDashboard.setManaged(true);
+        } else {
+            lblRole.setText("Rôle actuel: USER");
+            lblWelcome.setText("Espace User - Consultation formations et postulation");
+            btnApprenant.setVisible(false);
+            btnApprenant.setManaged(false);
+            btnDashboard.setVisible(false);
+            btnDashboard.setManaged(false);
+        }
+    }
+
     @FXML
     public void openFormation(ActionEvent event) {
-        // Cette méthode ouvre une nouvelle fenêtre contenant FormationView.fxml
-        // avec le titre "Gestion des Formations".
-        openWindow("/FormationView.fxml", "Gestion des Formations");
+        openInCurrentWindow(event, "/FormationView.fxml", "Gestion des Formations");
     }
 
-    // @FXML indique que cette méthode est appelée depuis le fichier FXML.
     @FXML
     public void openApprenant(ActionEvent event) {
-        // Cette méthode ouvre une nouvelle fenêtre contenant ApprenantView.fxml
-        // avec le titre "Gestion des Apprenants".
-        openWindow("/ApprenantView.fxml", "Gestion des Apprenants");
+        if (SessionContext.isUser()) {
+            showWarning("Accès refusé", "L'espace USER ne peut pas accéder au module Apprenants.");
+            return;
+        }
+        openInCurrentWindow(event, "/ApprenantView.fxml", "Gestion des Apprenants");
     }
 
-    // @FXML indique que cette méthode est liée à un bouton "Quitter".
+    @FXML
+    public void openDashboard(ActionEvent event) {
+        if (SessionContext.isUser()) {
+            showWarning("Accès refusé", "L'espace USER ne peut pas accéder au dashboard admin.");
+            return;
+        }
+        openInCurrentWindow(event, "/DashboardView.fxml", "Dashboard avancé");
+    }
+
+    @FXML
+    public void backToRoleSelection(ActionEvent event) {
+        SessionContext.setCurrentRole(null);
+        openInCurrentWindow(event, "/RoleSelectionView.fxml", "Choix de l'espace");
+    }
+
     @FXML
     public void quitter(ActionEvent event) {
-        // System.exit(0) ferme complètement l’application Java.
-        // 0 signifie "arrêt normal du programme".
         System.exit(0);
     }
 
-    // Méthode privée (accessible uniquement dans cette classe)
-    // qui permet d’ouvrir une nouvelle fenêtre à partir d’un fichier FXML.
-    private void openWindow(String fxml, String title) {
+    private void showWarning(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void openInCurrentWindow(ActionEvent event, String fxml, String title) {
         try {
-            // FXMLLoader.load(...) charge le fichier FXML indiqué par son chemin.
-            // getClass().getResource(fxml) cherche le fichier dans les ressources du projet.
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
-
-            // Création d’un nouvel objet Stage (une nouvelle fenêtre).
-            Stage stage = new Stage();
-
-            // Définition du titre de la fenêtre (barre du haut).
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle(title);
-
-            // Création d’une scène (Scene) qui contient l’interface graphique "root".
             stage.setScene(new Scene(root));
-
-            // Affichage de la fenêtre à l’écran.
             stage.show();
-
         } catch (Exception e) {
-            // En cas d’erreur (fichier FXML introuvable, erreur de chargement, etc.),
-            // on affiche les détails de l’erreur dans la console.
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Navigation");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 }

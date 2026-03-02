@@ -1,339 +1,251 @@
 package controllers;
-// package : indique que cette classe appartient au dossier logique "controllers"
-// BUT : organiser le projet (MVC : Controller)
 
 import entities.Apprenant;
-// import : permet d'utiliser la classe Apprenant définie dans le package entities
-// BUT : manipuler des objets Apprenant (id, nom, prénom, formation)
-
 import entities.Formation;
-// import : permet d'utiliser la classe Formation
-// BUT : représenter une formation (id, titre…)
-
-import services.ApprenantService;
-// import : service qui contient les méthodes CRUD pour Apprenant
-// BUT : communiquer avec la base de données pour les apprenants
-
-import services.FormationService;
-// import : service pour gérer les formations dans la base
-
-import javafx.fxml.FXML;
-// import FXML : permet d’associer les éléments graphiques du FXML au code Java
-// BUT : faire le lien entre interface graphique et contrôleur
-
-import javafx.fxml.FXMLLoader;
-// FXMLLoader : sert à charger un fichier FXML
-// BUT : changer de page (scène)
-
-import javafx.fxml.Initializable;
-// Initializable : interface JavaFX
-// BUT : forcer l’existence de la méthode initialize()
-
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-// FXCollections : outils pour créer des listes observables
-// BUT : permettre la mise à jour automatique du TableView
-
 import javafx.collections.transformation.FilteredList;
-// FilteredList : liste filtrable
-// BUT : permettre la recherche dynamique
-
-import javafx.scene.control.*;
-// import des composants graphiques (TextField, TableView, ComboBox, etc.)
-
-import javafx.scene.input.KeyEvent;
-// KeyEvent : événement clavier
-// BUT : détecter la saisie dans le champ de recherche
-
+import javafx.collections.transformation.SortedList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-// Parent : noeud racine d’une scène JavaFX
-
 import javafx.scene.Scene;
-// Scene : représente le contenu d’une fenêtre
-
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-// Stage : représente la fenêtre principale
+import javafx.stage.Window;
+import services.ApprenantService;
+import services.FormationService;
+import services.MailingApiService;
+import utils.SessionContext;
 
 import java.net.URL;
-// URL : utilisé par initialize()
-
 import java.sql.SQLException;
-// SQLException : erreur liée à la base de données
-
+import java.util.Comparator;
 import java.util.List;
-// List : collection d’objets
-
 import java.util.ResourceBundle;
-// ResourceBundle : ressources (langue, config)
 
 public class ApprenantController implements Initializable {
-// public : accessible partout
-// class : déclaration de classe
-// implements Initializable : oblige à définir initialize()
-// BUT : cette classe est le contrôleur de l’interface des apprenants
 
-    @FXML private TextField tfNom, tfPrenom, tfRecherche;
-    // @FXML : lié aux champs du fichier FXML
-    // TextField : champ de saisie
-    // BUT : récupérer le nom, prénom et texte de recherche
-
-    @FXML private ComboBox<Formation> cbFormation;
-    // ComboBox : liste déroulante
-    // BUT : choisir une formation pour l’apprenant
+    @FXML private TextField tfRecherche;
+    @FXML private ComboBox<String> cbSortBy;
+    @FXML private ComboBox<String> cbSortOrder;
 
     @FXML private TableView<Apprenant> tableApprenant;
-    // TableView : tableau graphique
-    // BUT : afficher la liste des apprenants
-
     @FXML private TableColumn<Apprenant, Integer> colId;
-    // TableColumn : colonne du tableau
-    // BUT : afficher l’id de l’apprenant
-
     @FXML private TableColumn<Apprenant, String> colNom;
-    // BUT : afficher le nom
-
     @FXML private TableColumn<Apprenant, String> colPrenom;
-    // BUT : afficher le prénom
-
+    @FXML private TableColumn<Apprenant, String> colEmail;
+    @FXML private TableColumn<Apprenant, String> colStatut;
     @FXML private TableColumn<Apprenant, String> colFormation;
-    // BUT : afficher le titre de la formation
+    @FXML private TableColumn<Apprenant, Void> colAction;
 
-    private ApprenantService service = new ApprenantService();
-    // new : création d’un objet
-    // BUT : accéder aux méthodes ajouter, modifier, supprimer, récupérer
-
-    private FormationService formationService = new FormationService();
-    // BUT : accéder aux formations depuis la base
-
+    private final ApprenantService service = new ApprenantService();
+    private final FormationService formationService = new FormationService();
+    private final MailingApiService mailingApiService = new MailingApiService();
     private FilteredList<Apprenant> filteredList;
-    // FilteredList : liste filtrable
-    // BUT : permettre la recherche
-
     private List<Formation> formations;
-    // List : liste normale
-    // BUT : stocker les formations récupérées
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // initialize : exécutée automatiquement au chargement du FXML
-        // BUT : initialiser la ComboBox, la TableView et les données
-
         try {
             formations = formationService.recuperer();
-            // BUT : récupérer les formations depuis la base
+            cbSortBy.setItems(FXCollections.observableArrayList("Nom", "Prénom", "Statut"));
+            cbSortBy.setValue("Nom");
+            cbSortOrder.setItems(FXCollections.observableArrayList("Asc", "Desc"));
+            cbSortOrder.setValue("Asc");
 
-            cbFormation.setItems(FXCollections.observableArrayList(formations));
-            // BUT : afficher les formations dans la ComboBox
+            colId.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdApprenant()).asObject());
+            colNom.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNom()));
+            colPrenom.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPrenom()));
+            colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
+            colStatut.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatut()));
+            colFormation.setCellValueFactory(data -> new SimpleStringProperty(getTitreFormation(data.getValue().getId_formation())));
+            initActionColumn();
 
-            cbFormation.setConverter(new javafx.util.StringConverter<Formation>() {
-                // BUT : afficher uniquement le titre de la formation dans la ComboBox
-
-                @Override
-                public String toString(Formation f) {
-                    // BUT : transformer un objet Formation en texte
-                    return f != null ? f.getTitre() : "";
-                }
-
-                @Override
-                public Formation fromString(String string) {
-                    // BUT : retrouver l’objet Formation correspondant au texte affiché
-                    return cbFormation.getItems().stream()
-                            .filter(f -> f.getTitre().equals(string))
-                            .findFirst()
-                            .orElse(null);
-                }
-            });
-
-            colId.setCellValueFactory(data ->
-                    new javafx.beans.property.SimpleIntegerProperty(
-                            data.getValue().getIdApprenant()
-                    ).asObject());
-            // BUT : afficher l’id dans la colonne
-
-            colNom.setCellValueFactory(data ->
-                    new javafx.beans.property.SimpleStringProperty(
-                            data.getValue().getNom()
-                    ));
-            // BUT : afficher le nom
-
-            colPrenom.setCellValueFactory(data ->
-                    new javafx.beans.property.SimpleStringProperty(
-                            data.getValue().getPrenom()
-                    ));
-            // BUT : afficher le prénom
-
-            colFormation.setCellValueFactory(data ->
-                    new javafx.beans.property.SimpleStringProperty(
-                            getTitreFormation(data.getValue().getId_formation())
-                    )
-            );
-            // BUT : afficher le nom de la formation au lieu de son id
-
-            afficher();
-            // BUT : charger les apprenants dans la table
-
-            tableApprenant.getSelectionModel().selectedItemProperty()
-                    .addListener((obs, oldSel, newSel) -> {
-                        // BUT : détecter la sélection d’une ligne
-
-                        if (newSel != null) {
-                            tfNom.setText(newSel.getNom());
-                            // BUT : remplir le champ nom
-
-                            tfPrenom.setText(newSel.getPrenom());
-                            // BUT : remplir le champ prénom
-
-                            cbFormation.getItems().stream()
-                                    .filter(f -> f.getId_formation() == newSel.getId_formation())
-                                    .findFirst()
-                                    .ifPresent(cbFormation::setValue);
-                            // BUT : sélectionner la formation correspondante
-                        }
-                    });
+            refreshTable();
+            applyPendingFormationSelection();
+            tfRecherche.textProperty().addListener((obs, o, n) -> applyFilterSort());
+            cbSortBy.valueProperty().addListener((obs, o, n) -> applyFilterSort());
+            cbSortOrder.valueProperty().addListener((obs, o, n) -> applyFilterSort());
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            // BUT : afficher l’erreur si problème DB
+            alert("Init", e.getMessage());
         }
     }
 
-    private String getTitreFormation(int idFormation) {
-        // BUT : convertir un id de formation en titre
+    private void initActionColumn() {
+        colAction.setCellFactory(param -> new TableCell<>() {
+            private final HBox box = new HBox(6);
+            private final Button editBtn = new Button("✎");
+            private final Button delBtn = new Button("🗑");
+            {
+                editBtn.getStyleClass().addAll("action-edit-btn", "action-icon-btn");
+                delBtn.getStyleClass().addAll("action-delete-btn", "action-icon-btn");
+                box.getStyleClass().add("action-column-box");
+                editBtn.setOnAction(e -> {
+                    Apprenant a = getTableView().getItems().get(getIndex());
+                    openFormDialog(a);
+                });
+                delBtn.setOnAction(e -> {
+                    Apprenant a = getTableView().getItems().get(getIndex());
+                    try { service.supprimer(a.getIdApprenant()); refreshTable(); } catch (SQLException ex) { alert("Suppression", ex.getMessage()); }
+                });
+                box.getChildren().addAll(editBtn, delBtn);
+            }
 
-        return formations.stream()
-                .filter(f -> f.getId_formation() == idFormation)
-                .map(Formation::getTitre)
-                .findFirst()
-                .orElse("N/A");
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : box);
+            }
+        });
     }
 
     @FXML
     public void ajouter() {
-        // BUT : ajouter un apprenant dans la base
-
-        try {
-            Formation f = cbFormation.getValue();
-            // BUT : récupérer la formation choisie
-
-            if (f == null) return;
-            // BUT : empêcher l’ajout sans formation
-
-            Apprenant a = new Apprenant();
-            // BUT : créer un nouvel objet Apprenant
-
-            a.setNom(tfNom.getText());
-            // BUT : affecter le nom
-
-            a.setPrenom(tfPrenom.getText());
-            // BUT : affecter le prénom
-
-            a.setId_formation(f.getId_formation());
-            // BUT : affecter la formation
-
-            service.ajouter(a);
-            // BUT : enregistrer dans la base
-
-            afficher();
-            // BUT : rafraîchir le tableau
-
-            clearFields();
-            // BUT : vider les champs
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        openFormDialog(null);
     }
 
-    @FXML
-    public void modifier() {
-        // BUT : modifier l’apprenant sélectionné
-
+    private void openFormDialog(Apprenant initial) {
         try {
-            Apprenant a = tableApprenant.getSelectionModel().getSelectedItem();
-            Formation f = cbFormation.getValue();
-
-            if (a != null && f != null) {
-                a.setNom(tfNom.getText());
-                a.setPrenom(tfPrenom.getText());
-                a.setId_formation(f.getId_formation());
-
-                service.modifier(a);
-                // BUT : mettre à jour dans la base
-
-                afficher();
-                // BUT : rafraîchir le tableau
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ApprenantFormView.fxml"));
+            Parent root = loader.load();
+            ApprenantFormController c = loader.getController();
+            c.setFormations(formations);
+            c.setInitial(initial);
+            if (initial == null && SessionContext.hasPendingFormation()) {
+                c.setPendingFormationId(SessionContext.getPendingFormationId());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    @FXML
-    public void supprimer() {
-        // BUT : supprimer l’apprenant sélectionné
-
-        try {
-            Apprenant a = tableApprenant.getSelectionModel().getSelectedItem();
-
-            if (a != null) {
-                service.supprimer(a.getIdApprenant());
-                // BUT : supprimer de la base
-
-                afficher();
-                // BUT : rafraîchir le tableau
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            if (tableApprenant != null && tableApprenant.getScene() != null) {
+                stage.initOwner(tableApprenant.getScene().getWindow());
             }
+            stage.setScene(new Scene(root));
+            stage.setTitle(initial == null ? "Ajouter apprenant" : "Modifier apprenant");
+            stage.showAndWait();
+
+            Apprenant result = c.getResult();
+            if (result == null) return;
+            if (initial == null) {
+                service.ajouter(result);
+                sendRegistrationEmail(result);
+                if (SessionContext.isUser()) {
+                    Parent rootBack = FXMLLoader.load(getClass().getResource("/FormationView.fxml"));
+                    Stage mainStage = null;
+                    Window owner = stage.getOwner();
+                    if (owner instanceof Stage) {
+                        mainStage = (Stage) owner;
+                    } else if (tableApprenant != null && tableApprenant.getScene() != null) {
+                        mainStage = (Stage) tableApprenant.getScene().getWindow();
+                    }
+                    if (mainStage != null) {
+                        mainStage.setScene(new Scene(rootBack));
+                        mainStage.show();
+                    }
+                    SessionContext.clearPendingFormation();
+                    return;
+                }
+            } else {
+                initial.setNom(result.getNom());
+                initial.setPrenom(result.getPrenom());
+                initial.setEmail(result.getEmail());
+                initial.setStatut(result.getStatut());
+                initial.setDateDebut(result.getDateDebut());
+                initial.setDateFin(result.getDateFin());
+                initial.setId_formation(result.getId_formation());
+                service.modifier(initial);
+            }
+            refreshTable();
         } catch (Exception e) {
-            e.printStackTrace();
+            alert("Formulaire", e.getMessage());
         }
     }
 
     @FXML
-    public void filtrer(KeyEvent event) {
-        // BUT : filtrer les apprenants selon la recherche
-
-        if (filteredList != null) {
-            String text = tfRecherche.getText().toLowerCase();
-
-            filteredList.setPredicate(a ->
-                    a.getNom().toLowerCase().contains(text) ||
-                            a.getPrenom().toLowerCase().contains(text) ||
-                            getTitreFormation(a.getId_formation()).toLowerCase().contains(text)
-            );
-            // BUT : afficher seulement les apprenants correspondants
-        }
+    public void envoyerMail() {
+        Apprenant selected = tableApprenant.getSelectionModel().getSelectedItem();
+        if (selected == null) { alert("Mail", "Sélectionnez un apprenant."); return; }
+        Formation formation = formations.stream().filter(f -> f.getId_formation() == selected.getId_formation()).findFirst().orElse(null);
+        String formationTitle = formation != null ? formation.getTitre() : "Formation";
+        boolean sent = mailingApiService.sendRegistrationEmail(selected.getEmail(), selected.getPrenom() + " " + selected.getNom(), formationTitle);
+        Alert info = new Alert(sent ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING);
+        info.setHeaderText(sent ? "Email envoyé" : "Email non envoyé");
+        info.setContentText(sent ? "Mail envoyé avec succès." : "Echec envoi: " + mailingApiService.getLastError());
+        info.showAndWait();
     }
 
     @FXML
     public void retourMain() {
-        // BUT : revenir à la fenêtre principale
-
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
-            Stage stage = (Stage) tfNom.getScene().getWindow();
+            Stage stage = (Stage) tableApprenant.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            alert("Navigation", e.getMessage());
         }
     }
 
-    private void afficher() throws SQLException {
-        // BUT : charger les apprenants depuis la base et les afficher
-
-        List<Apprenant> apprenants = service.recuperer();
-
-        filteredList = new FilteredList<>(
-                FXCollections.observableArrayList(apprenants),
-                p -> true
-        );
-
-        tableApprenant.setItems(filteredList);
+    private void refreshTable() {
+        try {
+            filteredList = new FilteredList<>(FXCollections.observableArrayList(service.recuperer()), p -> true);
+            applyFilterSort();
+        } catch (SQLException e) {
+            alert("Chargement", e.getMessage());
+        }
     }
 
-    private void clearFields() {
-        // BUT : vider les champs de saisie
+    private void applyFilterSort() {
+        if (filteredList == null) return;
+        String text = tfRecherche.getText() == null ? "" : tfRecherche.getText().toLowerCase();
+        filteredList.setPredicate(a -> text.isBlank()
+                || safe(a.getNom()).contains(text)
+                || safe(a.getPrenom()).contains(text)
+                || safe(a.getEmail()).contains(text)
+                || safe(a.getStatut()).contains(text)
+                || getTitreFormation(a.getId_formation()).toLowerCase().contains(text));
 
-        tfNom.clear();
-        tfPrenom.clear();
-        cbFormation.setValue(null);
+        Comparator<Apprenant> comparator = switch (cbSortBy.getValue()) {
+            case "Prénom" -> Comparator.comparing(a -> safe(a.getPrenom()));
+            case "Statut" -> Comparator.comparing(a -> safe(a.getStatut()));
+            default -> Comparator.comparing(a -> safe(a.getNom()));
+        };
+        if ("Desc".equals(cbSortOrder.getValue())) comparator = comparator.reversed();
+
+        SortedList<Apprenant> sorted = new SortedList<>(filteredList);
+        sorted.setComparator(comparator);
+        tableApprenant.setItems(sorted);
+    }
+
+    private void applyPendingFormationSelection() {
+        if (!SessionContext.hasPendingFormation()) return;
+        openFormDialog(null);
+        SessionContext.clearPendingFormation();
+    }
+
+    private String safe(String s) { return s == null ? "" : s.toLowerCase(); }
+
+    private String getTitreFormation(int idFormation) {
+        return formations.stream().filter(f -> f.getId_formation() == idFormation).map(Formation::getTitre).findFirst().orElse("N/A");
+    }
+
+    private void sendRegistrationEmail(Apprenant apprenant) {
+        Formation formation = formations.stream().filter(f -> f.getId_formation() == apprenant.getId_formation()).findFirst().orElse(null);
+        String formationTitle = formation != null ? formation.getTitre() : "Formation";
+        mailingApiService.sendRegistrationEmail(apprenant.getEmail(), apprenant.getPrenom() + " " + apprenant.getNom(), formationTitle);
+    }
+
+    private void alert(String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Gestion Apprenants");
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

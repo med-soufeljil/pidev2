@@ -1,361 +1,344 @@
 package controllers;
-// package : indique que cette classe appartient au package "controllers"
-// BUT : organiser le projet selon l’architecture MVC (Controller)
 
 import entities.Categorie;
-// import : permet d’utiliser la classe Categorie (enum ou entité)
-
 import entities.Formation;
-// import : permet d’utiliser la classe Formation (objet métier)
-
+import entities.FormationFeedback;
 import entities.Niveau;
-// import : permet d’utiliser la classe Niveau (enum)
-
 import javafx.beans.property.SimpleBooleanProperty;
-// SimpleBooleanProperty : propriété observable pour les booléens (TableView)
-
 import javafx.beans.property.SimpleIntegerProperty;
-// SimpleIntegerProperty : propriété observable pour les entiers
-
 import javafx.beans.property.SimpleObjectProperty;
-// SimpleObjectProperty : propriété observable pour les objets (Niveau, Categorie)
-
 import javafx.beans.property.SimpleStringProperty;
-// SimpleStringProperty : propriété observable pour les chaînes de caractères
-
 import javafx.collections.FXCollections;
-// FXCollections : utilitaires pour créer des listes observables JavaFX
-
 import javafx.collections.transformation.FilteredList;
-// FilteredList : liste qui permet le filtrage (recherche)
-
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-// @FXML : relie les composants du fichier FXML au contrôleur Java
-
 import javafx.fxml.FXMLLoader;
-// FXMLLoader : sert à charger un fichier FXML (changer d’écran)
-
 import javafx.fxml.Initializable;
-// Initializable : interface qui impose la méthode initialize()
-
 import javafx.scene.Parent;
-// Parent : nœud racine d’une scène JavaFX
-
 import javafx.scene.Scene;
-// Scene : représente le contenu d’une fenêtre
-
 import javafx.scene.control.*;
-// TextField, ComboBox, TableView, TableColumn, CheckBox, Alert…
-
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-// Stage : représente une fenêtre
-
+import services.FeedbackService;
 import services.FormationService;
-// FormationService : service qui gère la base de données pour Formation
+import utils.SessionContext;
 
 import java.net.URL;
-// URL : utilisé par initialize()
-
 import java.sql.SQLException;
-// SQLException : exception liée à la base de données
-
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.ResourceBundle;
-// ResourceBundle : ressources (langue, configuration)
 
 public class FormationController implements Initializable {
-// public : accessible depuis tout le projet
-// class : déclaration de la classe
-// implements Initializable : oblige à définir initialize()
-// BUT : cette classe est le contrôleur de l’interface Formation
 
     @FXML private TextField tfRecherche;
-    // Champ de recherche
+    @FXML private ComboBox<String> cbSortBy;
+    @FXML private ComboBox<String> cbSortOrder;
 
-    @FXML private TextField tfTitre, tfDescription, tfDuree;
-    // Champs pour saisir titre, description et durée
-
+    @FXML private TextField tfTitre, tfDuree;
+    @FXML private TextArea tfDescription;
     @FXML private ComboBox<Niveau> cbNiveau;
-    // ComboBox pour choisir le niveau
-
     @FXML private ComboBox<Categorie> cbCategorie;
-    // ComboBox pour choisir la catégorie
-
     @FXML private CheckBox cbCertification;
-    // CheckBox pour indiquer si la formation est certifiante
 
     @FXML private TableView<Formation> tableFormation;
-    // TableView qui affiche les formations
-
     @FXML private TableColumn<Formation, Integer> colId;
-    // Colonne pour l’id
-
     @FXML private TableColumn<Formation, String> colTitre;
-    // Colonne pour le titre
-
     @FXML private TableColumn<Formation, Integer> colDuree;
-    // Colonne pour la durée
-
     @FXML private TableColumn<Formation, Niveau> colNiveau;
-    // Colonne pour le niveau
-
     @FXML private TableColumn<Formation, Categorie> colCategorie;
-    // Colonne pour la catégorie
-
     @FXML private TableColumn<Formation, Boolean> colCertif;
-    // Colonne pour la certification (true/false)
+    @FXML private TableColumn<Formation, Void> colPostulerAction;
 
-    private FormationService service = new FormationService();
-    // new : création d’un objet
-    // BUT : accéder aux méthodes ajouter, modifier, supprimer, récupérer
+    @FXML private VBox boxEdition;
+    @FXML private Button btnPostuler;
+    @FXML private Button btnAfficherFeedbacks;
 
+    @FXML private TextField tfFeedbackAuteur;
+    @FXML private TextArea taFeedback;
+    @FXML private Slider slRating;
+    @FXML private Label lblRatingValue;
+    @FXML private Label lblAverageRating;
+    @FXML private TableView<FormationFeedback> tableFeedback;
+    @FXML private TableColumn<FormationFeedback, String> colFeedbackAuteur;
+    @FXML private TableColumn<FormationFeedback, Integer> colFeedbackNote;
+    @FXML private TableColumn<FormationFeedback, String> colFeedbackComment;
+    @FXML private TableColumn<FormationFeedback, String> colFeedbackDate;
+
+    private final FormationService service = new FormationService();
+    private final FeedbackService feedbackService = new FeedbackService();
     private FilteredList<Formation> filteredData;
-    // Liste filtrable
-    // BUT : permettre la recherche dynamique
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // initialize : exécutée automatiquement au chargement du FXML
-        // BUT : initialiser ComboBox, TableView et données
+        cbSortBy.setItems(FXCollections.observableArrayList("Titre", "Durée", "Niveau"));
+        cbSortBy.setValue("Titre");
+        cbSortOrder.setItems(FXCollections.observableArrayList("Asc", "Desc"));
+        cbSortOrder.setValue("Asc");
 
-        cbNiveau.setItems(FXCollections.observableArrayList(Niveau.values()));
-        // BUT : remplir la ComboBox Niveau avec les valeurs de l’enum Niveau
+        colId.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId_formation()).asObject());
+        colTitre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTitre()));
+        colDuree.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getDuree()).asObject());
+        colNiveau.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getNiveau()));
+        colCategorie.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCategorie()));
+        colCertif.setCellValueFactory(data -> new SimpleBooleanProperty(data.getValue().isCertification()));
+        initActionColumn();
 
-        cbCategorie.setItems(FXCollections.observableArrayList(Categorie.values()));
-        // BUT : remplir la ComboBox Catégorie avec les valeurs de l’enum Categorie
-
-        colId.setCellValueFactory(data ->
-                new SimpleIntegerProperty(data.getValue().getId_formation()).asObject());
-        // BUT : afficher l’id dans la colonne
-
-        colTitre.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getTitre()));
-        // BUT : afficher le titre
-
-        colDuree.setCellValueFactory(data ->
-                new SimpleIntegerProperty(data.getValue().getDuree()).asObject());
-        // BUT : afficher la durée
-
-        colNiveau.setCellValueFactory(data ->
-                new SimpleObjectProperty<>(data.getValue().getNiveau()));
-        // BUT : afficher le niveau
-
-        colCategorie.setCellValueFactory(data ->
-                new SimpleObjectProperty<>(data.getValue().getCategorie()));
-        // BUT : afficher la catégorie
-
-        colCertif.setCellValueFactory(data ->
-                new SimpleBooleanProperty(data.getValue().isCertification()));
-        // BUT : afficher true/false pour certification
-
-        tableFormation.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
-            // BUT : détecter la sélection d’une ligne du tableau
-
-            if (newSel != null) remplirChamps(newSel);
-            // BUT : remplir les champs du formulaire avec les données sélectionnées
+        tfRecherche.textProperty().addListener((obs, o, n) -> applyFiltersAndSort());
+        cbSortBy.valueProperty().addListener((obs, o, n) -> applyFiltersAndSort());
+        cbSortOrder.valueProperty().addListener((obs, o, n) -> applyFiltersAndSort());
+        tableFormation.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
+            if (n != null) {
+                try {
+                    lblAverageRating.setText(String.format("%.1f / 5", feedbackService.getAverageRating(n.getId_formation())));
+                } catch (SQLException ignored) {}
+            }
         });
 
         afficher();
-        // BUT : charger les formations dans le tableau
-
-        tfRecherche.textProperty().addListener((obs, oldVal, newVal) -> filtrerTable(newVal));
-        // BUT : filtrer la table quand on tape dans la recherche
+        applyRolePermissions();
     }
 
-    // ---------------- CRUD ----------------
+    private void initActionColumn() {
+        colPostulerAction.setCellFactory(param -> new TableCell<>() {
+            private final HBox box = new HBox(6);
+            private final Button editBtn = new Button("✎");
+            private final Button delBtn = new Button("🗑");
+            private final Button postulerBtn = new Button("Postuler");
+            {
+                editBtn.getStyleClass().addAll("action-edit-btn", "action-icon-btn");
+                delBtn.getStyleClass().addAll("action-delete-btn", "action-icon-btn");
+                postulerBtn.getStyleClass().add("postuler-row-btn");
+                box.getStyleClass().add("action-column-box");
+                editBtn.setOnAction(e -> {
+                    Formation f = getTableView().getItems().get(getIndex());
+                    openFormationFormDialog(f);
+                });
+                delBtn.setOnAction(e -> {
+                    Formation f = getTableView().getItems().get(getIndex());
+                    tableFormation.getSelectionModel().select(f);
+                    supprimer();
+                });
+                postulerBtn.setOnAction(e -> postulerForFormation(getTableView().getItems().get(getIndex())));
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) { setGraphic(null); return; }
+                box.getChildren().clear();
+                if (SessionContext.isAdmin()) {
+                    box.getChildren().addAll(editBtn, delBtn);
+                } else {
+                    box.getChildren().add(postulerBtn);
+                }
+                setGraphic(box);
+            }
+        });
+    }
 
     @FXML
     void ajouter() {
-        // BUT : ajouter une formation dans la base
-
-        try {
-            String titre = tfTitre.getText();
-
-            if (!titreValide(titre)) {
-                alert("Titre invalide", "Le titre ne doit contenir que des lettres.");
-                return;
-            }
-
-            if (!valideFormulaire()) return;
-            // BUT : vérifier que tous les champs sont remplis
-
-            Formation f = new Formation();
-            // BUT : créer un objet Formation
-
-            f.setTitre(titre);
-            f.setDescription(tfDescription.getText());
-            f.setDuree(Integer.parseInt(tfDuree.getText()));
-            f.setNiveau(cbNiveau.getValue());
-            f.setCategorie(cbCategorie.getValue());
-            f.setCertification(cbCertification.isSelected());
-
-            service.ajouter(f);
-            // BUT : enregistrer dans la base la nouvelle ligne
-
-            afficher();
-            // BUT : rafraîchir la table c ad ajouter la nouvelle ligne au tableau
-
-            clearForm();
-            // BUT : vider les champs apres l ajout
-
-        } catch (NumberFormatException e) {
-            alert("Erreur de saisie", "La durée doit être un nombre entier.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        if (!SessionContext.isAdmin()) return;
+        openFormationFormDialog(null);
     }
 
     @FXML
     void modifier() {
-        // BUT : modifier la formation sélectionnée
-
         Formation f = tableFormation.getSelectionModel().getSelectedItem();
-        if (f == null) return;
+        if (f != null) openFormationFormDialog(f);
+    }
 
+    private void openFormationFormDialog(Formation initial) {
         try {
-            String titre = tfTitre.getText();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FormationFormView.fxml"));
+            Parent root = loader.load();
+            FormationFormController controller = loader.getController();
+            controller.setInitial(initial);
 
-            if (!titreValide(titre)) {
-                alert("Titre invalide", "Le titre ne doit contenir que des lettres.");
-                return;
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.setTitle(initial == null ? "Ajouter formation" : "Modifier formation");
+            stage.showAndWait();
+
+            Formation result = controller.getResult();
+            if (result == null) return;
+            if (initial == null) {
+                service.ajouter(result);
+            } else {
+                initial.setTitre(result.getTitre());
+                initial.setDescription(result.getDescription());
+                initial.setDuree(result.getDuree());
+                initial.setNiveau(result.getNiveau());
+                initial.setCategorie(result.getCategorie());
+                initial.setCertification(result.isCertification());
+                service.modifier(initial);
             }
-
-            if (!valideFormulaire()) return;
-
-            f.setTitre(titre);
-            f.setDescription(tfDescription.getText());
-            f.setDuree(Integer.parseInt(tfDuree.getText()));
-            f.setNiveau(cbNiveau.getValue());
-            f.setCategorie(cbCategorie.getValue());
-            f.setCertification(cbCertification.isSelected());
-
-            service.modifier(f);
-            // BUT : mettre à jour dans la base
-
             afficher();
-            clearForm();
-
-        } catch (NumberFormatException e) {
-            alert("Erreur de saisie", "La durée doit être un nombre entier.");
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            alert("Formulaire", e.getMessage());
         }
     }
 
     @FXML
     void supprimer() {
-        // BUT : supprimer la formation sélectionnée
-
+        if (!SessionContext.isAdmin()) return;
         Formation f = tableFormation.getSelectionModel().getSelectedItem();
         if (f == null) return;
-
         try {
             service.supprimer(f.getId_formation());
-            // BUT : supprimer dans la base
-
             afficher();
-            clearForm();
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            alert("Erreur", e.getMessage());
         }
     }
 
     @FXML
     void afficher() {
-        // BUT : afficher toutes les formations dans la table
-
         try {
-            filteredData = new FilteredList<>(
-                    FXCollections.observableArrayList(service.recuperer()), p -> true
-            );
-            tableFormation.setItems(filteredData);
+            filteredData = new FilteredList<>(FXCollections.observableArrayList(service.recuperer()), p -> true);
+            applyFiltersAndSort();
+            tableFormation.refresh();
         } catch (SQLException e) {
-            e.printStackTrace();
+            alert("Erreur DB", e.getMessage());
         }
     }
 
-    // ---------------- Retour Main ----------------
+    @FXML
+    void addFeedback() {
+        Formation selected = tableFormation.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            alert("Feedback", "Sélectionnez une formation.");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FeedbackFormView.fxml"));
+            Parent root = loader.load();
+            FeedbackFormController controller = loader.getController();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter feedback");
+            stage.showAndWait();
+
+            if (!controller.isSaved()) return;
+            FormationFeedback feedback = new FormationFeedback();
+            feedback.setFormationId(selected.getId_formation());
+            feedback.setAuthor(controller.getAuteur());
+            feedback.setComment(controller.getCommentaire());
+            feedback.setRating(controller.getNote());
+            feedbackService.addFeedback(feedback);
+            lblAverageRating.setText(String.format("%.1f / 5", feedbackService.getAverageRating(selected.getId_formation())));
+        } catch (Exception e) {
+            alert("Feedback", e.getMessage());
+        }
+    }
+
+    @FXML
+    void afficherFeedbacks() {
+        if (!SessionContext.isAdmin()) return;
+        Formation selected = tableFormation.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+        try {
+            var feedbacks = FXCollections.observableArrayList(feedbackService.getByFormation(selected.getId_formation()));
+            TableView<FormationFeedback> popupTable = new TableView<>(feedbacks);
+            popupTable.getStyleClass().add("feedback-popup-table");
+
+            TableColumn<FormationFeedback, String> auteurCol = new TableColumn<>("Auteur");
+            auteurCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getAuthor()));
+            TableColumn<FormationFeedback, String> noteCol = new TableColumn<>("Note");
+            noteCol.setCellValueFactory(d -> new SimpleStringProperty(stars(d.getValue().getRating()) + " (" + d.getValue().getRating() + "/5)"));
+            TableColumn<FormationFeedback, String> commentaireCol = new TableColumn<>("Commentaire");
+            commentaireCol.setPrefWidth(360);
+            commentaireCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getComment() == null ? "" : d.getValue().getComment()));
+            TableColumn<FormationFeedback, String> dateCol = new TableColumn<>("Date");
+            dateCol.setCellValueFactory(d -> new SimpleStringProperty(
+                    d.getValue().getCreatedAt() == null ? "N/A" : d.getValue().getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
+            popupTable.getColumns().setAll(auteurCol, noteCol, commentaireCol, dateCol);
+
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Feedbacks - " + selected.getTitre());
+            dialog.getDialogPane().setContent(popupTable);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+        } catch (SQLException e) {
+            alert("Feedback", e.getMessage());
+        }
+    }
 
     @FXML
     void retourMain() {
-        // BUT : revenir à la fenêtre principale
-
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
-            Stage stage = (Stage) tfTitre.getScene().getWindow();
+            Stage stage = (Stage) tableFormation.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            alert("Navigation", e.getMessage());
         }
     }
 
-    // ---------------- Fonctions auxiliaires ----------------
+    private void applyFiltersAndSort() {
+        if (filteredData == null) return;
+        String text = tfRecherche.getText() == null ? "" : tfRecherche.getText().toLowerCase().trim();
+        filteredData.setPredicate(f -> text.isEmpty()
+                || f.getTitre().toLowerCase().contains(text)
+                || f.getDescription().toLowerCase().contains(text)
+                || f.getNiveau().name().toLowerCase().contains(text)
+                || f.getCategorie().name().toLowerCase().contains(text));
 
-    private void remplirChamps(Formation f) {
-        // BUT : remplir le formulaire avec une formation sélectionnée
+        Comparator<Formation> comparator = switch (cbSortBy.getValue()) {
+            case "Durée" -> Comparator.comparingInt(Formation::getDuree);
+            case "Niveau" -> Comparator.comparing(f -> f.getNiveau().name());
+            default -> Comparator.comparing(Formation::getTitre, String.CASE_INSENSITIVE_ORDER);
+        };
+        if ("Desc".equals(cbSortOrder.getValue())) comparator = comparator.reversed();
 
-        tfTitre.setText(f.getTitre());
-        tfDescription.setText(f.getDescription());
-        tfDuree.setText(String.valueOf(f.getDuree()));
-        cbNiveau.setValue(f.getNiveau());
-        cbCategorie.setValue(f.getCategorie());
-        cbCertification.setSelected(f.isCertification());
+        SortedList<Formation> sorted = new SortedList<>(filteredData);
+        sorted.setComparator(comparator);
+        tableFormation.setItems(sorted);
     }
 
-    private void clearForm() {
-        // BUT : vider le formulaire
-
-        tfTitre.clear();
-        tfDescription.clear();
-        tfDuree.clear();
-        cbNiveau.setValue(null);
-        cbCategorie.setValue(null);
-        cbCertification.setSelected(false);
+    @FXML
+    void postuler() {
+        Formation selected = tableFormation.getSelectionModel().getSelectedItem();
+        if (selected != null) postulerForFormation(selected);
     }
 
-    private boolean titreValide(String titre) {
-        // BUT : vérifier que le titre contient seulement des lettres
+    private void postulerForFormation(Formation selected) {
+        if (!SessionContext.isUser() || selected == null) return;
+        SessionContext.setPendingFormation(selected.getId_formation(), selected.getTitre());
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ApprenantView.fxml"));
+            Stage stage = (Stage) tableFormation.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            alert("Postuler", e.getMessage());
+        }
+    }
 
-        return titre != null && titre.matches("[a-zA-ZÀ-ÿ\\s]+");
+    private void applyRolePermissions() {
+        boolean userMode = SessionContext.isUser();
+        if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setVisible(!userMode);
+        if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setManaged(!userMode);
+        if (tableFeedback != null) tableFeedback.setVisible(false);
+        if (tableFeedback != null) tableFeedback.setManaged(false);
+    }
+
+    private String stars(int rating) {
+        int v = Math.max(0, Math.min(5, rating));
+        return "★".repeat(v) + "☆".repeat(5 - v);
     }
 
     private void alert(String header, String content) {
-        // BUT : afficher une boîte d’erreur
-
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Erreur de saisie");
+        a.setTitle("Gestion Formations");
         a.setHeaderText(header);
         a.setContentText(content);
         a.showAndWait();
-    }
-
-    private boolean valideFormulaire() {
-        // BUT : vérifier que tous les champs sont remplis
-
-        if (tfTitre.getText().isEmpty() || tfDescription.getText().isEmpty() || tfDuree.getText().isEmpty()) {
-            alert("Champs manquants", "Veuillez remplir tous les champs.");
-            return false;
-        }
-        if (cbNiveau.getValue() == null) {
-            alert("Niveau manquant", "Veuillez sélectionner un niveau.");
-            return false;
-        }
-        if (cbCategorie.getValue() == null) {
-            alert("Catégorie manquante", "Veuillez sélectionner une catégorie.");
-            return false;
-        }
-        return true;
-    }
-
-    private void filtrerTable(String texte) {
-        // BUT : filtrer les formations selon le texte recherché
-
-        if (filteredData == null) return;
-
-        filteredData.setPredicate(f -> {
-            if (texte == null || texte.isEmpty()) return true;
-            return f.getTitre().toLowerCase().contains(texte.toLowerCase());
-        });
     }
 }
