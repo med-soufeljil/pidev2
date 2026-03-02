@@ -99,7 +99,13 @@ public class DashboardController {
                 error("Top markets", body.isBlank() ? "Erreur API." : body);
                 return;
             }
-            List<String> entries = parseStringArray(body);
+
+            List<String> entries = parseTopMarketsResponse(body);
+            if (entries.isEmpty()) {
+                error("Top markets", "Aucun résultat exploitable retourné par l'API.");
+                return;
+            }
+
             lblMarket1.setText(entries.size() > 0 ? entries.get(0) : "-");
             lblMarket2.setText(entries.size() > 1 ? entries.get(1) : "-");
             lblMarket3.setText(entries.size() > 2 ? entries.get(2) : "-");
@@ -211,14 +217,31 @@ public class DashboardController {
         alert.showAndWait();
     }
 
-    private List<String> parseStringArray(String jsonArray) {
+    private List<String> parseTopMarketsResponse(String json) {
         List<String> out = new ArrayList<>();
-        if (jsonArray == null) return out;
-        String s = jsonArray.trim();
-        if (!s.startsWith("[") || !s.endsWith("]")) return out;
-        s = s.substring(1, s.length() - 1).trim();
-        if (s.isEmpty()) return out;
-        String[] parts = s.split(",");
+        if (json == null) return out;
+        String s = json.trim();
+
+        if (s.startsWith("[") && s.endsWith("]")) {
+            String inner = s.substring(1, s.length() - 1).trim();
+            if (inner.isEmpty()) return out;
+            String[] parts = inner.split(",");
+            for (String p : parts) {
+                String x = p.trim();
+                if (x.startsWith("\"") && x.endsWith("\"")) x = x.substring(1, x.length() - 1);
+                out.add(x.replace("\\\"", "\""));
+            }
+            return out;
+        }
+
+        int keyIdx = s.indexOf("\"topMarkets\"");
+        if (keyIdx < 0) return out;
+        int arrStart = s.indexOf('[', keyIdx);
+        int arrEnd = s.indexOf(']', arrStart);
+        if (arrStart < 0 || arrEnd < 0) return out;
+        String inner = s.substring(arrStart + 1, arrEnd).trim();
+        if (inner.isEmpty()) return out;
+        String[] parts = inner.split(",");
         for (String p : parts) {
             String x = p.trim();
             if (x.startsWith("\"") && x.endsWith("\"")) x = x.substring(1, x.length() - 1);
