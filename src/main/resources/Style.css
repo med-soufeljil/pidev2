@@ -576,8 +576,7 @@
 }
 
 .main-root .sidebar-btn {
-    -fx-pref-width: 248;
-    -fx-max-width: 248;
+    -fx-max-width: Infinity;
     -fx-background-color: rgba(255, 255, 255, 0.08);
     -fx-background-radius: 10;
     -fx-padding: 12 14;
@@ -751,7 +750,7 @@
 }
 
 .dark-mode .table-view .column-header-background {
-    -fx-background-color: #0f2947;
+    -fx-background-color: #152238;
 }
 
 .dark-mode .table-view .column-header .label,
