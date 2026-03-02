@@ -262,3 +262,10 @@
     -fx-text-fill: #0a3d62;
     -fx-font-weight: 700;
 }
+
+
+.pie-chart .chart-legend .label,
+.pie-chart .chart-title,
+.chart-legend .label {
+    -fx-text-fill: #111111;
+}
