@@ -105,7 +105,7 @@ public class FormationController implements Initializable {
     private void initActionColumn() {
         colPostulerAction.setCellFactory(param -> new TableCell<>() {
             private final HBox box = new HBox(6);
-            private final Button editBtn = new Button("✎");
+            private final Button editBtn = new Button("✏");
             private final Button delBtn = new Button("🗑");
             private final Button postulerBtn = new Button("Postuler");
             {
@@ -195,6 +195,17 @@ public class FormationController implements Initializable {
         } catch (SQLException e) {
             alert("Erreur", e.getMessage());
         }
+    }
+
+    @FXML
+    void actualiser() {
+        if (tableFormation != null) {
+            tableFormation.getSelectionModel().clearSelection();
+        }
+        if (lblAverageRating != null) {
+            lblAverageRating.setText("0.0 / 5");
+        }
+        afficher();
     }
 
     @FXML

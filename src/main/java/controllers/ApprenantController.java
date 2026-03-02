@@ -82,7 +82,7 @@ public class ApprenantController implements Initializable {
     private void initActionColumn() {
         colAction.setCellFactory(param -> new TableCell<>() {
             private final HBox box = new HBox(6);
-            private final Button editBtn = new Button("✎");
+            private final Button editBtn = new Button("✏");
             private final Button delBtn = new Button("🗑");
             {
                 editBtn.getStyleClass().addAll("action-edit-btn", "action-icon-btn");
@@ -110,6 +110,14 @@ public class ApprenantController implements Initializable {
     @FXML
     public void ajouter() {
         openFormDialog(null);
+    }
+
+    @FXML
+    public void actualiser() {
+        if (tableApprenant != null) {
+            tableApprenant.getSelectionModel().clearSelection();
+        }
+        refreshTable();
     }
 
     private void openFormDialog(Apprenant initial) {

@@ -29,6 +29,7 @@
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Ajouter" onAction="#ajouter"/>
+        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn"/>
         <Button text="Supprimer" onAction="#supprimer" styleClass="danger-btn"/>
         <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn"/>
     </HBox>

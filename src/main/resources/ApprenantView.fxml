@@ -29,6 +29,7 @@
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Ajouter" onAction="#ajouter"/>
+        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn"/>
         <Button text="Envoyer mail" onAction="#envoyerMail" styleClass="secondary-btn"/>
     </HBox>
 

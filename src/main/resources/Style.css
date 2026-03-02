@@ -286,12 +286,12 @@
 .action-add-btn,
 .action-edit-btn,
 .action-delete-btn {
-    -fx-min-width: 34;
-    -fx-pref-width: 34;
-    -fx-max-width: 34;
-    -fx-min-height: 30;
-    -fx-pref-height: 30;
-    -fx-font-size: 14px;
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-min-height: 26;
+    -fx-pref-height: 26;
+    -fx-font-size: 12px;
     -fx-font-weight: 800;
     -fx-background-radius: 8;
     -fx-padding: 0;
@@ -385,4 +385,15 @@
     -fx-padding: 3 10 3 10;
     -fx-background-radius: 12;
     -fx-font-weight: 800;
+}
+
+
+.table-row-cell:selected .action-edit-btn .text {
+    -fx-fill: #0a3d62;
+}
+
+.table-row-cell:selected .action-delete-btn .text,
+.table-row-cell:selected .action-add-btn .text,
+.table-row-cell:selected .postuler-row-btn .text {
+    -fx-fill: white;
 }

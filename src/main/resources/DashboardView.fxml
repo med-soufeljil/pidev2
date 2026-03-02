@@ -88,7 +88,7 @@
                         <Label fx:id="lblMarket3" text="-" styleClass="market-chip"/>
                     </HBox>
                     <Button text="Exporter rapport PDF" onAction="#exportPdf"/>
-                    <Button text="Exporter CSV" onAction="#exportCsv" styleClass="secondary-btn"/>
+                    <Button text="Exporter CSV" onAction="#exportCsv"/>
                     <Button text="Rafraîchir dashboard" onAction="#refreshDashboard"/>
                 </VBox>
             </HBox>
