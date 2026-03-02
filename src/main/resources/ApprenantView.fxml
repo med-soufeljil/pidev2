@@ -41,7 +41,7 @@
             <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
             <TableColumn fx:id="colStatut" text="Statut" prefWidth="120"/>
             <TableColumn fx:id="colFormation" text="Formation" prefWidth="220"/>
-            <TableColumn fx:id="colAction" text="Action" prefWidth="180"/>
+            <TableColumn fx:id="colAction" text="Action" prefWidth="110"/>
         </columns>
     </TableView>
 </VBox>

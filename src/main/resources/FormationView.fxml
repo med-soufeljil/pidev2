@@ -45,7 +45,7 @@
                     <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
                     <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="140"/>
                     <TableColumn fx:id="colCertif" text="Certif" prefWidth="90"/>
-                    <TableColumn fx:id="colPostulerAction" text="Action" prefWidth="180"/>
+                    <TableColumn fx:id="colPostulerAction" text="Action" prefWidth="110"/>
                 </columns>
             </TableView>
         </VBox>
