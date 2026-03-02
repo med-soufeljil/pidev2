@@ -2,6 +2,10 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+<<<<<<< HEAD
+=======
+.kotlin
+>>>>>>> feature-mohamed
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -35,6 +39,10 @@ build/
 .vscode/
 
 ### Mac OS ###
+<<<<<<< HEAD
 .DS_Store
 # Local mail credentials
 mailing.properties
+=======
+.DS_Store
+>>>>>>> feature-mohamed

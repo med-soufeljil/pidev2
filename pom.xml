@@ -5,7 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
+<<<<<<< HEAD
     <artifactId>pi</artifactId>
+=======
+    <artifactId>workshop_pidev_3A11_2526</artifactId>
+>>>>>>> feature-mohamed
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -23,7 +27,11 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+<<<<<<< HEAD
             <version>5.10.2</version>
+=======
+            <version>6.0.2</version>
+>>>>>>> feature-mohamed
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -38,6 +46,24 @@
             <version>21.0.10</version>
             <scope>compile</scope>
         </dependency>
+<<<<<<< HEAD
+=======
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.30</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mailersend</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+>>>>>>> feature-mohamed
     </dependencies>
     <build>
         <plugins>
@@ -46,7 +72,11 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
+<<<<<<< HEAD
                     <mainClass>test.MainProgGUI</mainClass>
+=======
+                    <mainClass>com.esprit.main.MainProgGUI</mainClass>
+>>>>>>> feature-mohamed
                 </configuration>
             </plugin>
         </plugins>
