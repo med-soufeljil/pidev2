@@ -227,7 +227,14 @@ public class ApiServer {
         marketMap.put("python", List.of("United States", "Canada", "Germany"));
         marketMap.put("dotnet", List.of("United States", "United Kingdom", "Sweden"));
 
-        List<String> markets = marketMap.getOrDefault(tech, List.of("United States", "Germany", "France"));
+        if (!marketMap.containsKey(tech)) {
+            sendJson(exchange, 400, "{\"error\":\"Unsupported tech keyword. Allowed values: "
+                    + String.join(", ", new TreeSet<>(marketMap.keySet()))
+                    + "\"}");
+            return;
+        }
+
+        List<String> markets = marketMap.get(tech);
         StringBuilder json = new StringBuilder("{\"tech\":\"")
                 .append(escape(tech))
                 .append("\",\"topMarkets\":[");
