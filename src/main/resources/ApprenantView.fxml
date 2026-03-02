@@ -18,9 +18,9 @@
             <HBox spacing="10">
                 <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
                 <TextField fx:id="tfRecherche" promptText="Recherche..." HBox.hgrow="ALWAYS"/>
-                <ComboBox fx:id="cbSortBy" prefWidth="140"/>
+                <ComboBox fx:id="cbSortBy" prefWidth="180"/>
                 <ComboBox fx:id="cbSortOrder" prefWidth="120"/>
-                <Button text="➕" onAction="#ajouter"/>
+                <Button text="＋ Ajouter apprenant" onAction="#ajouter" styleClass="secondary-btn"/>
             </HBox>
         </VBox>
     </top>
@@ -37,7 +37,7 @@
                     <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
                     <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
                     <TableColumn fx:id="colFormation" text="Formation" prefWidth="180"/>
-                    <TableColumn fx:id="colAction" text="Action" prefWidth="140"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="180"/>
                 </columns>
             </TableView>
         </VBox>

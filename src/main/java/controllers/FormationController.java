@@ -103,15 +103,16 @@ public class FormationController implements Initializable {
     private void initActionColumn() {
         colPostulerAction.setCellFactory(param -> new TableCell<>() {
             private final VBox box = new VBox(6);
-            private final Button addBtn = new Button("➕");
-            private final Button editBtn = new Button("✏");
-            private final Button delBtn = new Button("🗑");
+            private final Button addBtn = new Button("＋ Ajouter");
+            private final Button editBtn = new Button("✎ Modifier");
+            private final Button delBtn = new Button("✖ Supprimer");
             private final Button postulerBtn = new Button("Postuler");
             {
-                addBtn.getStyleClass().add("action-icon-btn");
-                editBtn.getStyleClass().add("action-icon-btn");
-                delBtn.getStyleClass().add("danger-btn");
+                addBtn.getStyleClass().add("action-add-btn");
+                editBtn.getStyleClass().add("action-edit-btn");
+                delBtn.getStyleClass().add("action-delete-btn");
                 postulerBtn.getStyleClass().add("postuler-row-btn");
+                box.getStyleClass().add("action-column-box");
                 addBtn.setOnAction(e -> ajouter());
                 editBtn.setOnAction(e -> {
                     Formation f = getTableView().getItems().get(getIndex());

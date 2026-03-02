@@ -79,11 +79,12 @@ public class ApprenantController implements Initializable {
     private void initActionColumn() {
         colAction.setCellFactory(param -> new TableCell<>() {
             private final VBox box = new VBox(6);
-            private final Button editBtn = new Button("✏");
-            private final Button delBtn = new Button("🗑");
+            private final Button editBtn = new Button("✎ Modifier");
+            private final Button delBtn = new Button("✖ Supprimer");
             {
-                editBtn.getStyleClass().add("action-icon-btn");
-                delBtn.getStyleClass().add("danger-btn");
+                editBtn.getStyleClass().add("action-edit-btn");
+                delBtn.getStyleClass().add("action-delete-btn");
+                box.getStyleClass().add("action-column-box");
                 editBtn.setOnAction(e -> {
                     Apprenant a = getTableView().getItems().get(getIndex());
                     openFormDialog(a);

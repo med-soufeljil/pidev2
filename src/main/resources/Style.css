@@ -277,3 +277,40 @@
     -fx-fill: #111111;
     -fx-stroke: #111111;
 }
+
+
+.action-column-box {
+    -fx-padding: 2 0 2 0;
+}
+
+.action-add-btn,
+.action-edit-btn,
+.action-delete-btn {
+    -fx-min-width: 130;
+    -fx-font-weight: 800;
+    -fx-background-radius: 8;
+}
+
+.action-add-btn {
+    -fx-background-color: linear-gradient(to bottom, #1ea7ff, #167ce0);
+    -fx-text-fill: white;
+}
+
+.action-edit-btn {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #7fc8f8;
+    -fx-border-width: 1;
+    -fx-text-fill: #0a3d62;
+}
+
+.action-delete-btn {
+    -fx-background-color: linear-gradient(to bottom, #ff6f87, #e5485d);
+    -fx-text-fill: white;
+}
+
+
+.bar-chart .chart-legend-item .label,
+.pie-chart .chart-legend-item .label,
+.chart-legend-item .label {
+    -fx-text-fill: #111111;
+}
