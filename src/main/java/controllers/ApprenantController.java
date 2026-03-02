@@ -24,6 +24,7 @@ import services.ApprenantService;
 import services.FormationService;
 import services.MailingApiService;
 import utils.SessionContext;
+import utils.ThemeUtil;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -55,6 +56,11 @@ public class ApprenantController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        javafx.application.Platform.runLater(() -> {
+            if (tableApprenant != null && tableApprenant.getScene() != null) {
+                ThemeUtil.applyTheme((javafx.scene.Parent) tableApprenant.getScene().getRoot());
+            }
+        });
         try {
             formations = formationService.recuperer();
             cbSortBy.setItems(FXCollections.observableArrayList("Nom", "Prénom", "Statut"));
@@ -214,6 +220,7 @@ public class ApprenantController implements Initializable {
     public void retourMain() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
+            ThemeUtil.applyTheme(root);
             Stage stage = (Stage) tableApprenant.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

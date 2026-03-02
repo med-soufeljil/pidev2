@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,10 +10,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
 import services.ExternalPublicApiService;
 import utils.ApiRuntime;
 import utils.SessionContext;
+import utils.ThemeUtil;
 
 public class MainController {
 
@@ -22,6 +25,7 @@ public class MainController {
     @FXML private Button btnFormation;
     @FXML private Button btnApprenant;
     @FXML private Button btnDashboard;
+    @FXML private ToggleButton toggleDarkMode;
 
     @FXML
     public void initialize() {
@@ -31,6 +35,16 @@ public class MainController {
 
         if (SessionContext.getCurrentRole() == null) {
             SessionContext.setCurrentRole(SessionContext.Role.USER);
+        }
+
+        if (toggleDarkMode != null) {
+            toggleDarkMode.setSelected(SessionContext.isDarkMode());
+            toggleDarkMode.setOnAction(e -> toggleDarkMode());
+            Platform.runLater(() -> {
+                if (toggleDarkMode.getScene() != null) {
+                    ThemeUtil.applyTheme((javafx.scene.Parent) toggleDarkMode.getScene().getRoot());
+                }
+            });
         }
 
         if (SessionContext.isAdmin()) {
@@ -47,6 +61,15 @@ public class MainController {
             btnApprenant.setManaged(false);
             btnDashboard.setVisible(false);
             btnDashboard.setManaged(false);
+        }
+    }
+
+
+    @FXML
+    public void toggleDarkMode() {
+        SessionContext.setDarkMode(toggleDarkMode != null && toggleDarkMode.isSelected());
+        if (toggleDarkMode != null && toggleDarkMode.getScene() != null) {
+            ThemeUtil.applyTheme((javafx.scene.Parent) toggleDarkMode.getScene().getRoot());
         }
     }
 
@@ -94,6 +117,7 @@ public class MainController {
     private void openInCurrentWindow(ActionEvent event, String fxml, String title) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
+            ThemeUtil.applyTheme(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle(title);
             stage.setScene(new Scene(root));

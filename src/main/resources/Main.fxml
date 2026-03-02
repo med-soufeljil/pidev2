@@ -62,7 +62,7 @@
             <Region HBox.hgrow="ALWAYS"/>
 
             <Label text="Dark mode" styleClass="mode-label"/>
-            <ToggleButton styleClass="switch-toggle"/>
+            <ToggleButton fx:id="toggleDarkMode" onAction="#toggleDarkMode" styleClass="switch-toggle"/>
         </HBox>
     </top>
 

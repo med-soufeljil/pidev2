@@ -10,6 +10,7 @@ public final class SessionContext {
     private static Role currentRole;
     private static Integer pendingFormationId;
     private static String pendingFormationTitle;
+    private static boolean darkMode;
 
     private SessionContext() {
     }
@@ -50,5 +51,13 @@ public final class SessionContext {
     public static void clearPendingFormation() {
         pendingFormationId = null;
         pendingFormationTitle = null;
+    }
+
+    public static boolean isDarkMode() {
+        return darkMode;
+    }
+
+    public static void setDarkMode(boolean enabled) {
+        darkMode = enabled;
     }
 }

@@ -24,6 +24,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import services.DashboardService;
 import utils.ApiRuntime;
+import utils.ThemeUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,6 +73,11 @@ public class DashboardController {
     }
 
     private void loadData() {
+        javafx.application.Platform.runLater(() -> {
+            if (lblTotalFormations != null && lblTotalFormations.getScene() != null) {
+                ThemeUtil.applyTheme((javafx.scene.Parent) lblTotalFormations.getScene().getRoot());
+            }
+        });
         try {
             stats = dashboardService.loadStats();
             lblTotalFormations.setText(String.valueOf(stats.getTotalFormations()));
@@ -237,6 +243,7 @@ public class DashboardController {
     public void retourMain() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
+            ThemeUtil.applyTheme(root);
             Stage stage = getStage();
             stage.setScene(new Scene(root));
             stage.show();

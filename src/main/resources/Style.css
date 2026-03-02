@@ -687,3 +687,101 @@
 .main-root .switch-toggle:selected {
     -fx-background-color: #3f8cff;
 }
+
+
+.dashboard-action-btn {
+    -fx-min-width: 240;
+    -fx-pref-width: 240;
+}
+
+/* ===== Global dark mode (requested palette) ===== */
+.dark-mode {
+    -fx-background-color: #0f172a;
+}
+
+.dark-mode .topbar {
+    -fx-background-color: #111c31;
+    -fx-border-color: transparent transparent #21304d transparent;
+}
+
+.dark-mode .content-area {
+    -fx-background-color: #0f172a;
+}
+
+.dark-mode .topbar-title,
+.dark-mode .welcome-title,
+.dark-mode .title-label,
+.dark-mode .label,
+.dark-mode .mode-label,
+.dark-mode .kpi-value,
+.dark-mode .panel-title {
+    -fx-text-fill: #e6edf8;
+}
+
+.dark-mode .topbar-subtitle,
+.dark-mode .welcome-subtitle,
+.dark-mode .kpi-label,
+.dark-mode .panel-item,
+.dark-mode .badge-label {
+    -fx-text-fill: #9aabc3;
+}
+
+.dark-mode .kpi-card,
+.dark-mode .welcome-panel,
+.dark-mode .card {
+    -fx-background-color: #18253d;
+    -fx-border-color: #2b3e5d;
+}
+
+.dark-mode .text-field,
+.dark-mode .text-area,
+.dark-mode .combo-box,
+.dark-mode .date-picker,
+.dark-mode .text-area .content {
+    -fx-background-color: #1c2a43;
+    -fx-border-color: #304461;
+    -fx-text-fill: #e6edf8;
+    -fx-prompt-text-fill: #7e90aa;
+}
+
+.dark-mode .table-view {
+    -fx-background-color: #18253d;
+    -fx-border-color: #2b3e5d;
+}
+
+.dark-mode .table-view .column-header-background {
+    -fx-background-color: #0f2947;
+}
+
+.dark-mode .table-view .column-header .label,
+.dark-mode .table-view .table-cell,
+.dark-mode .table-view .table-row-cell .text {
+    -fx-text-fill: #f3f7ff;
+    -fx-fill: #f3f7ff;
+}
+
+.dark-mode .table-view .table-row-cell {
+    -fx-background-color: #152238;
+}
+
+.dark-mode .table-view .table-row-cell:selected {
+    -fx-background-color: #2b3f5f;
+}
+
+.dark-mode .chart-pie-label,
+.dark-mode .chart-legend .label,
+.dark-mode .axis-label,
+.dark-mode .axis .text,
+.dark-mode .chart-title {
+    -fx-fill: #dce8f8;
+    -fx-text-fill: #dce8f8;
+}
+
+.dark-mode .button {
+    -fx-background-color: linear-gradient(to right, #0f62fe, #3f8cff);
+    -fx-text-fill: #f6f9ff;
+}
+
+.dark-mode .button:hover {
+    -fx-background-color: linear-gradient(to right, #084fc7, #2d6de0);
+}

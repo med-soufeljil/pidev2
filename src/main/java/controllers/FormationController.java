@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import services.FeedbackService;
 import services.FormationService;
 import utils.SessionContext;
+import utils.ThemeUtil;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -76,6 +77,12 @@ public class FormationController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        javafx.application.Platform.runLater(() -> {
+            if (tableFormation != null && tableFormation.getScene() != null) {
+                ThemeUtil.applyTheme((javafx.scene.Parent) tableFormation.getScene().getRoot());
+            }
+        });
+
         cbSortBy.setItems(FXCollections.observableArrayList("Titre", "Durée", "Niveau"));
         cbSortBy.setValue("Titre");
         cbSortOrder.setItems(FXCollections.observableArrayList("Asc", "Desc"));
@@ -302,6 +309,7 @@ public class FormationController implements Initializable {
     void retourMain() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
+            ThemeUtil.applyTheme(root);
             Stage stage = (Stage) tableFormation.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -343,6 +351,7 @@ public class FormationController implements Initializable {
         SessionContext.setPendingFormation(selected.getId_formation(), selected.getTitre());
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/ApprenantView.fxml"));
+            ThemeUtil.applyTheme(root);
             Stage stage = (Stage) tableFormation.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
