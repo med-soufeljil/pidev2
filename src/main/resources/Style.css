@@ -320,3 +320,39 @@
 .chart-legend-item .label {
     -fx-text-fill: #111111;
 }
+
+.content-area {
+    -fx-background-color: transparent;
+}
+
+.title-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0a3d62;
+}
+
+.kpi-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #2f6b92;
+    -fx-font-weight: 700;
+}
+
+.kpi-number {
+    -fx-font-size: 26px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0077b6;
+}
+
+.welcome-panel {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-background-radius: 16;
+    -fx-border-color: #b9e7ff;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 88, 146, 0.14), 14, 0.25, 0, 3);
+}
+
+.panel-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #0a3d62;
+}
