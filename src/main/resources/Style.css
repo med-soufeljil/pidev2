@@ -389,7 +389,7 @@
 
 
 .table-row-cell:selected .action-edit-btn .text {
-    -fx-fill: #0a3d62;
+    -fx-fill: white;
 }
 
 .table-row-cell:selected .action-delete-btn .text,
@@ -416,4 +416,22 @@
 
 .table-row-cell:selected .action-icon-btn {
     -fx-opacity: 1;
+}
+
+
+.toolbar-btn {
+    -fx-min-width: 130;
+    -fx-pref-width: 130;
+}
+
+.action-edit-btn {
+    -fx-background-color: linear-gradient(to bottom, #2bb8ff, #167ce0);
+    -fx-border-color: transparent;
+    -fx-text-fill: white;
+    -fx-background-radius: 14;
+}
+
+.table-row-cell:selected .action-edit-btn {
+    -fx-background-color: linear-gradient(to bottom, #2bb8ff, #167ce0);
+    -fx-border-color: transparent;
 }

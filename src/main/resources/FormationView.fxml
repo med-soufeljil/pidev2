@@ -28,9 +28,9 @@
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="Ajouter" onAction="#ajouter" styleClass="compact-btn"/>
-        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn compact-btn"/>
-        <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn compact-btn"/>
+        <Button text="Ajouter" onAction="#ajouter" styleClass="compact-btn toolbar-btn"/>
+        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn compact-btn toolbar-btn"/>
+        <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn compact-btn toolbar-btn"/>
     </HBox>
 
     <SplitPane dividerPositions="0.73" VBox.vgrow="ALWAYS">
