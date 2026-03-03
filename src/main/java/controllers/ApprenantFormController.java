@@ -18,6 +18,8 @@ public class ApprenantFormController {
     @FXML private DatePicker dpFin;
     @FXML private ComboBox<Formation> cbFormation;
 
+    private static final String NAME_PATTERN = "^[\\p{L}]+(?:[ '\\-][\\p{L}]+)*$";
+
     private Apprenant result;
 
     @FXML
@@ -52,13 +54,30 @@ public class ApprenantFormController {
 
     @FXML
     public void save() {
-        if (tfNom.getText().isBlank() || tfPrenom.getText().isBlank() || tfEmail.getText().isBlank() || cbFormation.getValue() == null || dpDebut.getValue() == null) return;
-        if (!tfEmail.getText().matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) return;
-        if (dpFin.getValue() != null && dpFin.getValue().isBefore(dpDebut.getValue())) return;
+        String nom = tfNom.getText() == null ? "" : tfNom.getText().trim();
+        String prenom = tfPrenom.getText() == null ? "" : tfPrenom.getText().trim();
+        String email = tfEmail.getText() == null ? "" : tfEmail.getText().trim();
+
+        if (nom.isBlank() || prenom.isBlank() || email.isBlank() || cbFormation.getValue() == null || dpDebut.getValue() == null) {
+            showValidation("Champs obligatoires", "Veuillez remplir tous les champs requis.");
+            return;
+        }
+        if (!nom.matches(NAME_PATTERN) || !prenom.matches(NAME_PATTERN)) {
+            showValidation("Nom/Prénom invalide", "Le nom et le prénom doivent contenir uniquement des caractères alphabétiques.");
+            return;
+        }
+        if (!email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            showValidation("Email invalide", "Veuillez saisir une adresse email valide.");
+            return;
+        }
+        if (dpFin.getValue() != null && dpFin.getValue().isBefore(dpDebut.getValue())) {
+            showValidation("Dates invalides", "La date de fin doit être postérieure à la date de début.");
+            return;
+        }
         Apprenant a = new Apprenant();
-        a.setNom(tfNom.getText().trim());
-        a.setPrenom(tfPrenom.getText().trim());
-        a.setEmail(tfEmail.getText().trim());
+        a.setNom(nom);
+        a.setPrenom(prenom);
+        a.setEmail(email);
         a.setStatut(cbStatut.getValue());
         a.setDateDebut(dpDebut.getValue());
         a.setDateFin(dpFin.getValue());
@@ -69,6 +88,16 @@ public class ApprenantFormController {
 
     @FXML
     public void cancel() { close(); }
+
+    private void showValidation(String header, String content) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setTitle("Validation");
+        a.setHeaderText(header);
+        a.setContentText(content);
+        a.showAndWait();
+    }
+
     private void close() { ((Stage) tfNom.getScene().getWindow()).close(); }
+
     public Apprenant getResult() { return result; }
 }

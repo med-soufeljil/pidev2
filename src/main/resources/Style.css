@@ -793,3 +793,27 @@
 .dark-mode .table-view .column-header {
     -fx-background-color: #0f2947;
 }
+
+/* Dashboard readability per mode */
+.dashboard-root .axis .text,
+.dashboard-root .axis-label,
+.dashboard-root .chart-legend .label,
+.dashboard-root .chart-pie-label,
+.dashboard-root .chart-title {
+    -fx-fill: #000000;
+    -fx-text-fill: #000000;
+}
+
+.dark-mode .dashboard-root .label,
+.dark-mode .dashboard-root .axis .text,
+.dark-mode .dashboard-root .axis-label,
+.dark-mode .dashboard-root .chart-legend .label,
+.dark-mode .dashboard-root .chart-pie-label,
+.dark-mode .dashboard-root .chart-title,
+.dark-mode .dashboard-root .kpi-label,
+.dark-mode .dashboard-root .kpi-number,
+.dark-mode .dashboard-root .panel-title,
+.dark-mode .dashboard-root .button {
+    -fx-fill: #ffffff;
+    -fx-text-fill: #ffffff;
+}

@@ -1,5 +1,6 @@
 package controllers;
 
+import entities.Apprenant;
 import entities.Categorie;
 import entities.Formation;
 import entities.FormationFeedback;
@@ -24,8 +25,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import services.ApprenantService;
 import services.FeedbackService;
 import services.FormationService;
+import services.MailingApiService;
 import utils.SessionContext;
 import utils.ThemeUtil;
 
@@ -59,6 +62,7 @@ public class FormationController implements Initializable {
 
     @FXML private VBox boxEdition;
     @FXML private Button btnPostuler;
+    @FXML private Button btnAjouterFormation;
     @FXML private Button btnAfficherFeedbacks;
 
     @FXML private TextField tfFeedbackAuteur;
@@ -73,7 +77,9 @@ public class FormationController implements Initializable {
     @FXML private TableColumn<FormationFeedback, String> colFeedbackDate;
 
     private final FormationService service = new FormationService();
+    private final ApprenantService apprenantService = new ApprenantService();
     private final FeedbackService feedbackService = new FeedbackService();
+    private final MailingApiService mailingApiService = new MailingApiService();
     private FilteredList<Formation> filteredData;
 
     @Override
@@ -350,13 +356,35 @@ public class FormationController implements Initializable {
 
     private void postulerForFormation(Formation selected) {
         if (!SessionContext.isUser() || selected == null) return;
-        SessionContext.setPendingFormation(selected.getId_formation(), selected.getTitre());
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ApprenantView.fxml"));
-            ThemeUtil.applyTheme(root);
-            Stage stage = (Stage) tableFormation.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ApprenantFormView.fxml"));
+            Parent root = loader.load();
+            ApprenantFormController controller = loader.getController();
+            controller.setFormations(java.util.List.of(selected));
+            controller.setPendingFormationId(selected.getId_formation());
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            if (tableFormation != null && tableFormation.getScene() != null) {
+                stage.initOwner(tableFormation.getScene().getWindow());
+            }
             stage.setScene(new Scene(root));
-            stage.show();
+            stage.setTitle("Postuler à " + selected.getTitre());
+            stage.showAndWait();
+
+            Apprenant result = controller.getResult();
+            if (result == null) return;
+
+            apprenantService.ajouter(result);
+            boolean sent = mailingApiService.sendRegistrationEmail(result.getEmail(), result.getPrenom() + " " + result.getNom(), selected.getTitre());
+            if (!sent) {
+                Alert warn = new Alert(Alert.AlertType.WARNING);
+                warn.setTitle("Inscription enregistrée");
+                warn.setHeaderText("Apprenant ajouté, email non envoyé");
+                warn.setContentText(mailingApiService.getLastError());
+                warn.showAndWait();
+            }
+            afficher();
         } catch (Exception e) {
             alert("Postuler", e.getMessage());
         }
@@ -366,6 +394,8 @@ public class FormationController implements Initializable {
         boolean userMode = SessionContext.isUser();
         if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setVisible(!userMode);
         if (btnAfficherFeedbacks != null) btnAfficherFeedbacks.setManaged(!userMode);
+        if (btnAjouterFormation != null) btnAjouterFormation.setVisible(!userMode);
+        if (btnAjouterFormation != null) btnAjouterFormation.setManaged(!userMode);
         if (tableFeedback != null) tableFeedback.setVisible(false);
         if (tableFeedback != null) tableFeedback.setManaged(false);
     }
