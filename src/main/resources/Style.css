@@ -858,3 +858,38 @@
 .dark-mode .table-view .table-row-cell {
     -fx-border-color: rgba(255,255,255,0.35);
 }
+
+/* Final override: handle dark-mode class on same node as dashboard-root */
+.dashboard-root .text,
+.dashboard-root .axis .text,
+.dashboard-root .axis-label,
+.dashboard-root .chart-legend .label,
+.dashboard-root .chart-pie-label,
+.dashboard-root .chart-pie-label-line,
+.dashboard-root .chart-title,
+.dashboard-root .label {
+    -fx-fill: #000000;
+    -fx-stroke: #000000;
+    -fx-text-fill: #000000;
+}
+
+.dark-mode .dashboard-root .text,
+.dark-mode .dashboard-root .axis .text,
+.dark-mode .dashboard-root .axis-label,
+.dark-mode .dashboard-root .chart-legend .label,
+.dark-mode .dashboard-root .chart-pie-label,
+.dark-mode .dashboard-root .chart-pie-label-line,
+.dark-mode .dashboard-root .chart-title,
+.dark-mode .dashboard-root .label,
+.dashboard-root.dark-mode .text,
+.dashboard-root.dark-mode .axis .text,
+.dashboard-root.dark-mode .axis-label,
+.dashboard-root.dark-mode .chart-legend .label,
+.dashboard-root.dark-mode .chart-pie-label,
+.dashboard-root.dark-mode .chart-pie-label-line,
+.dashboard-root.dark-mode .chart-title,
+.dashboard-root.dark-mode .label {
+    -fx-fill: #ffffff;
+    -fx-stroke: #ffffff;
+    -fx-text-fill: #ffffff;
+}
