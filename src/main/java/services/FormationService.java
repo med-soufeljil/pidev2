@@ -49,18 +49,18 @@ public class FormationService {
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
         // Préparation de la requête SQL
-        PreparedStatement ps = connection.prepareStatement(sql);
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            // Remplacement des ? par les valeurs de l’objet Formation
+            ps.setString(1, f.getTitre());              // 1er ? → titre
+            ps.setString(2, f.getDescription());        // 2e ? → description
+            ps.setInt(3, f.getDuree());                 // 3e ? → durée
+            ps.setString(4, f.getNiveau().name());      // 4e ? → niveau (enum → String)
+            ps.setString(5, f.getCategorie().name());   // 5e ? → catégorie (enum → String)
+            ps.setBoolean(6, f.isCertification());      // 6e ? → certification (true/false)
 
-        // Remplacement des ? par les valeurs de l’objet Formation
-        ps.setString(1, f.getTitre());              // 1er ? → titre
-        ps.setString(2, f.getDescription());        // 2e ? → description
-        ps.setInt(3, f.getDuree());                 // 3e ? → durée
-        ps.setString(4, f.getNiveau().name());      // 4e ? → niveau (enum → String)
-        ps.setString(5, f.getCategorie().name());   // 5e ? → catégorie (enum → String)
-        ps.setBoolean(6, f.isCertification());      // 6e ? → certification (true/false)
-
-        // Exécution de la requête INSERT
-        ps.executeUpdate();
+            // Exécution de la requête INSERT
+            ps.executeUpdate();
+        }
     }
 
     // ============================
@@ -74,21 +74,21 @@ public class FormationService {
                 "WHERE id_formation=?";
 
         // Préparation de la requête SQL
-        PreparedStatement ps = connection.prepareStatement(sql);
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            // Remplacement des ? par les valeurs de l’objet Formation
+            ps.setString(1, f.getTitre());              // nouveau titre
+            ps.setString(2, f.getDescription());        // nouvelle description
+            ps.setInt(3, f.getDuree());                 // nouvelle durée
+            ps.setString(4, f.getNiveau().name());      // nouveau niveau
+            ps.setString(5, f.getCategorie().name());   // nouvelle catégorie
+            ps.setBoolean(6, f.isCertification());      // nouvelle valeur certification
 
-        // Remplacement des ? par les valeurs de l’objet Formation
-        ps.setString(1, f.getTitre());              // nouveau titre
-        ps.setString(2, f.getDescription());        // nouvelle description
-        ps.setInt(3, f.getDuree());                 // nouvelle durée
-        ps.setString(4, f.getNiveau().name());      // nouveau niveau
-        ps.setString(5, f.getCategorie().name());   // nouvelle catégorie
-        ps.setBoolean(6, f.isCertification());      // nouvelle valeur certification
+            // Condition WHERE (id de la formation à modifier)
+            ps.setInt(7, f.getId_formation());
 
-        // Condition WHERE (id de la formation à modifier)
-        ps.setInt(7, f.getId_formation());
-
-        // Exécution de la requête UPDATE
-        ps.executeUpdate();
+            // Exécution de la requête UPDATE
+            ps.executeUpdate();
+        }
     }
 
     // ============================
@@ -134,41 +134,39 @@ public class FormationService {
         String sql = "SELECT * FROM formation";
 
         // Création d’un Statement pour exécuter la requête
-        Statement st = connection.createStatement();
-
-        // Exécution de la requête et récupération du résultat
-        ResultSet rs = st.executeQuery(sql);
-
         // Création d’une liste pour stocker les formations
         List<Formation> formations = new ArrayList<>();
 
-        // Parcours de toutes les lignes du ResultSet
-        while (rs.next()) {
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            // Parcours de toutes les lignes du ResultSet
+            while (rs.next()) {
 
-            // Création d’un nouvel objet Formation
-            Formation f = new Formation();
+                // Création d’un nouvel objet Formation
+                Formation f = new Formation();
 
-            // Récupération des valeurs depuis la base de données
-            f.setId_formation(rs.getInt("id_formation"));
-            f.setTitre(rs.getString("titre"));
-            f.setDescription(rs.getString("description"));
-            f.setDuree(rs.getInt("duree"));
+                // Récupération des valeurs depuis la base de données
+                f.setId_formation(rs.getInt("id_formation"));
+                f.setTitre(rs.getString("titre"));
+                f.setDescription(rs.getString("description"));
+                f.setDuree(rs.getInt("duree"));
 
-            // Récupération des valeurs "niveau" et "categorie" sous forme String
-            String niveauDB = rs.getString("niveau");
-            String categorieDB = rs.getString("categorie");
+                // Récupération des valeurs "niveau" et "categorie" sous forme String
+                String niveauDB = rs.getString("niveau");
+                String categorieDB = rs.getString("categorie");
 
-            // Conversion String → Enum Niveau
-            f.setNiveau(Niveau.valueOf(niveauDB.toUpperCase()));
+                // Conversion String → Enum Niveau
+                f.setNiveau(Niveau.valueOf(niveauDB.toUpperCase()));
 
-            // Conversion String → Enum Categorie
-            f.setCategorie(Categorie.valueOf(categorieDB.toUpperCase()));
+                // Conversion String → Enum Categorie
+                f.setCategorie(Categorie.valueOf(categorieDB.toUpperCase()));
 
-            // Récupération du champ certification (true/false)
-            f.setCertification(rs.getBoolean("certification"));
+                // Récupération du champ certification (true/false)
+                f.setCertification(rs.getBoolean("certification"));
 
-            // Ajout de la formation dans la liste
-            formations.add(f);
+                // Ajout de la formation dans la liste
+                formations.add(f);
+            }
         }
 
         // Retour de la liste des formations
