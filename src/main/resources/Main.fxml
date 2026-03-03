@@ -32,11 +32,11 @@
 
             <Label text="Navigation" styleClass="section-label"/>
 
-            <Button text="📊 Dashboard" fx:id="btnDashboard" onAction="#openDashboard" styleClass="sidebar-btn"/>
-            <Button text="📘 Formations" fx:id="btnFormation" onAction="#openFormation" styleClass="sidebar-btn"/>
-            <Button text="👨‍🎓 Apprenants" fx:id="btnApprenant" onAction="#openApprenant" styleClass="sidebar-btn"/>
-            <Button text="⬅ Changer espace" onAction="#backToRoleSelection" styleClass="sidebar-btn secondary-btn"/>
-            <Button text="Quitter" onAction="#quitter" styleClass="sidebar-btn danger-btn"/>
+            <Button text="📊 Dashboard" fx:id="btnDashboard" onAction="#openDashboard" styleClass="sidebar-btn" maxWidth="1.7976931348623157E308"/>
+            <Button text="📘 Formations" fx:id="btnFormation" onAction="#openFormation" styleClass="sidebar-btn" maxWidth="1.7976931348623157E308"/>
+            <Button text="👨‍🎓 Apprenants" fx:id="btnApprenant" onAction="#openApprenant" styleClass="sidebar-btn" maxWidth="1.7976931348623157E308"/>
+            <Button text="⬅ Changer espace" onAction="#backToRoleSelection" styleClass="sidebar-btn secondary-btn" maxWidth="1.7976931348623157E308"/>
+            <Button text="Quitter" onAction="#quitter" styleClass="sidebar-btn danger-btn" maxWidth="1.7976931348623157E308"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 

@@ -465,7 +465,7 @@
 }
 
 .sidebar-btn {
-    -fx-alignment: CENTER_LEFT;
+    -fx-alignment: CENTER;
     -fx-background-radius: 10;
     -fx-padding: 10 12;
     -fx-font-size: 13px;
@@ -580,7 +580,7 @@
     -fx-background-color: rgba(255, 255, 255, 0.08);
     -fx-background-radius: 10;
     -fx-padding: 12 14;
-    -fx-alignment: CENTER_LEFT;
+    -fx-alignment: CENTER;
     -fx-text-fill: #f5f8ff;
     -fx-font-size: 13;
     -fx-font-weight: 700;
@@ -750,7 +750,7 @@
 }
 
 .dark-mode .table-view .column-header-background {
-    -fx-background-color: #152238;
+    -fx-background-color: #0f2947;
 }
 
 .dark-mode .table-view .column-header .label,
@@ -784,4 +784,12 @@
 
 .dark-mode .button:hover {
     -fx-background-color: linear-gradient(to right, #084fc7, #2d6de0);
+}
+
+.dark-mode .table-view .filler {
+    -fx-background-color: #0f2947;
+}
+
+.dark-mode .table-view .column-header {
+    -fx-background-color: #0f2947;
 }
