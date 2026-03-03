@@ -6,7 +6,6 @@ import entities.Formation;
 import entities.FormationFeedback;
 import entities.Niveau;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -52,7 +51,6 @@ public class FormationController implements Initializable {
     @FXML private CheckBox cbCertification;
 
     @FXML private TableView<Formation> tableFormation;
-    @FXML private TableColumn<Formation, Integer> colId;
     @FXML private TableColumn<Formation, String> colTitre;
     @FXML private TableColumn<Formation, Integer> colDuree;
     @FXML private TableColumn<Formation, Niveau> colNiveau;
@@ -95,7 +93,6 @@ public class FormationController implements Initializable {
         cbSortOrder.setItems(FXCollections.observableArrayList("Asc", "Desc"));
         cbSortOrder.setValue("Asc");
 
-        colId.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId_formation()).asObject());
         colTitre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTitre()));
         colDuree.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getDuree()).asObject());
         colNiveau.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getNiveau()));

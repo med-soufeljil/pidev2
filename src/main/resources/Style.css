@@ -817,3 +817,44 @@
     -fx-fill: #ffffff;
     -fx-text-fill: #ffffff;
 }
+
+
+/* Dashboard contrast fixes (light/dark readability) */
+.dashboard-root .pie-chart .chart-pie-label,
+.dashboard-root .pie-chart .chart-pie-label-line,
+.dashboard-root .axis .text,
+.dashboard-root .axis-label,
+.dashboard-root .chart-legend .label,
+.dashboard-root .chart-title,
+.dashboard-root .label {
+    -fx-fill: #000000;
+    -fx-stroke: #000000;
+    -fx-text-fill: #000000;
+}
+
+.dark-mode .dashboard-root .pie-chart .chart-pie-label,
+.dark-mode .dashboard-root .pie-chart .chart-pie-label-line,
+.dark-mode .dashboard-root .axis .text,
+.dark-mode .dashboard-root .axis-label,
+.dark-mode .dashboard-root .chart-legend .label,
+.dark-mode .dashboard-root .chart-title,
+.dark-mode .dashboard-root .label,
+.dark-mode .dashboard-root .kpi-label,
+.dark-mode .dashboard-root .kpi-number,
+.dark-mode .dashboard-root .panel-title {
+    -fx-fill: #ffffff;
+    -fx-stroke: #ffffff;
+    -fx-text-fill: #ffffff;
+}
+
+/* Dark mode table white grid lines */
+.dark-mode .table-view .table-cell,
+.dark-mode .table-view .column-header,
+.dark-mode .table-view .filler,
+.dark-mode .table-view .column-header-background {
+    -fx-border-color: rgba(255,255,255,0.85);
+}
+
+.dark-mode .table-view .table-row-cell {
+    -fx-border-color: rgba(255,255,255,0.35);
+}

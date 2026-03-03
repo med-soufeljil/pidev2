@@ -2,7 +2,6 @@ package controllers;
 
 import entities.Apprenant;
 import entities.Formation;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -40,7 +39,6 @@ public class ApprenantController implements Initializable {
     @FXML private ComboBox<String> cbSortOrder;
 
     @FXML private TableView<Apprenant> tableApprenant;
-    @FXML private TableColumn<Apprenant, Integer> colId;
     @FXML private TableColumn<Apprenant, String> colNom;
     @FXML private TableColumn<Apprenant, String> colPrenom;
     @FXML private TableColumn<Apprenant, String> colEmail;
@@ -69,7 +67,6 @@ public class ApprenantController implements Initializable {
             cbSortOrder.setItems(FXCollections.observableArrayList("Asc", "Desc"));
             cbSortOrder.setValue("Asc");
 
-            colId.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getIdApprenant()).asObject());
             colNom.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNom()));
             colPrenom.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPrenom()));
             colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));

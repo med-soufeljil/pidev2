@@ -39,7 +39,6 @@
             <Label text="Catalogue des formations" styleClass="panel-title"/>
             <TableView fx:id="tableFormation" prefHeight="500" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
                     <TableColumn fx:id="colTitre" text="Titre" prefWidth="220"/>
                     <TableColumn fx:id="colDuree" text="Durée" prefWidth="90"/>
                     <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
