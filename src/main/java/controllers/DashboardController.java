@@ -48,10 +48,6 @@ public class DashboardController {
     @FXML private PieChart pieSecondary;
 
     @FXML private TextField tfTech;
-    @FXML private Label lblMarket1;
-    @FXML private Label lblMarket2;
-    @FXML private Label lblMarket3;
-
     private final DashboardService dashboardService = new DashboardService();
     private DashboardStats stats;
 
@@ -169,9 +165,6 @@ public class DashboardController {
                 return;
             }
 
-            lblMarket1.setText(entries.size() > 0 ? entries.get(0) : "-");
-            lblMarket2.setText(entries.size() > 1 ? entries.get(1) : "-");
-            lblMarket3.setText(entries.size() > 2 ? entries.get(2) : "-");
             showTopMarketsPopup(tech, entries);
         } catch (Exception e) {
             error("Top markets", e.getMessage());

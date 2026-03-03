@@ -96,18 +96,32 @@ public class FormationService {
     // ============================
     // Cette méthode permet de supprimer une formation par son id
     public void supprimer(int id) throws SQLException {
+        boolean autoCommit = connection.getAutoCommit();
+        try {
+            connection.setAutoCommit(false);
 
-        // Requête SQL de suppression
-        String sql = "DELETE FROM formation WHERE id_formation=?";
+            try (PreparedStatement psFeedback = connection.prepareStatement("DELETE FROM formation_feedback WHERE id_formation=?")) {
+                psFeedback.setInt(1, id);
+                psFeedback.executeUpdate();
+            }
 
-        // Préparation de la requête SQL
-        PreparedStatement ps = connection.prepareStatement(sql);
+            try (PreparedStatement psApprenant = connection.prepareStatement("DELETE FROM apprenant WHERE id_formation=?")) {
+                psApprenant.setInt(1, id);
+                psApprenant.executeUpdate();
+            }
 
-        // Remplacement du ? par l’id reçu en paramètre
-        ps.setInt(1, id);
+            try (PreparedStatement psFormation = connection.prepareStatement("DELETE FROM formation WHERE id_formation=?")) {
+                psFormation.setInt(1, id);
+                psFormation.executeUpdate();
+            }
 
-        // Exécution de la requête DELETE
-        ps.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            connection.setAutoCommit(autoCommit);
+        }
     }
 
     // ============================
