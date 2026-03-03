@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.controllers.ChatbotFrontController">
+
+    <!-- Haut : Titre et boutons -->
+    <top>
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="← Retour" onAction="#handleRetour"
+                        style="-fx-background-color: #64748b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-cursor: hand; -fx-background-radius: 5;" />
+                <Label text="💬 Assistant Virtuel (Gemini AI)">
+                    <font>
+                        <Font name="System Bold" size="20" />
+                    </font>
+                </Label>
+                <!-- Remplacer Region par Pane avec HBox.hgrow -->
+                <Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="resetButton" text="🔄 Nouvelle conversation"
+                        style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-cursor: hand; -fx-background-radius: 5;" />
+            </HBox>
+            <Label text="Posez toutes vos questions sur les événements. Je suis là pour vous aider !"
+                   style="-fx-text-fill: #666666; -fx-font-size: 14px;" />
+        </VBox>
+    </top>
+
+    <!-- Centre : Zone des messages -->
+    <center>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true"
+                    style="-fx-background: #f8fafc; -fx-background-color: #f8fafc; -fx-border-color: transparent;">
+            <content>
+                <VBox fx:id="messagesContainer" spacing="10" style="-fx-padding: 20;" />
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- Bas : Zone de saisie -->
+    <bottom>
+        <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, -2);">
+
+            <!-- Indicateur de frappe -->
+            <Label fx:id="typingIndicator" text="🤖 L'assistant est en train d'écrire..."
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 12px; -fx-padding: 0 0 5 10;"
+                   visible="false" />
+
+            <HBox spacing="10">
+                <TextField fx:id="inputField" promptText="Posez votre question ici..."
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-padding: 12 15; -fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #e2e8f0; -fx-font-size: 14px;" />
+                <Button fx:id="sendButton" text="Envoyer"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 25; -fx-cursor: hand; -fx-background-radius: 25; -fx-font-size: 14px;" />
+            </HBox>
+
+            <HBox spacing="20" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                <Label text="Suggestions :" style="-fx-text-fill: #64748b; -fx-font-size: 12px;" />
+                <Button text="📅 Événements à venir" style="-fx-background-color: #e2e8f0; -fx-text-fill: #334155; -fx-cursor: hand; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 15;" />
+                <Button text="📍 Comment s'inscrire ?" style="-fx-background-color: #e2e8f0; -fx-text-fill: #334155; -fx-cursor: hand; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 15;" />
+                <Button text="🌦️ Météo" style="-fx-background-color: #e2e8f0; -fx-text-fill: #334155; -fx-cursor: hand; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 15;" />
+            </HBox>
+        </VBox>
+    </bottom>
+
+</BorderPane>

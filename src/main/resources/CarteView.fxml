@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="com.esprit.controllers.CarteController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
+
+    <Label text="🗺️ Localisation des Événements">
+        <font>
+            <Font name="System Bold" size="28" />
+        </font>
+    </Label>
+
+    <Label text="Trouvez et visualisez l'emplacement exact de vos événements"
+           style="-fx-text-fill: #666666; -fx-font-size: 14px;" />
+
+    <ComboBox fx:id="cbEvenement" promptText="Choisir un événement..." maxWidth="500" />
+
+    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+
+        <Label text="📍 Informations de localisation" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+        <GridPane hgap="10" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="120" />
+                <ColumnConstraints minWidth="300" />
+            </columnConstraints>
+
+            <Label text="Coordonnées:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+            <Label fx:id="lblCoordonnees" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+            <Label text="Adresse:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+            <Label fx:id="lblAdresse" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1" wrapText="true" />
+
+            <Label text="Ville:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+            <Label fx:id="lblVille" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+            <Label text="Pays:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+            <Label fx:id="lblPays" text="-" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+        </GridPane>
+
+        <Separator />
+
+        <Label text="🔗 Ouvrir dans:" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+
+        <!-- CORRECTION: Remplacé wrapWidth par spacing et ajouté un conteneur avec largeur fixe -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Hyperlink fx:id="linkGoogleMaps" text="Google Maps (coordonnées)" />
+            <Label text="|" />
+            <Hyperlink fx:id="linkGoogleMapsAddress" text="Google Maps (adresse)" />
+            <Label text="|" />
+            <Hyperlink fx:id="linkOpenStreetMap" text="OpenStreetMap" />
+            <Label text="|" />
+            <Hyperlink fx:id="linkDirections" text="Itinéraire" />
+        </HBox>
+
+    </VBox>
+</VBox>

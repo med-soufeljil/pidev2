@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="450.0" style="-fx-background-color: white; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.controllers.DetailsEvenementController">
+
+    <children>
+        <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <children>
+                <!-- Bouton fermer -->
+                <HBox alignment="TOP_RIGHT">
+                    <Button onAction="#handleFermer" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                        <graphic>
+                            <Label text="✕" style="-fx-font-size: 20px; -fx-text-fill: #94a3b8;" />
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- En-tête avec emoji -->
+                <HBox alignment="CENTER" spacing="15">
+                    <Label fx:id="emojiLabel" style="-fx-font-size: 64px;" />
+                    <Label fx:id="titreLabel" wrapText="true" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                </HBox>
+
+                <!-- Rectangle coloré -->
+                <Rectangle fx:id="colorRectangle" width="410" height="10" arcWidth="10" arcHeight="10" />
+
+                <Separator />
+
+                <!-- Détails -->
+                <VBox spacing="15">
+                    <children>
+                        <!-- Date -->
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label text="📅" style="-fx-font-size: 20px;" />
+                            <VBox>
+                                <Label text="Date" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" />
+                                <Label fx:id="dateLabel" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Heure -->
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label text="⏰" style="-fx-font-size: 20px;" />
+                            <VBox>
+                                <Label text="Horaire" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" />
+                                <Label fx:id="heureLabel" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Lieu avec bouton Maps -->
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label text="📍" style="-fx-font-size: 20px;" />
+                            <VBox>
+                                <Label text="Lieu" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" />
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <Label fx:id="lieuLabel" style="-fx-font-size: 14px; -fx-font-weight: bold;" wrapText="true" />
+                                    <Button fx:id="mapsButton" onAction="#handleOuvrirMaps"
+                                            text="🗺️ Voir sur Maps" disable="true"
+                                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;" />
+                                </HBox>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Météo -->
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label text="🌤️" style="-fx-font-size: 20px;" />
+                            <VBox>
+                                <Label text="Météo prévue" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" />
+                                <Label fx:id="meteoLabel" text="Chargement..." style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Places -->
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label text="👥" style="-fx-font-size: 20px;" />
+                            <VBox>
+                                <Label text="Places" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" />
+                                <Label fx:id="placesLabel" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Description -->
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Label text="📝" style="-fx-font-size: 20px;" />
+                            <VBox>
+                                <Label text="Description" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;" />
+                                <Label fx:id="descriptionLabel" wrapText="true" style="-fx-font-size: 13px;" />
+                            </VBox>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <Separator />
+
+                <!-- Bouton Participer -->
+                <HBox alignment="CENTER">
+                    <Button fx:id="participerButton"
+                            prefHeight="45.0" prefWidth="200.0"
+                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;">
+                        <graphic>
+                            <HBox spacing="10" alignment="CENTER">
+                                <Label text="✓" style="-fx-font-size: 16px;" />
+                                <Label text="Participer" />
+                            </HBox>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
