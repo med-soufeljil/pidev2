@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.LoginController"
+      alignment="CENTER"
+      spacing="16"
+      style="-fx-background-color:#1a1a2e; -fx-padding:50;"
+      prefWidth="420" prefHeight="380">
+
+    <Label text="🔐 Connexion"
+           style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#e94560;"/>
+
+    <Label text="Gestion RH – Congés &amp; Télétravail"
+           style="-fx-font-size:13px; -fx-text-fill:#a0a0c0;"/>
+
+    <VBox spacing="8" style="-fx-padding:20 0 0 0;">
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="📧 Email :" prefWidth="90"
+                   style="-fx-text-fill:#e0e0e0; -fx-font-size:13px;"/>
+            <TextField fx:id="tfMail" promptText="votre@email.com"
+                       prefWidth="220"
+                       style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#e94560; -fx-border-radius:4; -fx-background-radius:4; -fx-padding:6;"/>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="🔑 Mot de passe :" prefWidth="90"
+                   style="-fx-text-fill:#e0e0e0; -fx-font-size:13px;"/>
+            <PasswordField fx:id="pfPassword" promptText="••••••••"
+                           prefWidth="220"
+                           style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#e94560; -fx-border-radius:4; -fx-background-radius:4; -fx-padding:6;"/>
+        </HBox>
+
+    </VBox>
+
+    <Button text="Se connecter" onAction="#onLogin"
+            prefWidth="200" prefHeight="40"
+            style="-fx-background-color:#e94560; -fx-text-fill:white; -fx-font-size:14px; -fx-font-weight:bold; -fx-background-radius:6; -fx-cursor:hand;"/>
+
+    <Label fx:id="lblMsg" style="-fx-text-fill:#cc0000; -fx-font-size:12px;"/>
+
+</VBox>

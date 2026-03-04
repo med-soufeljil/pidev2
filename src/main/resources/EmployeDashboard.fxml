@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.EmployeDashboardController"
+      spacing="10"
+      style="-fx-background-color:#0f3460; -fx-padding:20;"
+      prefWidth="980" prefHeight="680">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <Label fx:id="lblBienvenue"
+               style="-fx-font-size:18px; -fx-font-weight:bold; -fx-text-fill:#e94560;"/>
+        <Label fx:id="lblScore"
+               style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;
+                      -fx-background-color:#16213e; -fx-background-radius:20;
+                      -fx-padding:4 12;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="⟳ Rafraîchir" onAction="#onRefresh"
+                style="-fx-background-color:#16213e; -fx-text-fill:#e0e0e0; -fx-background-radius:4; -fx-cursor:hand;"/>
+        <Button text="🚪 Déconnexion" onAction="#onLogout"
+                style="-fx-background-color:#e94560; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <!-- Action buttons -->
+    <HBox spacing="14" alignment="CENTER_LEFT">
+        <Button text="➕ Demande Congé" onAction="#goToConge"
+                prefWidth="200" prefHeight="38"
+                style="-fx-background-color:#533483; -fx-text-fill:white; -fx-font-size:13px; -fx-background-radius:6; -fx-cursor:hand;"/>
+        <Button text="🏠 Demande Télétravail" onAction="#goToTeletravail"
+                prefWidth="200" prefHeight="38"
+                style="-fx-background-color:#533483; -fx-text-fill:white; -fx-font-size:13px; -fx-background-radius:6; -fx-cursor:hand;"/>
+    </HBox>
+
+    <!-- ══════════ STATISTIQUES ══════════════════════════════════════════════ -->
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <Label text="📊 Statistiques :"
+               style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;"/>
+        <Label fx:id="lblStatCTotal"  text="Congés total: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#90caf9; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblStatCAttente" text="En attente: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#fff176; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblStatCApprouve" text="Approuvés: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#a5d6a7; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblStatCRefuse" text="Refusés: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#ef9a9a; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblStatTTotal"  text="Télétravail total: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#90caf9; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblStatTAttente" text="En attente: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#fff176; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblStatTApprouve" text="Approuvés: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#a5d6a7; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblStatTRefuse" text="Refusés: 0"
+               style="-fx-background-color:#1e3a5f; -fx-text-fill:#ef9a9a; -fx-padding:4 10; -fx-background-radius:4;"/>
+    </HBox>
+
+    <!-- ══════════ CONGÉS ════════════════════════════════════════════════════ -->
+    <Label text="📋 Mes demandes de congé"
+           style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;"/>
+
+    <!-- Search + Sort for Congés -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="🔍 Recherche :" style="-fx-text-fill:#e0e0e0;"/>
+        <TextField fx:id="tfSearchConge" promptText="Type ou statut…" prefWidth="200"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#444; -fx-border-radius:4;"/>
+        <Label text="Trier par :" style="-fx-text-fill:#e0e0e0;"/>
+        <ComboBox fx:id="cbSortConge" prefWidth="140"
+                  style="-fx-background-color:#16213e; -fx-text-fill:white;"/>
+        <Button text="↑↓ Trier" onAction="#onSortConge"
+                style="-fx-background-color:#16213e; -fx-text-fill:#a0c4ff; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <TableView fx:id="tvConges" VBox.vgrow="ALWAYS"
+               style="-fx-background-color:#16213e; -fx-table-cell-border-color:transparent;">
+        <columns>
+            <TableColumn fx:id="colCType"        text="Type"            prefWidth="140"/>
+            <TableColumn fx:id="colCDebut"       text="Début"           prefWidth="100"/>
+            <TableColumn fx:id="colCFin"         text="Fin"             prefWidth="100"/>
+            <TableColumn fx:id="colCStatut"      text="Statut"          prefWidth="110"/>
+            <TableColumn fx:id="colCDate"        text="Demandé le"      prefWidth="155"/>
+            <TableColumn fx:id="colCCommentaire" text="Commentaire admin" prefWidth="240"/>
+        </columns>
+        <placeholder>
+            <Label text="Aucune demande de congé" style="-fx-text-fill:#888;"/>
+        </placeholder>
+    </TableView>
+
+    <!-- ══════════ TÉLÉTRAVAIL ════════════════════════════════════════════════ -->
+    <Label text="💻 Mes demandes de télétravail"
+           style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;"/>
+
+    <!-- Search + Sort for Télétravail -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="🔍 Recherche :" style="-fx-text-fill:#e0e0e0;"/>
+        <TextField fx:id="tfSearchTT" promptText="Statut…" prefWidth="200"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#444; -fx-border-radius:4;"/>
+        <Label text="Trier par :" style="-fx-text-fill:#e0e0e0;"/>
+        <ComboBox fx:id="cbSortTT" prefWidth="140"
+                  style="-fx-background-color:#16213e; -fx-text-fill:white;"/>
+        <Button text="↑↓ Trier" onAction="#onSortTT"
+                style="-fx-background-color:#16213e; -fx-text-fill:#a0c4ff; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <TableView fx:id="tvTeletravail" VBox.vgrow="ALWAYS"
+               style="-fx-background-color:#16213e; -fx-table-cell-border-color:transparent;">
+        <columns>
+            <TableColumn fx:id="colTDebut"        text="Début"           prefWidth="100"/>
+            <TableColumn fx:id="colTFin"          text="Fin"             prefWidth="100"/>
+            <TableColumn fx:id="colTStatut"       text="Statut"          prefWidth="110"/>
+            <TableColumn fx:id="colTDate"         text="Demandé le"      prefWidth="155"/>
+            <TableColumn fx:id="colTCommentaire"  text="Commentaire admin" prefWidth="240"/>
+        </columns>
+        <placeholder>
+            <Label text="Aucune demande de télétravail" style="-fx-text-fill:#888;"/>
+        </placeholder>
+    </TableView>
+
+</VBox>

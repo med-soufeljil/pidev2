@@ -1,0 +1,9 @@
+package models;
+
+public enum TypeConge {
+    CONGES_PAYES,
+    CONGES_VIE_PROFESSIONNELLE_FAMILIALE,
+    CONGES_MALADIE,
+    CONGES_SANS_SOLDE,
+    AUTRE
+}

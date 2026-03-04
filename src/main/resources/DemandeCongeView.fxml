@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.DemandeCongesController"
+      spacing="14"
+      style="-fx-padding:28; -fx-background-color:#0f3460;"
+      prefWidth="520">
+
+    <Label text="📋 Demande de Congé"
+           style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:#e94560;"/>
+
+    <Label fx:id="lblEmploye"
+           style="-fx-font-size:13px; -fx-text-fill:#a0c4ff;"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Type congé :" prefWidth="130" style="-fx-text-fill:#e0e0e0;"/>
+        <ComboBox fx:id="cbTypeConge" promptText="Choisir..." prefWidth="220"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Date début :" prefWidth="130" style="-fx-text-fill:#e0e0e0;"/>
+        <DatePicker fx:id="dpDebut"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Date fin :" prefWidth="130" style="-fx-text-fill:#e0e0e0;"/>
+        <DatePicker fx:id="dpFin"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Motif :" prefWidth="130" style="-fx-text-fill:#e0e0e0;"/>
+        <TextField fx:id="tfMotif" promptText="Motif obligatoire" prefWidth="300"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#444; -fx-border-radius:4;"/>
+    </HBox>
+
+    <HBox spacing="10" style="-fx-padding:10 0 0 0;">
+        <Button text="Envoyer" onAction="#onAjouter"
+                style="-fx-background-color:#e94560; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+        <Button text="Effacer" onAction="#onClear"
+                style="-fx-background-color:#533483; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+        <Button text="◀ Retour" onAction="#goBack"
+                style="-fx-background-color:#16213e; -fx-text-fill:#e0e0e0; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <Label fx:id="lblMsg" style="-fx-font-size:12px;"/>
+
+</VBox>

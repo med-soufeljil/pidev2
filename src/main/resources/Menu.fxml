@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.MenuController"
+      alignment="CENTER"
+      spacing="20"
+      style="-fx-padding:30; -fx-background-color:white;">
+
+    <Label text="Gestion des Demandes"
+           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button text="Demande Congé" prefWidth="200" prefHeight="45"
+                onAction="#goToConge"/>
+
+        <Button text="Demande Télétravail" prefWidth="200" prefHeight="45"
+                onAction="#goToTeletravail"/>
+    </HBox>
+
+</VBox>

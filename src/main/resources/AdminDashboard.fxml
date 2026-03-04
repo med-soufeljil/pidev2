@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.AdminDashboardController"
+      spacing="10"
+      style="-fx-background-color:#1a1a2e; -fx-padding:20;"
+      prefWidth="1050" prefHeight="740">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <Label text="🛡️ "
+               style="-fx-font-size:20px;"/>
+        <Label fx:id="lblBienvenue"
+               style="-fx-font-size:18px; -fx-font-weight:bold; -fx-text-fill:#e94560;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="⟳ Rafraîchir" onAction="#onRefresh"
+                style="-fx-background-color:#16213e; -fx-text-fill:#e0e0e0; -fx-background-radius:4; -fx-cursor:hand;"/>
+        <Button text="🚪 Déconnexion" onAction="#onLogout"
+                style="-fx-background-color:#e94560; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <!-- ══════════ STATISTIQUES ══════════════════════════════════════════════ -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="📊 Stats Congés :"
+               style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;"/>
+        <Label fx:id="lblAdminStatCTotal"   text="Total: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#90caf9; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblAdminStatCAttente" text="En attente: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#fff176; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblAdminStatCApprouve" text="Approuvés: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#a5d6a7; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblAdminStatCRefuse" text="Refusés: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#ef9a9a; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="📊 Stats Télétravail :"
+               style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;"/>
+        <Label fx:id="lblAdminStatTTotal"   text="Total: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#90caf9; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblAdminStatTAttente" text="En attente: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#fff176; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblAdminStatTApprouve" text="Approuvés: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#a5d6a7; -fx-padding:4 10; -fx-background-radius:4;"/>
+        <Label fx:id="lblAdminStatTRefuse" text="Refusés: 0"
+               style="-fx-background-color:#16213e; -fx-text-fill:#ef9a9a; -fx-padding:4 10; -fx-background-radius:4;"/>
+    </HBox>
+
+    <!-- ══════════ CONGÉS ══════════════════════════════════════════════════════ -->
+    <Label text="📋 Demandes de congé (EN ATTENTE + APPROUVÉ)"
+           style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;"/>
+
+    <!-- Search + Sort Congés -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="🔍 Rechercher :" style="-fx-text-fill:#e0e0e0;"/>
+        <TextField fx:id="tfSearchAdminConge" promptText="Nom ou prénom d'employé…" prefWidth="220"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#444; -fx-border-radius:4;"/>
+        <Label text="Trier par :" style="-fx-text-fill:#e0e0e0;"/>
+        <ComboBox fx:id="cbSortAdminConge" prefWidth="150"
+                  style="-fx-background-color:#16213e; -fx-text-fill:white;"/>
+        <Button text="↑↓ Trier" onAction="#onSortAdminConge"
+                style="-fx-background-color:#16213e; -fx-text-fill:#a0c4ff; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <TableView fx:id="tvConges" VBox.vgrow="ALWAYS"
+               style="-fx-background-color:#16213e;">
+        <columns>
+            <TableColumn fx:id="colCNom"      text="Nom"       prefWidth="90"/>
+            <TableColumn fx:id="colCPrenom"   text="Prénom"    prefWidth="90"/>
+            <TableColumn fx:id="colCType"     text="Type"      prefWidth="110"/>
+            <TableColumn fx:id="colCDebut"    text="Début"     prefWidth="82"/>
+            <TableColumn fx:id="colCFin"      text="Fin"       prefWidth="82"/>
+            <TableColumn fx:id="colCMotif"    text="Motif"     prefWidth="130"/>
+            <TableColumn fx:id="colCStatut"   text="Statut"    prefWidth="88"/>
+            <TableColumn fx:id="colCPriority" text="🏅 Priorité" prefWidth="175"/>
+            <TableColumn fx:id="colCScore"    text="🎯 Score"  prefWidth="150"/>
+            <TableColumn fx:id="colCHoliday"  text="📅 Férié ?" prefWidth="180"/>
+        </columns>
+        <placeholder>
+            <Label text="✅ Aucune demande de congé en attente" style="-fx-text-fill:#888;"/>
+        </placeholder>
+    </TableView>
+
+    <!-- Congé actions -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Commentaire :" style="-fx-text-fill:#e0e0e0;"/>
+        <TextField fx:id="tfCommentaireConge" promptText="Commentaire (optionnel)" prefWidth="320"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#444; -fx-border-radius:4;"/>
+        <Button text="✔ Approuver" onAction="#onApprouverConge"
+                style="-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+        <Button text="✖ Refuser" onAction="#onRefuserConge"
+                style="-fx-background-color:#e74c3c; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <!-- ══════════ TÉLÉTRAVAIL ════════════════════════════════════════════════ -->
+    <Label text="💻 Demandes de télétravail (EN ATTENTE + APPROUVÉ)"
+           style="-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#a0c4ff;"/>
+
+    <!-- Search + Sort Télétravail -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="🔍 Rechercher :" style="-fx-text-fill:#e0e0e0;"/>
+        <TextField fx:id="tfSearchAdminTT" promptText="Nom ou prénom d'employé…" prefWidth="220"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#444; -fx-border-radius:4;"/>
+        <Label text="Trier par :" style="-fx-text-fill:#e0e0e0;"/>
+        <ComboBox fx:id="cbSortAdminTT" prefWidth="150"
+                  style="-fx-background-color:#16213e; -fx-text-fill:white;"/>
+        <Button text="↑↓ Trier" onAction="#onSortAdminTT"
+                style="-fx-background-color:#16213e; -fx-text-fill:#a0c4ff; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+    <TableView fx:id="tvTeletravail" VBox.vgrow="ALWAYS"
+               style="-fx-background-color:#16213e;">
+        <columns>
+            <TableColumn fx:id="colTNom"     text="Nom"         prefWidth="90"/>
+            <TableColumn fx:id="colTPrenom"  text="Prénom"      prefWidth="90"/>
+            <TableColumn fx:id="colTDebut"   text="Début"       prefWidth="82"/>
+            <TableColumn fx:id="colTFin"     text="Fin"         prefWidth="82"/>
+            <TableColumn fx:id="colTMotif"   text="Motif"       prefWidth="130"/>
+            <TableColumn fx:id="colTStatut"  text="Statut"      prefWidth="88"/>
+            <TableColumn fx:id="colTAlerte"  text="⚠ Alerte"    prefWidth="175"/>
+            <TableColumn fx:id="colTScore"   text="🎯 Score"   prefWidth="148"/>
+            <TableColumn fx:id="colTWeather" text="🌤 Météo"   prefWidth="195"/>
+        </columns>
+        <placeholder>
+            <Label text="✅ Aucune demande de télétravail en attente" style="-fx-text-fill:#888;"/>
+        </placeholder>
+    </TableView>
+
+    <!-- Télétravail actions -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Commentaire :" style="-fx-text-fill:#e0e0e0;"/>
+        <TextField fx:id="tfCommentaireTT" promptText="Commentaire (optionnel)" prefWidth="320"
+                   style="-fx-background-color:#16213e; -fx-text-fill:white; -fx-border-color:#444; -fx-border-radius:4;"/>
+        <Button text="✔ Approuver" onAction="#onApprouverTT"
+                style="-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+        <Button text="✖ Refuser" onAction="#onRefuserTT"
+                style="-fx-background-color:#e74c3c; -fx-text-fill:white; -fx-background-radius:4; -fx-cursor:hand;"/>
+    </HBox>
+
+</VBox>
