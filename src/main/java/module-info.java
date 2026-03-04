@@ -28,11 +28,12 @@ module org.soa.tp1.pi_dev_s2 {
     exports org.soa.tp1.pi_dev_s2.dao;
     exports org.soa.tp1.pi_dev_s2.config;
     exports org.soa.tp1.pi_dev_s2.mouhamd.api;
-    exports org.soa.tp1.pi_dev_s2;
     // OPENS : nécessaire pour que JavaFX FXML accède aux classes privées
-    opens org.soa.tp1.pi_dev_s2 to javafx.fxml;
+    opens org.soa.tp1.pi_dev_s2 to javafx.graphics, javafx.fxml;
+
     opens org.soa.tp1.pi_dev_s2.com.esprit.controllers to javafx.fxml;
     opens org.soa.tp1.pi_dev_s2.controller to javafx.fxml;
     opens org.soa.tp1.pi_dev_s2.model to javafx.base, javafx.fxml;
     opens org.soa.tp1.pi_dev_s2.mouhamd.controllers to javafx.fxml;
+    exports org.soa.tp1.pi_dev_s2.mouhamd.test to javafx.fxml, javafx.graphics;
 }

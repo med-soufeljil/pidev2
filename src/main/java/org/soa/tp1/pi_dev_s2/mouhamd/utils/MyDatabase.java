@@ -8,7 +8,7 @@ import java.sql.Statement;
 public class MyDatabase {
     private final String USER = "root";
     private final String PASSWORD = "";
-    private final String URL = "jdbc:mysql://localhost:3306/pidev";
+    private final String URL = "jdbc:mysql://localhost:3306/PI_DEV_3a11_2?useSSL=false&serverTimezone=UTC";
     public Connection connection;
     public static MyDatabase instance = new MyDatabase();
 

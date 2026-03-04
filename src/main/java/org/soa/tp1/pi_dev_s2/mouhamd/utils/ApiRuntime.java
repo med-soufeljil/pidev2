@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public final class ApiRuntime {
-    private static int port = 8080;
+    private static int port = 1500;
     private static boolean started = false;
 
     private ApiRuntime() {
@@ -19,7 +19,7 @@ public final class ApiRuntime {
             return;
         }
 
-        for (int candidate = 8080; candidate <= 8090; candidate++) {
+        for (int candidate = 1500; candidate <= 1600; candidate++) {
             try {
                 ApiServer server = new ApiServer();
                 server.start(candidate);
@@ -34,8 +34,8 @@ public final class ApiRuntime {
         }
 
         // As fallback, if something is already listening on 8080 and responds, use it.
-        if (isApiReachable(8080)) {
-            port = 8080;
+        if (isApiReachable(1500)) {
+            port = 1500;
             started = true;
         }
     }

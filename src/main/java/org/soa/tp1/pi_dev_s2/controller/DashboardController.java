@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.soa.tp1.pi_dev_s2.com.esprit.services.StatutScheduler;
 import org.soa.tp1.pi_dev_s2.model.Utilisateur;
+import org.soa.tp1.pi_dev_s2.mouhamd.utils.ApiRuntime;
 import org.soa.tp1.pi_dev_s2.service.UtilisateurService;
 
 import java.sql.SQLException;
@@ -63,11 +64,11 @@ public class DashboardController {
         // ── ADMIN ──────────────────────────────
         if (role.equals("admin")) {
             sidebar.getChildren().add(makeSep("Administration"));
-            sidebar.getChildren().add(makeNavBtn("🏠  Accueil",           this::showWelcome));
             sidebar.getChildren().add(makeNavBtn("👥  Gérer utilisateurs", this::showGererUtilisateurs));
             sidebar.getChildren().add(makeNavBtn("🛡  Attribuer rôles",    this::showAttribuerRoles));
             sidebar.getChildren().add(makeNavBtn("📚  Formations",         this::showGererFormations));
             sidebar.getChildren().add(makeNavBtn("🎉  Gérer événements",   this::showGererEvenements));
+            sidebar.getChildren().add(makeNavBtn("💼  Recrutement", this::showGererRecrutement));
             sidebar.getChildren().add(makeNavBtn("👤  Mon Profil",         this::showMonProfil));
             sidebar.getChildren().add(makeNavBtn("📊  Statistiques",       this::showStats));
         }
@@ -231,7 +232,13 @@ public class DashboardController {
             setContent(root);
         } catch (Exception e) { e.printStackTrace(); }
     }
-
+    private void showGererRecrutement() {
+        lblPageTitle.setText("Gestion du Recrutement");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/RoleSelectionView.fxml"));
+            setContent(root);
+        } catch (Exception e) { e.printStackTrace(); }
+    }
     private void showGererFormations() {
         lblPageTitle.setText("Formations");
         try {
