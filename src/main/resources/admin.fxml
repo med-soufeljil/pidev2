@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.soa.tp1.pi_dev_s2.controller.AdminController"
+        spacing="14"
+        style="-fx-background-color: #F0F4F8;">
+
+    <!-- Toolbar -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+
+        <TextField
+                fx:id="txtSearch"
+                promptText="🔍  Rechercher par nom, email, rôle..."
+                style="-fx-background-radius: 8; -fx-border-radius: 8;
+                   -fx-border-color: #E0E0E0; -fx-border-width: 1.5;
+                   -fx-padding: 9 14; -fx-pref-width: 300; -fx-background-color: white;" />
+
+        <Region HBox.hgrow="ALWAYS" />
+
+        <Label fx:id="lblCount" text="Total : 0 utilisateurs"
+               style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+
+        <Button text="➕ Ajouter" onAction="#handleAdd"
+                style="-fx-background-color: #2E7D32; -fx-text-fill: white;
+                       -fx-background-radius: 8; -fx-padding: 9 16;
+                       -fx-font-weight: bold; -fx-cursor: hand;" />
+
+        <Button text="✏ Modifier" onAction="#handleEdit"
+                style="-fx-background-color: #E65100; -fx-text-fill: white;
+                       -fx-background-radius: 8; -fx-padding: 9 16;
+                       -fx-font-weight: bold; -fx-cursor: hand;" />
+
+        <Button text="🗑 Supprimer" onAction="#handleDelete"
+                style="-fx-background-color: #C62828; -fx-text-fill: white;
+                       -fx-background-radius: 8; -fx-padding: 9 16;
+                       -fx-font-weight: bold; -fx-cursor: hand;" />
+
+        <Button text="📤 CSV" onAction="#handleExportCSV"
+                style="-fx-background-color: #00695C; -fx-text-fill: white;
+                       -fx-background-radius: 8; -fx-padding: 9 14;
+                       -fx-font-weight: bold; -fx-cursor: hand;" />
+
+        <Button text="🔄" onAction="#handleRefresh"
+                style="-fx-background-color: #546E7A; -fx-text-fill: white;
+                       -fx-background-radius: 8; -fx-padding: 9 12; -fx-cursor: hand;" />
+
+    </HBox>
+
+    <!-- Table -->
+    <TableView
+            fx:id="tableUsers"
+            VBox.vgrow="ALWAYS"
+            style="-fx-background-color: white; -fx-background-radius: 14;
+               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 3);
+               -fx-border-color: transparent;">
+
+        <columns>
+            <TableColumn fx:id="colId"     text="ID"      prefWidth="55" />
+            <TableColumn fx:id="colNom"    text="Nom"     prefWidth="140" />
+            <TableColumn fx:id="colPrenom" text="Prénom"  prefWidth="140" />
+            <TableColumn fx:id="colEmail"  text="Email"   prefWidth="240" />
+            <TableColumn fx:id="colRole"   text="Rôle"    prefWidth="110" />
+        </columns>
+
+        <placeholder>
+            <Label text="Aucun utilisateur trouvé."
+                   style="-fx-text-fill: #aaa; -fx-font-size: 14px;" />
+        </placeholder>
+
+    </TableView>
+
+    <!-- Pagination -->
+    <Pagination
+            fx:id="pagination"
+            style="-fx-padding: 6 0 0 0;" />
+
+</VBox>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<!--
+    Ce FXML est chargé DANS le contentArea du Dashboard (StackPane).
+    Pas de BorderPane parent, pas de bouton Retour.
+    L'utilisateur navigue via la sidebar du dashboard.
+-->
+<ScrollPane fitToWidth="true"
+            style="-fx-background:transparent;-fx-background-color:transparent;-fx-border-color:transparent;"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.soa.tp1.pi_dev_s2.controller.ProfileController">
+
+    <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding:30 40;">
+
+        <!-- ══ CARTE AVATAR ══════════════════════════════════════════════ -->
+        <VBox alignment="CENTER" spacing="10"
+              style="-fx-background-color:white;
+                     -fx-background-radius:18;
+                     -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),14,0,0,4);
+                     -fx-padding:30 40;">
+            <maxWidth>560</maxWidth>
+
+            <!-- Cercle avatar avec initiales -->
+            <StackPane prefWidth="84" prefHeight="84" alignment="CENTER">
+                <Circle radius="42" fill="#1A237E" stroke="#3949AB" strokeWidth="3"/>
+                <Label fx:id="lblAvatar" text="??"
+                       style="-fx-font-size:26px;-fx-font-weight:bold;-fx-text-fill:white;"/>
+            </StackPane>
+
+            <Label fx:id="lblNomComplet" text="Nom Prénom"
+                   style="-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#1A237E;"/>
+
+            <Label fx:id="lblEmailHeader" text="email@exemple.com"
+                   style="-fx-font-size:13px;-fx-text-fill:#888;"/>
+
+            <Label fx:id="lblRoleBadge" text="USER"
+                   style="-fx-background-color:#2E7D3222;-fx-text-fill:#2E7D32;
+                          -fx-background-radius:20;-fx-padding:4 16;
+                          -fx-font-size:11px;-fx-font-weight:bold;"/>
+        </VBox>
+
+        <!-- ══ CARTE FORMULAIRE ══════════════════════════════════════════ -->
+        <VBox spacing="16"
+              style="-fx-background-color:white;
+                     -fx-background-radius:18;
+                     -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),14,0,0,4);
+                     -fx-padding:28 36;">
+            <maxWidth>560</maxWidth>
+
+            <Label text="✏  Informations personnelles"
+                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1A237E;"/>
+
+            <Separator style="-fx-background-color:#E8EAF6;"/>
+
+            <!-- Nom + Prénom côte à côte -->
+            <HBox spacing="14">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Nom" style="-fx-font-size:12px;-fx-text-fill:#666;-fx-font-weight:bold;"/>
+                    <TextField fx:id="txtNom" promptText="Votre nom"
+                               style="-fx-background-radius:8;-fx-border-radius:8;
+                                      -fx-border-color:#E0E0E0;-fx-border-width:1.5;
+                                      -fx-padding:10;-fx-font-size:13px;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Prénom" style="-fx-font-size:12px;-fx-text-fill:#666;-fx-font-weight:bold;"/>
+                    <TextField fx:id="txtPrenom" promptText="Votre prénom"
+                               style="-fx-background-radius:8;-fx-border-radius:8;
+                                      -fx-border-color:#E0E0E0;-fx-border-width:1.5;
+                                      -fx-padding:10;-fx-font-size:13px;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Email -->
+            <VBox spacing="6">
+                <Label text="Adresse email" style="-fx-font-size:12px;-fx-text-fill:#666;-fx-font-weight:bold;"/>
+                <TextField fx:id="txtEmail" promptText="votre@email.com"
+                           style="-fx-background-radius:8;-fx-border-radius:8;
+                                  -fx-border-color:#E0E0E0;-fx-border-width:1.5;
+                                  -fx-padding:10;-fx-font-size:13px;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color:#E8EAF6;"/>
+
+            <!-- Bouton toggle MDP -->
+            <Button fx:id="btnToggleMdp"
+                    text="🔑 Changer mon mot de passe"
+                    onAction="#handleToggleMdp"
+                    maxWidth="1.7976931348623157E308"
+                    style="-fx-background-color:#E8EAF6;
+                           -fx-text-fill:#3949AB;
+                           -fx-font-weight:bold;
+                           -fx-background-radius:8;
+                           -fx-border-radius:8;
+                           -fx-padding:10;
+                           -fx-cursor:hand;
+                           -fx-font-size:13px;"/>
+
+            <!-- ── Section MDP (masquée par défaut) ────────────────── -->
+            <VBox fx:id="panelMdp" spacing="12"
+                  style="-fx-background-color:#F5F7FF;
+                         -fx-background-radius:10;
+                         -fx-border-color:#C5CAE9;
+                         -fx-border-radius:10;
+                         -fx-border-width:1;
+                         -fx-padding:16;">
+
+                <Label text="🔒 Modification du mot de passe"
+                       style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#3949AB;"/>
+
+                <VBox spacing="6">
+                    <Label text="Mot de passe actuel"
+                           style="-fx-font-size:12px;-fx-text-fill:#666;-fx-font-weight:bold;"/>
+                    <PasswordField fx:id="txtPasswordActuel" promptText="••••••••"
+                                   style="-fx-background-radius:8;-fx-border-radius:8;
+                                          -fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:10;"/>
+                </VBox>
+
+                <HBox spacing="12">
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="Nouveau mot de passe"
+                               style="-fx-font-size:12px;-fx-text-fill:#666;-fx-font-weight:bold;"/>
+                        <PasswordField fx:id="txtPasswordNouveau" promptText="6 caractères min."
+                                       style="-fx-background-radius:8;-fx-border-radius:8;
+                                              -fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:10;"/>
+                    </VBox>
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="Confirmer le nouveau"
+                               style="-fx-font-size:12px;-fx-text-fill:#666;-fx-font-weight:bold;"/>
+                        <PasswordField fx:id="txtPasswordConfirm" promptText="••••••••"
+                                       style="-fx-background-radius:8;-fx-border-radius:8;
+                                              -fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:10;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Message feedback -->
+            <Label fx:id="lblMessage" text="" wrapText="true"
+                   style="-fx-font-size:12px;"/>
+
+            <!-- Bouton Enregistrer -->
+            <Button text="💾  Enregistrer les modifications"
+                    onAction="#handleSave"
+                    maxWidth="1.7976931348623157E308"
+                    style="-fx-background-color:#1A237E;
+                           -fx-text-fill:white;
+                           -fx-font-weight:bold;
+                           -fx-font-size:14px;
+                           -fx-background-radius:10;
+                           -fx-padding:13;
+                           -fx-cursor:hand;"/>
+
+        </VBox>
+
+    </VBox>
+</ScrollPane>

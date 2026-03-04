@@ -1,0 +1,7 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<VBox spacing="10" alignment="CENTER">
+    <Button text="Gérer utilisateurs"/>
+    <Button text="Gérer offres"/>
+    <Button text="Gérer congés"/>
+</VBox>

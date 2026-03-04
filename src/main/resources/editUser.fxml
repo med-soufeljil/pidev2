@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.soa.tp1.pi_dev_s2.controller.EditUserController"
+        spacing="14" prefWidth="420"
+        style="-fx-background-color: white; -fx-padding: 32 28;">
+
+    <Label fx:id="title" text="Utilisateur"
+           style="-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#1A237E;"/>
+
+    <Separator/>
+
+    <VBox spacing="4">
+        <Label text="Nom" style="-fx-font-size:12px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+        <TextField fx:id="nom" promptText="Nom"
+                   style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;
+                   -fx-border-width:1.5;-fx-padding:10;-fx-max-width:infinity;"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Prénom" style="-fx-font-size:12px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+        <TextField fx:id="prenom" promptText="Prénom"
+                   style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;
+                   -fx-border-width:1.5;-fx-padding:10;-fx-max-width:infinity;"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Email" style="-fx-font-size:12px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+        <TextField fx:id="email" promptText="email@exemple.com"
+                   style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;
+                   -fx-border-width:1.5;-fx-padding:10;-fx-max-width:infinity;"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Rôle" style="-fx-font-size:12px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+        <ComboBox fx:id="comboRole" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox spacing="4">
+        <Label text="Mot de passe" style="-fx-font-size:12px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+        <PasswordField fx:id="password" promptText="••••••••"
+                       style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;
+                   -fx-border-width:1.5;-fx-padding:10;-fx-max-width:infinity;"/>
+    </VBox>
+
+    <Label fx:id="message" text="" style="-fx-font-size:12px;"/>
+
+    <HBox spacing="12">
+        <Button text="💾 Sauvegarder" onAction="#handleSave" HBox.hgrow="ALWAYS"
+                maxWidth="Infinity"
+                style="-fx-background-color:#1A237E;-fx-text-fill:white;
+                       -fx-font-weight:bold;-fx-background-radius:8;
+                       -fx-padding:11;-fx-cursor:hand;"/>
+        <Button text="Annuler" onAction="#handleCancel"
+                style="-fx-background-color:#E0E0E0;-fx-text-fill:#333;
+                       -fx-background-radius:8;-fx-padding:11 20;-fx-cursor:hand;"/>
+    </HBox>
+
+</VBox>

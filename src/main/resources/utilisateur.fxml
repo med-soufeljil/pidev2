@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.awt.TextField?>
+<?import java.awt.Button?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" >
+
+    <top>
+        <HBox spacing="10" padding="10">
+            <TextField fx:id="txtName" promptText="Name"/>
+            <TextField fx:id="txtEmail" promptText="Email"/>
+
+            <Button text="Add"  />
+            <Button text="Update" />
+            <Button text="Delete" />
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="tableView">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+            </columns>
+        </TableView>
+    </center>
+
+</BorderPane>

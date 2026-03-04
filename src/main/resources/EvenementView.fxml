@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="12" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.soa.tp1.pi_dev_s2.controller.EvenementController"
+      style="-fx-padding: 20; -fx-background-color: #F0F4F8;">
+
+    <Label text="🎉 Gestion des Événements"
+           style="-fx-font-size:22px;-fx-font-weight:bold;-fx-text-fill:#1A237E;"/>
+
+    <!-- Toolbar recherche -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="tfRecherche" promptText="🔍 Rechercher..." prefWidth="300"
+                   style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;
+                   -fx-border-width:1.5;-fx-padding:8 12;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblCount" text="0 événement(s)"
+               style="-fx-text-fill:#666;-fx-font-size:12px;"/>
+    </HBox>
+
+    <!-- Boutons CRUD -->
+    <HBox spacing="10">
+        <Button text="➕ Ajouter"     onAction="#handleAjouter"
+                style="-fx-background-color:#2E7D32;-fx-text-fill:white;-fx-background-radius:8;-fx-padding:9 16;-fx-font-weight:bold;-fx-cursor:hand;"/>
+        <Button text="✏ Modifier"    onAction="#handleModifier"
+                style="-fx-background-color:#E65100;-fx-text-fill:white;-fx-background-radius:8;-fx-padding:9 16;-fx-font-weight:bold;-fx-cursor:hand;"/>
+        <Button text="🗑 Supprimer"   onAction="#handleSupprimer"
+                style="-fx-background-color:#C62828;-fx-text-fill:white;-fx-background-radius:8;-fx-padding:9 16;-fx-font-weight:bold;-fx-cursor:hand;"/>
+        <Button text="✅ Participer"  onAction="#handleParticiper"
+                style="-fx-background-color:#1A237E;-fx-text-fill:white;-fx-background-radius:8;-fx-padding:9 16;-fx-font-weight:bold;-fx-cursor:hand;"/>
+        <Button text="🔄 Actualiser"  onAction="#handleActualiser"
+                style="-fx-background-color:#546E7A;-fx-text-fill:white;-fx-background-radius:8;-fx-padding:9 14;-fx-cursor:hand;"/>
+    </HBox>
+
+    <Label fx:id="message" text="" style="-fx-font-size:12px;"/>
+
+    <SplitPane dividerPositions="0.58" VBox.vgrow="ALWAYS">
+
+        <!-- Table événements -->
+        <VBox style="-fx-background-color:white;-fx-background-radius:12;
+                     -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),10,0,0,3);">
+            <TableView fx:id="tableEvenements" VBox.vgrow="ALWAYS"
+                       style="-fx-background-color:transparent;-fx-border-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colTitre"   text="Titre"    prefWidth="170"/>
+                    <TableColumn fx:id="colDate"    text="Date"     prefWidth="100"/>
+                    <TableColumn fx:id="colLieu"    text="Lieu"     prefWidth="140"/>
+                    <TableColumn fx:id="colPlaces"  text="Places"   prefWidth="70"/>
+                    <TableColumn fx:id="colInscrits" text="Inscrits" prefWidth="70"/>
+                    <TableColumn fx:id="colStatut"  text="Statut"   prefWidth="90"/>
+                </columns>
+                <placeholder>
+                    <Label text="Aucun événement." style="-fx-text-fill:#aaa;"/>
+                </placeholder>
+            </TableView>
+        </VBox>
+
+        <!-- Formulaire -->
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background-color:transparent;-fx-border-color:transparent;">
+            <VBox spacing="10" style="-fx-background-color:white;-fx-background-radius:12;
+                                      -fx-padding:20;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),10,0,0,3);">
+                <Label text="Détails événement"
+                       style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1A237E;"/>
+
+                <Label text="Titre" style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                <TextField fx:id="tfTitre" promptText="Titre de l'événement"
+                           style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:8;"/>
+
+                <Label text="Lieu" style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                <TextField fx:id="tfLieu" promptText="Lieu de l'événement"
+                           style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:8;"/>
+
+                <Label text="Nombre de places" style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                <TextField fx:id="tfPlaces" promptText="Ex: 50"
+                           style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:8;"/>
+
+                <Label text="Date" style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                <DatePicker fx:id="dpDate" maxWidth="Infinity"/>
+
+                <HBox spacing="10">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Heure début (HH:mm)"
+                               style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                        <TextField fx:id="tfHeureDebut" promptText="09:00"
+                                   style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:8;"/>
+                    </VBox>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Heure fin (HH:mm)"
+                               style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                        <TextField fx:id="tfHeureFin" promptText="17:00"
+                                   style="-fx-background-radius:8;-fx-border-radius:8;-fx-border-color:#E0E0E0;-fx-border-width:1.5;-fx-padding:8;"/>
+                    </VBox>
+                </HBox>
+
+                <Label text="Catégorie (ID)" style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                <ComboBox fx:id="cbCategorie" maxWidth="Infinity"/>
+
+                <Label text="Statut" style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                <ComboBox fx:id="cbStatut" maxWidth="Infinity"/>
+
+                <Label text="Description" style="-fx-font-size:11px;-fx-text-fill:#757575;-fx-font-weight:bold;"/>
+                <TextArea fx:id="tfDescription" promptText="Description..." prefRowCount="3"/>
+            </VBox>
+        </ScrollPane>
+
+    </SplitPane>
+</VBox>

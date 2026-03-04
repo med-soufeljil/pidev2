@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ApprenantFormController" stylesheets="@Style.css" styleClass="page-root">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+    <Label text="Formulaire apprenant" styleClass="section-title"/>
+    <TextField fx:id="tfNom" promptText="Nom"/>
+    <TextField fx:id="tfPrenom" promptText="Prénom"/>
+    <TextField fx:id="tfEmail" promptText="Email"/>
+    <ComboBox fx:id="cbStatut" promptText="Statut"/>
+    <HBox spacing="8">
+        <DatePicker fx:id="dpDebut" promptText="Date début" HBox.hgrow="ALWAYS"/>
+        <DatePicker fx:id="dpFin" promptText="Date fin" HBox.hgrow="ALWAYS"/>
+    </HBox>
+    <ComboBox fx:id="cbFormation" promptText="Formation"/>
+    <HBox spacing="8">
+        <Button text="Enregistrer" onAction="#save"/>
+        <Button text="Annuler" onAction="#cancel" styleClass="secondary-btn"/>
+    </HBox>
+</VBox>

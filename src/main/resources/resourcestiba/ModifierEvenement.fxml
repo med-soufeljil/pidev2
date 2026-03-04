@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="700.0" prefWidth="850.0" spacing="20.0" style="-fx-background-color: #F8F9FA;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.soa.tp1.pi_dev_s2.com.esprit.controllers.ModifierEvenementController">
+
+    <padding>
+        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+    </padding>
+
+    <children>
+        <Label text="Modifier l'Événement">
+            <font>
+                <Font name="System Bold" size="28.0" />
+            </font>
+        </Label>
+
+        <VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <GridPane hgap="20.0" vgap="15.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="350.0" minWidth="10.0" prefWidth="300.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="350.0" minWidth="10.0" prefWidth="300.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <!-- Titre -->
+                        <VBox spacing="5.0">
+                            <Label styleClass="label-form" text="Titre de l'événement *" />
+                            <TextField fx:id="tfTitre" promptText="Ex: Conférence Tech 2026" styleClass="input-field" />
+                        </VBox>
+
+                        <!-- Catégorie -->
+                        <VBox spacing="5.0" GridPane.columnIndex="1">
+                            <Label styleClass="label-form" text="Catégorie *" />
+                            <ComboBox fx:id="cbCategorie" prefHeight="40.0" promptText="Sélectionner une catégorie" styleClass="input-field" />
+                        </VBox>
+
+                        <!-- Date -->
+                        <VBox spacing="5.0" GridPane.rowIndex="1">
+                            <Label styleClass="label-form" text="Date de l'événement *" />
+                            <DatePicker fx:id="dpDateEvenement" promptText="jj/mm/aaaa" styleClass="input-field" prefHeight="40.0" />
+                        </VBox>
+
+                        <!-- Lieu -->
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label styleClass="label-form" text="Lieu *" />
+                            <TextField fx:id="tfLieu" promptText="Ex: Espace Tunis, Tunis" styleClass="input-field" />
+                        </VBox>
+
+                        <!-- Heure début -->
+                        <VBox spacing="5.0" GridPane.rowIndex="2">
+                            <Label styleClass="label-form" text="Heure de début" />
+                            <TextField fx:id="tfHeureDebut" promptText="HH:MM (ex: 14:30)" styleClass="input-field" />
+                        </VBox>
+
+                        <!-- Heure fin -->
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Label styleClass="label-form" text="Heure de fin" />
+                            <TextField fx:id="tfHeureFin" promptText="HH:MM (ex: 17:30)" styleClass="input-field" />
+                        </VBox>
+
+                        <!-- Places max -->
+                        <VBox spacing="5.0" GridPane.rowIndex="3">
+                            <Label styleClass="label-form" text="Nombre de places *" />
+                            <TextField fx:id="tfNombrePlacesMax" promptText="Ex: 100" styleClass="input-field" />
+                        </VBox>
+
+                        <!-- Statut -->
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <Label styleClass="label-form" text="Statut *" />
+                            <ComboBox fx:id="cbStatut" prefHeight="40.0" promptText="Sélectionner un statut" styleClass="input-field" />
+                        </VBox>
+
+                        <!-- Inscrits (lecture seule) -->
+                        <VBox spacing="5.0" GridPane.rowIndex="4">
+                            <Label styleClass="label-form" text="Nombre d'inscrits" />
+                            <TextField fx:id="tfNombreInscrits" editable="false" styleClass="input-field" style="-fx-background-color: #f5f5f5;" />
+                        </VBox>
+
+                        <!-- ID Catégorie caché -->
+                        <TextField fx:id="tfIdCategorie" visible="false" managed="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    </children>
+                </GridPane>
+
+                <!-- Description -->
+                <VBox spacing="5.0">
+                    <Label styleClass="label-form" text="Description détaillée" />
+                    <TextArea fx:id="taDescription" prefHeight="120.0" promptText="Décrivez l'événement..." styleClass="input-field" wrapText="true" />
+                </VBox>
+
+                <!-- Validation -->
+                <Label fx:id="lblValidation" style="-fx-text-fill: #d32f2f;" wrapText="true" />
+
+                <!-- Boutons -->
+                <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                    <children>
+                        <Button fx:id="btnAnnuler" onAction="#annuler" styleClass="btn-secondary" text="Annuler" />
+                        <Button fx:id="btnModifier" onAction="#modifier" styleClass="btn-primary" text="Modifier l'événement" />
+                    </children>
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</VBox>

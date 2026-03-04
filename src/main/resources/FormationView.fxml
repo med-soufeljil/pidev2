@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="12" alignment="TOP_LEFT"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.FormationController"
+      stylesheets="@Style.css"
+      styleClass="page-root content-area">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Gestion des Formations" styleClass="title-label"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn compact-btn"/>
+        <TextField fx:id="tfRecherche" promptText="🔍 Rechercher une formation..." prefWidth="340"/>
+        <Label text="Trier:"/>
+        <ComboBox fx:id="cbSortBy" prefWidth="130"/>
+        <ComboBox fx:id="cbSortOrder" prefWidth="130"/>
+        <Label text="Résultats:" styleClass="badge-label"/>
+        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button fx:id="btnAjouterFormation" text="Ajouter" onAction="#ajouter" styleClass="compact-btn toolbar-btn"/>
+        <Button text="Actualiser" onAction="#actualiser" styleClass="secondary-btn compact-btn toolbar-btn"/>
+        <Button fx:id="btnAfficherFeedbacks" text="Afficher feedbacks" onAction="#afficherFeedbacks" styleClass="secondary-btn compact-btn toolbar-btn"/>
+    </HBox>
+
+    <SplitPane dividerPositions="0.73" VBox.vgrow="ALWAYS">
+        <VBox spacing="10" styleClass="card">
+            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+            <Label text="Catalogue des formations" styleClass="panel-title"/>
+            <TableView fx:id="tableFormation" prefHeight="500" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colTitre" text="Titre" prefWidth="220"/>
+                    <TableColumn fx:id="colDuree" text="Durée" prefWidth="90"/>
+                    <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
+                    <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="140"/>
+                    <TableColumn fx:id="colCertif" text="Certif" prefWidth="90"/>
+                    <TableColumn fx:id="colPostulerAction" text="Action" prefWidth="110"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <VBox fx:id="boxEdition" spacing="12" styleClass="welcome-panel">
+            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+            <Label text="Feedbacks" styleClass="panel-title"/>
+            <Label text="Note moyenne"/>
+            <Label fx:id="lblAverageRating" text="0.0 / 5" styleClass="kpi-number"/>
+            <Button text="Ajouter feedback" onAction="#addFeedback"/>
+
+            <TextField fx:id="tfTitre" visible="false" managed="false"/>
+            <TextArea fx:id="tfDescription" visible="false" managed="false"/>
+            <TextField fx:id="tfDuree" visible="false" managed="false"/>
+            <ComboBox fx:id="cbNiveau" visible="false" managed="false"/>
+            <ComboBox fx:id="cbCategorie" visible="false" managed="false"/>
+            <CheckBox fx:id="cbCertification" visible="false" managed="false"/>
+            <HBox fx:id="hbCrud" visible="false" managed="false"/>
+            <Button fx:id="btnPostuler" text="Postuler" onAction="#postuler" visible="false" managed="false"/>
+            <TextField fx:id="tfFeedbackAuteur" visible="false" managed="false"/>
+            <TextArea fx:id="taFeedback" visible="false" managed="false"/>
+            <Slider fx:id="slRating" visible="false" managed="false"/>
+            <Label fx:id="lblRatingValue" text="4.0" visible="false" managed="false"/>
+            <TableView fx:id="tableFeedback" visible="false" managed="false">
+                <columns>
+                    <TableColumn fx:id="colFeedbackAuteur" text="Auteur"/>
+                    <TableColumn fx:id="colFeedbackNote" text="Note"/>
+                    <TableColumn fx:id="colFeedbackComment" text="Commentaire"/>
+                    <TableColumn fx:id="colFeedbackDate" text="Date"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </SplitPane>
+</VBox>

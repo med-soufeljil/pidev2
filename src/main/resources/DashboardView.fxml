@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" fitToHeight="false" pannable="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.DashboardController" stylesheets="@Style.css" styleClass="page-root dashboard-root">
+    <content>
+        <VBox spacing="16" styleClass="content-area">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+                <Label text="Dashboard Exécutif" styleClass="title-label"/>
+            </HBox>
+
+            <HBox spacing="12">
+                <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><padding><Insets top="12" right="12" bottom="12" left="12"/></padding><Label text="Formations" styleClass="kpi-label"/><Label fx:id="lblTotalFormations" text="0" styleClass="kpi-number"/></VBox>
+                <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><padding><Insets top="12" right="12" bottom="12" left="12"/></padding><Label text="Apprenants" styleClass="kpi-label"/><Label fx:id="lblTotalApprenants" text="0" styleClass="kpi-number"/></VBox>
+                <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><padding><Insets top="12" right="12" bottom="12" left="12"/></padding><Label text="Durée moyenne" styleClass="kpi-label"/><Label fx:id="lblAvgDuree" text="0" styleClass="kpi-number"/></VBox>
+                <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><padding><Insets top="12" right="12" bottom="12" left="12"/></padding><Label text="Formations certifiées" styleClass="kpi-label"/><Label fx:id="lblCertif" text="0" styleClass="kpi-number"/></VBox>
+            </HBox>
+
+            <HBox spacing="16">
+                <VBox spacing="10" fillWidth="true" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+                    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                    <Label text="Statistique certifications" styleClass="panel-title"/>
+                    <PieChart fx:id="pieChart" prefHeight="240" legendVisible="true"/>
+                </VBox>
+
+                <VBox spacing="10" fillWidth="true" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+                    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                    <Label text="Répartition par statut de formation" styleClass="panel-title"/>
+                    <PieChart fx:id="pieSecondary" prefHeight="240" legendVisible="true"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="16">
+                <VBox spacing="10" fillWidth="true" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+                    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                    <Label text="Nombre de feedbacks par formation" styleClass="panel-title"/>
+                    <BarChart fx:id="barFeedbacks" prefHeight="300" legendVisible="true" animated="false" categoryGap="16" barGap="4">
+                        <xAxis><CategoryAxis label="Formation" tickLabelRotation="-25"/></xAxis>
+                        <yAxis><NumberAxis label="Feedbacks"/></yAxis>
+                    </BarChart>
+                </VBox>
+
+                <VBox spacing="10" fillWidth="true" styleClass="welcome-panel dashboard-actions-box" HBox.hgrow="ALWAYS">
+                    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                    <Label text="Actions" styleClass="panel-title"/>
+                    <TextField fx:id="tfTech" promptText="java / spring / react ..."/>
+                    <Button text="Trouver Top 3" onAction="#findTopMarkets" styleClass="dashboard-action-btn"/>
+                    <Button text="Exporter rapport PDF" onAction="#exportPdf" styleClass="dashboard-action-btn"/>
+                    <Button text="Exporter CSV" onAction="#exportCsv" styleClass="dashboard-action-btn"/>
+                    <Button text="Rafraîchir dashboard" onAction="#refreshDashboard" styleClass="dashboard-action-btn"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

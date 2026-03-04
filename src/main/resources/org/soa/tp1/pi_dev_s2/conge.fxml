@@ -1,0 +1,10 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<VBox spacing="10"
+      xmlns:fx="http://javafx.com/fxml">
+
+    <DatePicker/>
+    <DatePicker/>
+    <Button text="Demander congé"/>
+</VBox>

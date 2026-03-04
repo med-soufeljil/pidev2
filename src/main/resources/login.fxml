@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.soa.tp1.pi_dev_s2.controller.LoginController"
+           prefWidth="440" prefHeight="520"
+           style="-fx-background-color: linear-gradient(to bottom right, #0D47A1, #1E88E5);">
+    <VBox styleClass="login-card" alignment="CENTER" spacing="14">
+        <Label text="Connexion" styleClass="login-title"/>
+        <TextField  fx:id="email"    promptText="Email"        styleClass="form-field"/>
+        <PasswordField fx:id="password" promptText="Mot de passe" styleClass="form-field"/>
+        <Label fx:id="message" text="" styleClass="msg-error"/>
+        <Button text="Se connecter" onAction="#handleLogin"
+                styleClass="btn-primary btn-full"/>
+        <Separator/>
+        <Label text="Pas encore de compte ?"
+               style="-fx-text-fill:#aaa; -fx-font-size:12px;"/>
+        <Label text="Créer un compte" onMouseClicked="#handleRegister" styleClass="link-label"/>
+    </VBox>
+</StackPane>

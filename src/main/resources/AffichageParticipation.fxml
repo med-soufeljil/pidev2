@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="950.0" styleClass="root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.soa.tp1.pi_dev_s2.com.esprit.controllers.AffichageParticipationController">
+
+    <children>
+        <VBox spacing="25.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+            <children>
+
+                <!-- Header Section -->
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <children>
+                        <VBox alignment="CENTER_LEFT">
+                            <children>
+                                <Label fx:id="lblEventTitle" text="Gestion des Participations" textFill="#212b36">
+                                    <font>
+                                        <Font name="System Bold" size="30.0" />
+                                    </font>
+                                </Label>
+                                <Label text="Gérez les inscriptions et présences aux événements" textFill="#919eab">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                        <Pane HBox.hgrow="ALWAYS" />
+
+                        <!-- Filtre par événement -->
+                        <ComboBox fx:id="filterEventCombo" prefHeight="40.0" prefWidth="250.0" promptText="Filtrer par événement" styleClass="input-field" />
+
+                        <!-- Add Button -->
+                        <Button onAction="#handleAjouter" styleClass="btn-primary" text="+ Nouvelle Participation" />
+
+                        <!-- Refresh Button -->
+                        <Button onAction="#handleRefresh" styleClass="btn-secondary" text="↻" />
+
+                        <!-- Back Button -->
+                        <Button onAction="#handleRetour" styleClass="btn-secondary" text="← Retour" />
+
+                        <!-- Search Field -->
+                        <TextField fx:id="searchField" prefHeight="45.0" prefWidth="250.0" promptText="Rechercher..." styleClass="search-box">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextField>
+                    </children>
+                </HBox>
+
+                <!-- Table Section -->
+                <VBox styleClass="white-pane" VBox.vgrow="ALWAYS">
+                    <children>
+                        <TableView fx:id="tableParticipations" prefHeight="500.0" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colId" minWidth="50.0" text="ID" />
+                                <!-- Changé de "ID ÉVÉNEMENT" à "ÉVÉNEMENT" -->
+                                <TableColumn fx:id="colEvenement" minWidth="200.0" text="ÉVÉNEMENT" />
+                                <TableColumn fx:id="colDateInscription" minWidth="120.0" text="DATE INSCRIPTION" />
+                                <TableColumn fx:id="colStatut" minWidth="100.0" text="STATUT" />
+                                <TableColumn fx:id="colPresence" minWidth="100.0" text="PRÉSENCE" />
+                                <TableColumn fx:id="colAction" minWidth="120.0" prefWidth="130.0" style="-fx-alignment: CENTER;" text="ACTIONS" />
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                        </TableView>
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                </VBox>
+
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

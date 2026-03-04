@@ -1,0 +1,14 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<VBox spacing="10"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.soa.tp1.pi_dev_s2.controller.OffreController">
+
+    <TextField fx:id="titre" promptText="Titre"/>
+    <TextArea fx:id="description" promptText="Description"/>
+    <Button text="Ajouter"/>
+    <TableView fx:id="table"/>
+</VBox>
