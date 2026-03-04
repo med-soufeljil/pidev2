@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.soa.tp1.pi_dev_s2.com.esprit.services.StatutScheduler;
+import org.soa.tp1.pi_dev_s2.mouhamd.utils.SessionContext;
 import org.soa.tp1.pi_dev_s2.model.Utilisateur;
 import org.soa.tp1.pi_dev_s2.service.UtilisateurService;
 
@@ -67,6 +68,7 @@ public class DashboardController {
             sidebar.getChildren().add(makeNavBtn("👥  Gérer utilisateurs", this::showGererUtilisateurs));
             sidebar.getChildren().add(makeNavBtn("🛡  Attribuer rôles",    this::showAttribuerRoles));
             sidebar.getChildren().add(makeNavBtn("📚  Formations",         this::showGererFormations));
+            sidebar.getChildren().add(makeNavBtn("🧲  Recrutement",        this::showRecrutement));
             sidebar.getChildren().add(makeNavBtn("🎉  Gérer événements",   this::showGererEvenements));
             sidebar.getChildren().add(makeNavBtn("👤  Mon Profil",         this::showMonProfil));
             sidebar.getChildren().add(makeNavBtn("📊  Statistiques",       this::showStats));
@@ -167,6 +169,7 @@ public class DashboardController {
             case "admin" -> cards.getChildren().addAll(
                     makeQuickCard("👥", "Utilisateurs", "#3949AB", this::showGererUtilisateurs),
                     makeQuickCard("🛡", "Rôles",        "#6A1B9A", this::showAttribuerRoles),
+                    makeQuickCard("🧲", "Recrutement",  "#2E7D32", this::showRecrutement),
                     makeQuickCard("👤", "Mon Profil",   "#E65100", this::showMonProfil),
                     makeQuickCard("📊", "Statistiques", "#1565C0", this::showStats)
             );
@@ -198,7 +201,7 @@ public class DashboardController {
     private void showGererUtilisateurs() {
         lblPageTitle.setText("Gestion des Utilisateurs");
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/GestionUtilisateurs.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Gestionutilisateurs.fxml"));
             setContent(root);
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -236,6 +239,15 @@ public class DashboardController {
         lblPageTitle.setText("Formations");
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/FormationView.fxml"));
+            setContent(root);
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    private void showRecrutement() {
+        lblPageTitle.setText("Recrutement");
+        try {
+            SessionContext.setCurrentRole(SessionContext.Role.ADMIN);
+            Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
             setContent(root);
         } catch (Exception e) { e.printStackTrace(); }
     }

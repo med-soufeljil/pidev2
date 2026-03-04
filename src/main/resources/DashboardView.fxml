@@ -14,7 +14,7 @@
 
 <ScrollPane fitToWidth="true" fitToHeight="false" pannable="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.DashboardController" stylesheets="@Style.css" styleClass="page-root dashboard-root">
+            fx:controller="org.soa.tp1.pi_dev_s2.mouhamd.controllers.DashboardController" stylesheets="@style.css" styleClass="page-root dashboard-root">
     <content>
         <VBox spacing="16" styleClass="content-area">
             <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>

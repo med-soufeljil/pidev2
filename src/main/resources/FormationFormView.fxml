@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.FormationFormController" stylesheets="@Style.css" styleClass="page-root">
+      fx:controller="org.soa.tp1.pi_dev_s2.mouhamd.controllers.FormationFormController" stylesheets="@style.css" styleClass="page-root">
     <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
     <Label text="Formulaire formation" styleClass="section-title"/>
     <TextField fx:id="tfTitre" promptText="Titre"/>

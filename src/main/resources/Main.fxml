@@ -12,9 +12,9 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.MainController"
+            fx:controller="org.soa.tp1.pi_dev_s2.mouhamd.controllers.MainController"
             fx:id="rootPane"
-            stylesheets="@Style.css"
+            stylesheets="@style.css"
             prefHeight="900"
             prefWidth="1400"
             styleClass="page-root main-root" id="rootPane">

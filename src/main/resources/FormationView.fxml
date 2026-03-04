@@ -7,8 +7,8 @@
 <VBox spacing="12" alignment="TOP_LEFT"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.FormationController"
-      stylesheets="@Style.css"
+      fx:controller="org.soa.tp1.pi_dev_s2.mouhamd.controllers.FormationController"
+      stylesheets="@style.css"
       styleClass="page-root content-area">
 
     <padding>
