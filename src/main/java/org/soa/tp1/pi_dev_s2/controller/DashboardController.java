@@ -30,7 +30,24 @@ public class DashboardController {
     private StatutScheduler      statutScheduler;
 
     // ─────────────────────────────────────────
+    /**
+     * Compatibilité avec anciens contrôleurs qui injectent uniquement le rôle.
+     * Construit un utilisateur minimal puis délègue vers setUser(...).
+     */
+    public void setRole(String role) {
+        Utilisateur fallbackUser = new Utilisateur();
+        fallbackUser.setNom("Utilisateur");
+        fallbackUser.setPrenom("");
+        fallbackUser.setEmail("-");
+        fallbackUser.setRole(role == null || role.isBlank() ? "candidat" : role.trim().toLowerCase());
+        setUser(fallbackUser);
+    }
+
     public void setUser(Utilisateur user) {
+        if (user == null) {
+            setRole("candidat");
+            return;
+        }
         this.currentUser = user;
         lblUserName.setText(user.getNom() + " " + user.getPrenom());
         lblUserRole.setText("🏷 " + user.getRole().toUpperCase());
