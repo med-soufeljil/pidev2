@@ -27,17 +27,6 @@
       "App\\Tests\\": "tests/"
     }
   },
-  "scripts": {
-    "auto-scripts": {
-      "cache:clear": "symfony-cmd"
-    },
-    "post-install-cmd": [
-      "@auto-scripts"
-    ],
-    "post-update-cmd": [
-      "@auto-scripts"
-    ]
-  },
   "extra": {
     "symfony": {
       "allow-contrib": false,
