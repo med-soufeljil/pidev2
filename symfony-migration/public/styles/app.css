@@ -11,3 +11,5 @@ th, td { border-bottom: 1px solid #e5e7eb; padding: .6rem; text-align: left; }
 .btn { display: inline-block; background: #4f46e5; color: #fff; padding: .5rem .8rem; border-radius: 8px; text-decoration: none; border: 0; }
 form > div { margin-bottom: .75rem; }
 input, select, textarea { width: 100%; padding: .45rem; border: 1px solid #d1d5db; border-radius: 8px; }
+
+.btn-danger { background: #dc2626; }

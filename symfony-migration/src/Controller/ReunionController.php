@@ -23,7 +23,27 @@ class ReunionController extends AbstractController
     #[Route('/new', name: 'app_reunion_new')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
-        $item = new Reunion();
+        return $this->handleForm($request, $em, new Reunion());
+    }
+
+    #[Route('/{id}/edit', name: 'app_reunion_edit')]
+    public function edit(Reunion $item, Request $request, EntityManagerInterface $em): Response
+    {
+        return $this->handleForm($request, $em, $item);
+    }
+
+    #[Route('/{id}/delete', name: 'app_reunion_delete', methods: ['POST'])]
+    public function delete(Reunion $item, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete_reunion_'.$item->getId(), (string) $request->request->get('_token'))) {
+            $em->remove($item);
+            $em->flush();
+        }
+        return $this->redirectToRoute('app_reunion_index');
+    }
+
+    private function handleForm(Request $request, EntityManagerInterface $em, Reunion $item): Response
+    {
         $form = $this->createForm(ReunionType::class, $item);
         $form->handleRequest($request);
 
@@ -33,6 +53,6 @@ class ReunionController extends AbstractController
             return $this->redirectToRoute('app_reunion_index');
         }
 
-        return $this->render('reunion/form.html.twig', ['form' => $form]);
+        return $this->render('reunion/form.html.twig', ['form' => $form, 'item' => $item]);
     }
 }

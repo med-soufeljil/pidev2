@@ -23,7 +23,27 @@ class RecrutementController extends AbstractController
     #[Route('/new', name: 'app_recrutement_new')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
-        $item = new Recrutement();
+        return $this->handleForm($request, $em, new Recrutement());
+    }
+
+    #[Route('/{id}/edit', name: 'app_recrutement_edit')]
+    public function edit(Recrutement $item, Request $request, EntityManagerInterface $em): Response
+    {
+        return $this->handleForm($request, $em, $item);
+    }
+
+    #[Route('/{id}/delete', name: 'app_recrutement_delete', methods: ['POST'])]
+    public function delete(Recrutement $item, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete_recrutement_'.$item->getId(), (string) $request->request->get('_token'))) {
+            $em->remove($item);
+            $em->flush();
+        }
+        return $this->redirectToRoute('app_recrutement_index');
+    }
+
+    private function handleForm(Request $request, EntityManagerInterface $em, Recrutement $item): Response
+    {
         $form = $this->createForm(RecrutementType::class, $item);
         $form->handleRequest($request);
 
@@ -33,6 +53,6 @@ class RecrutementController extends AbstractController
             return $this->redirectToRoute('app_recrutement_index');
         }
 
-        return $this->render('recrutement/form.html.twig', ['form' => $form]);
+        return $this->render('recrutement/form.html.twig', ['form' => $form, 'item' => $item]);
     }
 }

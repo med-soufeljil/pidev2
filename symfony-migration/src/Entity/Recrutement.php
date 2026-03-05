@@ -6,19 +6,20 @@ use App\Repository\RecrutementRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecrutementRepository::class)]
+#[ORM\Table(name: 'recrutement')]
 class Recrutement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(name: 'idRec')]
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'idOffre', referencedColumnName: 'idOffre', nullable: false)]
     private ?Offre $offre = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'idCandidat', referencedColumnName: 'idCandidat', nullable: false)]
     private ?Candidat $candidat = null;
 
     public function getId(): ?int { return $this->id; }

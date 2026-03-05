@@ -6,23 +6,24 @@ use App\Repository\OffreRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OffreRepository::class)]
+#[ORM\Table(name: 'offre')]
 class Offre
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(name: 'idOffre')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'nomOffre', length: 255)]
     private string $nomOffre = '';
 
-    #[ORM\Column(enumType: TypeOffre::class)]
+    #[ORM\Column(name: 'type', enumType: TypeOffre::class)]
     private TypeOffre $type = TypeOffre::CDI;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(name: 'competences', type: 'text')]
     private string $competences = '';
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'salaire')]
     private int $salaire = 0;
 
     public function getId(): ?int { return $this->id; }

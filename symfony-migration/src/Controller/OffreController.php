@@ -23,7 +23,27 @@ class OffreController extends AbstractController
     #[Route('/new', name: 'app_offre_new')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
-        $item = new Offre();
+        return $this->handleForm($request, $em, new Offre());
+    }
+
+    #[Route('/{id}/edit', name: 'app_offre_edit')]
+    public function edit(Offre $item, Request $request, EntityManagerInterface $em): Response
+    {
+        return $this->handleForm($request, $em, $item);
+    }
+
+    #[Route('/{id}/delete', name: 'app_offre_delete', methods: ['POST'])]
+    public function delete(Offre $item, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete_offre_'.$item->getId(), (string) $request->request->get('_token'))) {
+            $em->remove($item);
+            $em->flush();
+        }
+        return $this->redirectToRoute('app_offre_index');
+    }
+
+    private function handleForm(Request $request, EntityManagerInterface $em, Offre $item): Response
+    {
         $form = $this->createForm(OffreType::class, $item);
         $form->handleRequest($request);
 
@@ -33,6 +53,6 @@ class OffreController extends AbstractController
             return $this->redirectToRoute('app_offre_index');
         }
 
-        return $this->render('offre/form.html.twig', ['form' => $form]);
+        return $this->render('offre/form.html.twig', ['form' => $form, 'item' => $item]);
     }
 }

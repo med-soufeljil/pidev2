@@ -3,11 +3,20 @@
 <h2>Candidats</h2>
 <a class="btn" href="{{ path('app_candidat_new') }}">Nouveau candidat</a>
 <table>
-<thead><tr><th>Nom</th><th>Prénom</th><th>Email</th><th>Statut</th><th>Score IA</th></tr></thead>
+<thead><tr><th>Nom</th><th>Prénom</th><th>Email</th><th>Statut</th><th>Score IA</th><th>Actions</th></tr></thead>
 <tbody>
 {% for item in items %}
-<tr><td>{{ item.nom }}</td><td>{{ item.prenom }}</td><td>{{ item.email }}</td><td>{{ item.statut }}</td><td>{{ item.aiScore }}</td></tr>
-{% else %}<tr><td colspan="5">Aucun candidat</td></tr>{% endfor %}
+<tr>
+<td>{{ item.nom }}</td><td>{{ item.prenom }}</td><td>{{ item.email }}</td><td>{{ item.statut }}</td><td>{{ item.aiScore }}</td>
+<td>
+  <a class="btn" href="{{ path('app_candidat_edit', {id: item.id}) }}">Modifier</a>
+  <form method="post" action="{{ path('app_candidat_delete', {id: item.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer ?')">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_candidat_' ~ item.id) }}">
+    <button class="btn btn-danger">Supprimer</button>
+  </form>
+</td>
+</tr>
+{% else %}<tr><td colspan="6">Aucun candidat</td></tr>{% endfor %}
 </tbody>
 </table>
 {% endblock %}

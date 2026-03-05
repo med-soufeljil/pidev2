@@ -3,11 +3,20 @@
 <h2>Recrutements</h2>
 <a class="btn" href="{{ path('app_recrutement_new') }}">Nouveau recrutement</a>
 <table>
-<thead><tr><th>Offre</th><th>Candidat</th></tr></thead>
+<thead><tr><th>Offre</th><th>Candidat</th><th>Actions</th></tr></thead>
 <tbody>
 {% for item in items %}
-<tr><td>{{ item.offre.nomOffre }}</td><td>{{ item.candidat.nom }} {{ item.candidat.prenom }}</td></tr>
-{% else %}<tr><td colspan="2">Aucun recrutement</td></tr>{% endfor %}
+<tr>
+<td>{{ item.offre.nomOffre }}</td><td>{{ item.candidat.nom }} {{ item.candidat.prenom }}</td>
+<td>
+  <a class="btn" href="{{ path('app_recrutement_edit', {id: item.id}) }}">Modifier</a>
+  <form method="post" action="{{ path('app_recrutement_delete', {id: item.id}) }}" style="display:inline" onsubmit="return confirm('Supprimer ?')">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_recrutement_' ~ item.id) }}">
+    <button class="btn btn-danger">Supprimer</button>
+  </form>
+</td>
+</tr>
+{% else %}<tr><td colspan="3">Aucun recrutement</td></tr>{% endfor %}
 </tbody>
 </table>
 {% endblock %}

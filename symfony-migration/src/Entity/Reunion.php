@@ -6,24 +6,25 @@ use App\Repository\ReunionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReunionRepository::class)]
+#[ORM\Table(name: 'reunion')]
 class Reunion
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(name: 'idReunion')]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'idRH')]
     private int $idRh = 0;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'idCandidat', referencedColumnName: 'idCandidat', nullable: false)]
     private ?Candidat $candidat = null;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(name: 'date', type: 'datetime_immutable')]
     private ?\DateTimeImmutable $date = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'link', length: 255)]
     private string $link = '';
 
     public function getId(): ?int { return $this->id; }

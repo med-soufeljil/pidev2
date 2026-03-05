@@ -6,41 +6,42 @@ use App\Repository\CandidatRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CandidatRepository::class)]
+#[ORM\Table(name: 'candidat')]
 class Candidat
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(name: 'idCandidat')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'nom', length: 255)]
     private string $nom = '';
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'prenom', length: 255)]
     private string $prenom = '';
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'CIN')]
     private int $cin = 0;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'tel')]
     private int $tel = 0;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'adresse', length: 255)]
     private string $adresse = '';
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'email', length: 255)]
     private string $email = '';
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'cv', length: 255)]
     private string $cv = '';
 
-    #[ORM\Column(length: 64)]
+    #[ORM\Column(name: 'statut', length: 64)]
     private string $statut = 'Nouveau';
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(name: 'ai_analyse', type: 'text', nullable: true)]
     private ?string $aiAnalyse = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'ai_score')]
     private int $aiScore = 0;
 
     public function getId(): ?int { return $this->id; }
