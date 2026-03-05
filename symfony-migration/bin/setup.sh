@@ -15,8 +15,10 @@ else
   echo "[setup] vendor existe déjà, skip composer install"
 fi
 
-echo "[setup] création/mise à jour du schéma Doctrine..."
-php bin/console doctrine:database:create --if-not-exists
-php bin/console doctrine:schema:update --force
+echo "[setup] test connexion DB (même DB que Java)..."
+php bin/console doctrine:query:sql "SELECT 1"
+
+echo "[setup] synchronisation schéma sur DB Java..."
+php bin/console doctrine:schema:update --complete --force
 
 echo "[setup] OK"

@@ -1,87 +1,57 @@
-# SmartHire Symfony Migration (base)
+# SmartHire Symfony Translation (même projet, même DB)
 
-Cette migration **ne supprime rien** du projet Java. Le code Java reste à la racine, et la traduction Symfony est dans `symfony-migration/`.
+Tu as demandé **le même projet** en Symfony, sans supprimer le Java.
+C'est ce qui est fait:
+- Java reste inchangé à la racine.
+- Symfony est dans `symfony-migration/`.
+- Même base de données que Java: `pidev` MySQL localhost.
 
-## Objectif
-Avoir le même projet SmartHire en Symfony avec:
-- mêmes modules (Candidat, Offre, Recrutement, Réunion, Dashboard)
-- même base de données (tables/colonnes Java conservées)
-- interface web équivalente (navigation + CRUD complet: ajouter/modifier/supprimer)
+## Base de données partagée avec Java
+Référence Java: `src/main/java/utils/MyDatabase.java`
+- URL: `jdbc:mysql://localhost:3306/pidev`
+- USER: `root`
+- PASSWORD: vide
 
-## Important
-Le projet Symfony est dans **`symfony-migration/`**.
-Si vous lancez `composer install` à la racine (`Esprit-PIDEV-3A11-2026-SmartHire`), c'est normal d'avoir l'erreur "composer.json introuvable".
+Symfony utilise exactement ces valeurs via `.env`:
+- `DATABASE_URL="mysql://root:@127.0.0.1:3306/pidev?serverVersion=8.0&charset=utf8mb4"`
 
-## 1) Prérequis
-- PHP 8.2+
-- Composer 2+
-- SQLite (par défaut) ou MySQL si vous mettez l'URL de votre DB Java dans `DATABASE_URL`
-
-## 2) Ouvrir le bon dossier dans VS Code
-Option A (recommandée): ouvrir directement le dossier `symfony-migration/`.
-
-Option B: rester à la racine, puis faire:
+## Lancer le projet Symfony (fonctionnel)
+Depuis la racine du repo:
 
 ```bash
 cd symfony-migration
 ```
 
-## 3) Installation rapide
-
 ### Linux / macOS / Git Bash
 ```bash
 ./bin/setup.sh
-```
-
-### Windows PowerShell
-```powershell
-Set-ExecutionPolicy -Scope Process Bypass
-.\bin\setup.ps1
-```
-
-## 4) Lancer l'application
-
-### Linux / macOS / Git Bash
-```bash
 ./bin/run.sh
 ```
 
 ### Windows PowerShell
 ```powershell
+cd symfony-migration
+Set-ExecutionPolicy -Scope Process Bypass
+.\bin\setup.ps1
 .\bin\run.ps1
 ```
 
 Puis ouvrir: `http://127.0.0.1:8000`
 
-## 5) Tester rapidement
+## Ce que fait setup
+- installe les dépendances (`composer install`)
+- teste la connexion sur la DB Java (`SELECT 1`)
+- synchronise le schéma Doctrine sur la même DB (`doctrine:schema:update --complete --force`)
 
-### Test technique (lint PHP)
-Linux/macOS:
-```bash
-./bin/check.sh
-```
+## Modules traduits
+- Candidats
+- Offres
+- Recrutements
+- Réunions
+- Dashboard
 
-Windows PowerShell:
-```powershell
-.\bin\check.ps1
-```
+Tous les modules ont CRUD: ajouter / modifier / supprimer.
 
-### Test fonctionnel manuel
-1. Dashboard.
-2. Candidats: ajouter / modifier / supprimer.
-3. Offres: ajouter / modifier / supprimer.
-4. Recrutements: ajouter / modifier / supprimer.
-5. Réunions: ajouter / modifier / supprimer.
-6. Vérifier que les données viennent de la même DB (mêmes tables Java).
-
-## 6) Compatibilité base Java
-Les entités Symfony mappent les mêmes tables/colonnes Java:
-- `candidat(idCandidat, CIN, ai_analyse, ai_score, ... )`
-- `offre(idOffre, nomOffre, type, competences, salaire)`
-- `recrutement(idRec, idOffre, idCandidat)`
-- `reunion(idReunion, idRH, idCandidat, date, link)`
-
-## 7) Dépannage rapide
-- **Erreur `composer.json file not found`**: vous n'êtes pas dans `symfony-migration/`.
-- **Erreur `./bin/setup.sh not recognized` sous PowerShell**: utilisez les scripts `.ps1`.
-- Si `composer install` échoue (proxy/tunnel/403): exécuter dans une machine avec accès internet ou configurer le proxy Composer.
+## Important
+Ne pas lancer `composer install` à la racine Java.
+Il faut être dans `symfony-migration/`.

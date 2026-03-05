@@ -6,4 +6,4 @@ if (!(Test-Path "vendor")) {
     exit 1
 }
 
-php -S 127.0.0.1:8000 -t public
+php -S 127.0.0.1:8000 -t public public/index.php

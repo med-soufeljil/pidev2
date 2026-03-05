@@ -8,4 +8,4 @@ if [ ! -d vendor ]; then
   exit 1
 fi
 
-php -S 127.0.0.1:8000 -t public
+php -S 127.0.0.1:8000 -t public public/index.php

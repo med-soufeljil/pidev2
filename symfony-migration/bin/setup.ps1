@@ -14,8 +14,10 @@ else {
     Write-Host "[setup] vendor existe déjà, skip composer install"
 }
 
-Write-Host "[setup] création/mise à jour du schéma Doctrine..."
-php bin/console doctrine:database:create --if-not-exists
-php bin/console doctrine:schema:update --force
+Write-Host "[setup] test connexion DB (même DB que Java)..."
+php bin/console doctrine:query:sql "SELECT 1"
+
+Write-Host "[setup] synchronisation schéma sur DB Java..."
+php bin/console doctrine:schema:update --complete --force
 
 Write-Host "[setup] OK"
