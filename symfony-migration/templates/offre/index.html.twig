@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<h2>Offres</h2>
+<a class="btn" href="{{ path('app_offre_new') }}">Nouvelle offre</a>
+<table>
+<thead><tr><th>Nom</th><th>Type</th><th>Compétences</th><th>Salaire</th></tr></thead>
+<tbody>
+{% for item in items %}
+<tr><td>{{ item.nomOffre }}</td><td>{{ item.type.value }}</td><td>{{ item.competences }}</td><td>{{ item.salaire }}</td></tr>
+{% else %}<tr><td colspan="4">Aucune offre</td></tr>{% endfor %}
+</tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Dashboard</h2>
+    <div class="cards">
+        <article><h3>Candidats</h3><p>{{ counts.candidats }}</p></article>
+        <article><h3>Offres</h3><p>{{ counts.offres }}</p></article>
+        <article><h3>Recrutements</h3><p>{{ counts.recrutements }}</p></article>
+        <article><h3>Réunions</h3><p>{{ counts.reunions }}</p></article>
+    </div>
+{% endblock %}

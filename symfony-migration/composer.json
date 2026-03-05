@@ -1,0 +1,18 @@
+{
+  "name": "smarthire/symfony-migration",
+  "type": "project",
+  "require": {
+    "php": ">=8.2",
+    "symfony/framework-bundle": "^7.1",
+    "symfony/twig-bundle": "^7.1",
+    "symfony/orm-pack": "^2.4",
+    "symfony/form": "^7.1",
+    "symfony/validator": "^7.1",
+    "symfony/asset": "^7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  }
+}

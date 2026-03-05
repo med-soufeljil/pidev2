@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<h2>Réunions</h2>
+<a class="btn" href="{{ path('app_reunion_new') }}">Nouvelle réunion</a>
+<table>
+<thead><tr><th>Candidat</th><th>Date</th><th>Lien</th></tr></thead>
+<tbody>
+{% for item in items %}
+<tr><td>{{ item.candidat.nom }} {{ item.candidat.prenom }}</td><td>{{ item.date|date('Y-m-d H:i') }}</td><td>{{ item.link }}</td></tr>
+{% else %}<tr><td colspan="3">Aucune réunion</td></tr>{% endfor %}
+</tbody>
+</table>
+{% endblock %}

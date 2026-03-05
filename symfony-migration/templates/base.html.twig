@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SmartHire Symfony{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+</head>
+<body>
+<div class="shell">
+    {% include 'partials/nav.html.twig' %}
+    <main class="content">{% block body %}{% endblock %}</main>
+</div>
+</body>
+</html>
