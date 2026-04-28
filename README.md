@@ -55,7 +55,7 @@ The application follows a layered architecture:
 
 ## Contributors
 
-- Mohamed Soufeljil
+- Mohamed Soufeljill
 
 ## Academic Context
 
