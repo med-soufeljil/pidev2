@@ -14,7 +14,7 @@ import services.ExternalPublicApiService;
 import utils.ApiRuntime;
 import utils.SessionContext;
 
-public class MainController {
+public class MainformationController {
 
     @FXML private Label lblSuggestion;
     @FXML private Label lblRole;

@@ -272,7 +272,7 @@ public class FormationController implements Initializable {
     @FXML
     void retourMain() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/mainformation.fxml"));
             Stage stage = (Stage) tableFormation.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
