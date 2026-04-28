@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefWidth="1366" prefHeight="768"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.ApprenantController"
+            stylesheets="@Style.css"
+            styleClass="page-root">
+
+    <top>
+        <VBox spacing="10" styleClass="top-bar">
+            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+            <Label text="Gestion avancée des apprenants" styleClass="page-title"/>
+            <HBox spacing="10">
+                <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
+                <TextField fx:id="tfRecherche" promptText="Recherche..." HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="cbSortBy" prefWidth="180"/>
+                <ComboBox fx:id="cbSortOrder" prefWidth="120"/>
+                <Button text="＋ Ajouter apprenant" onAction="#ajouter" styleClass="secondary-btn"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="10" styleClass="card">
+            <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+            <Label text="Liste des apprenants" styleClass="section-title"/>
+            <TableView fx:id="tableApprenant" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colNom" text="Nom" prefWidth="130"/>
+                    <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="130"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
+                    <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
+                    <TableColumn fx:id="colFormation" text="Formation" prefWidth="180"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="180"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="8" alignment="CENTER_RIGHT" styleClass="bottom-actions">
+            <padding><Insets top="10" right="16" bottom="14" left="16"/></padding>
+            <Button text="Envoyer mail" onAction="#envoyerMail" styleClass="secondary-btn"/>
+        </HBox>
+    </bottom>
+</BorderPane>
