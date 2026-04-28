@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.RecrutementController"
+      stylesheets="@style.css" styleClass="content-area" style="-fx-padding:20;">
+
+    <Label text="Gestion des Recrutements" styleClass="title-label" />
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Ajouter" fx:id="btnAjouter"/>
+        <Button text="Modifier" fx:id="btnModifier"/>
+        <Button text="Supprimer" fx:id="btnSupprimer"/>
+    </HBox>
+
+    <TableView fx:id="tableRecrutement" prefWidth="980" prefHeight="420" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn text="ID" fx:id="colId" prefWidth="100"/>
+            <TableColumn text="Offre" fx:id="colOffre" prefWidth="420"/>
+            <TableColumn text="Candidat" fx:id="colCandidat" prefWidth="420"/>
+        </columns>
+    </TableView>
+
+    
+</VBox>

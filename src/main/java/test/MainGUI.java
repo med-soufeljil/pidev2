@@ -5,25 +5,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import utils.ApiRuntime;
 
 import java.io.IOException;
 
-public class MainProgGUI extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-    }
+public class MainGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        ApiRuntime.ensureStarted();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/RoleSelectionView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
-        primaryStage.setTitle("Workshop PIDEV");
+        primaryStage.setTitle("PIDEV");
         primaryStage.show();
     }
+
+
 }

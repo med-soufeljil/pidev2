@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="12" alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.OffreController" stylesheets="@style.css"
+      styleClass="content-area" style="-fx-padding:20;">
+
+    <Label text="Gestion des Offres" styleClass="title-label"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="txtRecherche" promptText="🔍 Rechercher une offre..." prefWidth="320"/>
+        <Label text="Trier:"/>
+        <ComboBox fx:id="comboTri" prefWidth="130"/>
+        <ComboBox fx:id="comboOrdre" prefWidth="130"/>
+        <Label text="Résultats:" styleClass="badge-label"/>
+        <Label fx:id="lblCount" text="0" styleClass="badge-count"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Ajouter" fx:id="btnAjouter"/>
+        <Button text="Modifier" fx:id="btnModifier"/>
+        <Button text="Supprimer" fx:id="btnSupprimer"/>
+        <Button text="Filtre avancé" fx:id="btnFiltre"/>
+        <Button text="Reset Filtre" fx:id="btnResetFiltre"/>
+    </HBox>
+
+    <TableView fx:id="tableOffre" prefHeight="470" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn text="Nom" fx:id="colNom" prefWidth="190"/>
+            <TableColumn text="Type" fx:id="colType" prefWidth="140"/>
+            <TableColumn text="Compétences" fx:id="colCompetences" prefWidth="320"/>
+            <TableColumn text="Salaire" fx:id="colSalaire" prefWidth="120"/>
+            <TableColumn text="Action" fx:id="colAction" prefWidth="180"/>
+        </columns>
+    </TableView>
+
+    <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
+
+    
+</VBox>

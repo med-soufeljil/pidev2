@@ -33,7 +33,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardController {
+public class dashboardformationController {
 
     @FXML private Label lblTotalFormations;
     @FXML private Label lblTotalApprenants;
@@ -198,7 +198,7 @@ public class DashboardController {
     private void showTopMarketsPopup(String tech, List<String> entries) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Résultat Top Markets");
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/Style.css").toExternalForm());
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/stylef.css").toExternalForm());
 
         VBox box = new VBox(8);
         box.getStyleClass().addAll("card", "top-market-popup");

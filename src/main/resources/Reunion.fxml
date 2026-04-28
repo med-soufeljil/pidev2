@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="500" prefWidth="700" spacing="12" styleClass="content-area" style="-fx-padding:20;" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="controllers.ReunionController">
+
+    <Label text="Gestion des Réunions" styleClass="title-label"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button fx:id="btnAjouter" text="Ajouter" />
+        <Button fx:id="btnModifier" text="Modifier" />
+        <Button fx:id="btnSupprimer" text="Supprimer" />
+        <Button fx:id="btnReset" text="Reset" />
+    </HBox>
+
+    <TableView fx:id="tableReunion" prefHeight="380" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colCandidat" prefWidth="220" text="Candidat" />
+            <TableColumn fx:id="colDate" prefWidth="180" text="Date" />
+            <TableColumn fx:id="colLink" prefWidth="500" text="Lien" />
+        </columns>
+    </TableView>
+
+    
+</VBox>

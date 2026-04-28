@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox spacing="12" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.RecrutementFormController" stylesheets="@style.css" styleClass="content-area" style="-fx-padding:20;">
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button fx:id="btnBack" text="← Retour recrutements"/>
+        <Label fx:id="title" text="Recrutement" styleClass="title-label"/>
+    </HBox>
+    <GridPane hgap="8" vgap="8" styleClass="form-grid">
+        <Label text="Offre" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="formOffre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Candidat" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="formCandidat" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    </GridPane>
+    <Button fx:id="btnSave" text="Enregistrer"/>
+</VBox>
