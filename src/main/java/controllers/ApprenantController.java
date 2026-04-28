@@ -183,7 +183,7 @@ public class ApprenantController implements Initializable {
     @FXML
     public void retourMain() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Mainformation.fxml"));
             Stage stage = (Stage) tableApprenant.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

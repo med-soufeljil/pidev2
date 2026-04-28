@@ -186,7 +186,7 @@ public class DashboardController {
     @FXML
     public void retourMain() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Mainformation.fxml"));
             Stage stage = getStage();
             stage.setScene(new Scene(root));
             stage.show();
