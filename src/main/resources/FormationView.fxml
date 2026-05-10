@@ -8,13 +8,13 @@
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.FormationController"
-            stylesheets="@stylef.css"
-            styleClass="page-root">
+            stylesheets="@style.css"
+            styleClass="content-area">
 
     <top>
-        <VBox spacing="10" styleClass="top-bar">
+        <VBox spacing="10" styleClass="welcome-panel">
             <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-            <Label text="Gestion avancée des formations" styleClass="page-title"/>
+            <Label text="Gestion avancée des formations" styleClass="title-label"/>
             <HBox spacing="10">
                 <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
                 <TextField fx:id="tfRecherche" promptText="Recherche multi-critères..." HBox.hgrow="ALWAYS"/>
@@ -27,9 +27,9 @@
 
     <center>
         <SplitPane dividerPositions="0.67">
-            <VBox spacing="10" styleClass="card">
+            <VBox spacing="10" styleClass="welcome-panel">
                 <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
-                <Label text="Catalogue des formations" styleClass="section-title"/>
+                <Label text="Catalogue des formations" styleClass="panel-title"/>
                 <TableView fx:id="tableFormation" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
@@ -43,9 +43,9 @@
                 </TableView>
             </VBox>
 
-            <VBox fx:id="boxEdition" spacing="12" styleClass="card">
+            <VBox fx:id="boxEdition" spacing="12" styleClass="welcome-panel">
                 <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
-                <Label text="Feedbacks" styleClass="section-title"/>
+                <Label text="Feedbacks" styleClass="panel-title"/>
                 <Label text="Note moyenne"/>
                 <Label fx:id="lblAverageRating" text="0.0 / 5" styleClass="kpi-value"/>
                 <Button text="Ajouter feedback" onAction="#addFeedback"/>

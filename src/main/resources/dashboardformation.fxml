@@ -15,13 +15,13 @@
 
 <ScrollPane fitToWidth="true" fitToHeight="true" pannable="true"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            stylesheets="@stylef.css" fx:controller="controllers.dashboardformationController">
+            stylesheets="@style.css" fx:controller="controllers.dashboardformationController">
     <content>
-        <VBox prefWidth="1366" prefHeight="768" minHeight="768" spacing="16" styleClass="page-root">
+        <VBox prefWidth="1366" prefHeight="768" minHeight="768" spacing="16" styleClass="content-area">
             <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
             <Button text="←" onAction="#retourMain" styleClass="secondary-btn"/>
-            <Label text="Dashboard décisionnel" styleClass="page-title"/>
+            <Label text="Dashboard décisionnel" styleClass="title-label"/>
 
             <HBox spacing="12">
                 <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations"/><Label fx:id="lblTotalFormations" styleClass="kpi-value"/></VBox>
@@ -30,9 +30,9 @@
                 <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations certifiées"/><Label fx:id="lblCertif" styleClass="kpi-value"/></VBox>
             </HBox>
 
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="welcome-panel">
                 <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-                <Label text="Top markets (tech)" styleClass="section-title"/>
+                <Label text="Top markets (tech)" styleClass="panel-title"/>
                 <TextField fx:id="tfTech" promptText="java / spring / react ..." prefWidth="240"/>
                 <Button text="Trouver Top 3" onAction="#findTopMarkets"/>
                 <Label fx:id="lblMarket1" text="-" styleClass="market-chip"/>

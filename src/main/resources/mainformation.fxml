@@ -11,37 +11,50 @@
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.mainformationController"
-            stylesheets="@stylef.css"
-            styleClass="page-root">
+            stylesheets="@style.css"
+            styleClass="content-area">
 
-    <left>
-        <VBox spacing="12" prefWidth="280" styleClass="card">
-            <padding><Insets top="24" right="16" bottom="24" left="16"/></padding>
-            <Label text="Modules" styleClass="section-title"/>
-            <Label fx:id="lblRole" styleClass="hero-chip" text="Rôle actuel"/>
-
-            <Button fx:id="btnFormation" text="📘 Gestion Formations" onAction="#openFormation" styleClass="left-menu-btn" maxWidth="1.7976931348623157E308"/>
-            <Button fx:id="btnApprenant" text="👨‍🎓 Gestion Apprenants" onAction="#openApprenant" styleClass="left-menu-btn" maxWidth="1.7976931348623157E308"/>
-            <Button fx:id="btnDashboard" text="📊 Dashboard" onAction="#openDashboard" styleClass="left-menu-btn" maxWidth="1.7976931348623157E308"/>
-
-            <Button text="⬅ Changer espace" onAction="#backToRoleSelection" styleClass="secondary-btn" maxWidth="1.7976931348623157E308"/>
-            <Button text="Quitter" onAction="#quitter" styleClass="danger-btn" maxWidth="1.7976931348623157E308"/>
+    <top>
+        <VBox spacing="8" styleClass="topbar">
+            <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
+            <Label text="Gestion des formations" styleClass="topbar-title"/>
+            <Label fx:id="lblRole" styleClass="topbar-subtitle" text="Rôle actuel"/>
         </VBox>
-    </left>
+    </top>
 
     <center>
-        <VBox spacing="12" alignment="CENTER_LEFT">
+        <VBox spacing="16" alignment="CENTER_LEFT">
             <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
-            <Label text="Bienvenue dans votre espace" styleClass="hero-title"/>
-            <Label fx:id="lblWelcome" text="Bienvenue" styleClass="page-title"/>
+            <Label text="Bienvenue dans votre espace" styleClass="welcome-title"/>
+            <Label fx:id="lblWelcome" text="Bienvenue" styleClass="welcome-subtitle"/>
             <Label fx:id="lblSuggestion" styleClass="hero-chip" text="Suggestion externe: chargement..."/>
-            <VBox spacing="10" styleClass="card">
-                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
-                <Label text="Bienvenue sur la plateforme de gestion des formations."/>
-                <Label text="✔ Gérer les formations, postulations, feedbacks et reporting."/>
-                <Label text="✔ Accès conditionné selon votre rôle ADMIN/USER."/>
-                <Label text="✔ API et exports disponibles pour le pilotage."/>
+
+            <HBox spacing="16">
+                <VBox spacing="10" styleClass="kpi-card" HBox.hgrow="ALWAYS">
+                    <Label text="Catalogue" styleClass="kpi-label"/>
+                    <Button fx:id="btnFormation" text="📘 Gestion Formations" onAction="#openFormation" maxWidth="1.7976931348623157E308"/>
+                </VBox>
+                <VBox spacing="10" styleClass="kpi-card" HBox.hgrow="ALWAYS">
+                    <Label text="Apprenants" styleClass="kpi-label"/>
+                    <Button fx:id="btnApprenant" text="👨‍🎓 Gestion Apprenants" onAction="#openApprenant" maxWidth="1.7976931348623157E308"/>
+                </VBox>
+                <VBox spacing="10" styleClass="kpi-card" HBox.hgrow="ALWAYS">
+                    <Label text="Analytics" styleClass="kpi-label"/>
+                    <Button fx:id="btnDashboard" text="📊 Dashboard" onAction="#openDashboard" maxWidth="1.7976931348623157E308"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="10" styleClass="welcome-panel">
+                <Label text="Workflow formation" styleClass="panel-title"/>
+                <Label text="✔ Gérer les formations, postulations, feedbacks et reporting." styleClass="panel-item"/>
+                <Label text="✔ Accès conditionné selon votre rôle ADMIN/USER." styleClass="panel-item"/>
+                <Label text="✔ UI harmonisée avec la gestion de recrutement." styleClass="panel-item"/>
             </VBox>
+
+            <HBox spacing="10">
+                <Button text="⬅ Changer espace" onAction="#backToRoleSelection" styleClass="secondary-btn"/>
+                <Button text="Quitter" onAction="#quitter" styleClass="danger-btn"/>
+            </HBox>
         </VBox>
     </center>
 </BorderPane>

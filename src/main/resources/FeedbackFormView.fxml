@@ -4,12 +4,12 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.FeedbackFormController" stylesheets="@stylef.css" styleClass="page-root">
+      fx:controller="controllers.FeedbackFormController" stylesheets="@style.css" styleClass="content-area">
     <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-    <Label text="Ajouter un feedback" styleClass="section-title"/>
+    <Label text="Ajouter un feedback" styleClass="panel-title"/>
     <TextField fx:id="tfAuteur" promptText="Auteur"/>
     <TextArea fx:id="taCommentaire" promptText="Commentaire" prefRowCount="3"/>
-    <Label fx:id="lblStars" text="★★★☆☆" styleClass="section-title"/>
+    <Label fx:id="lblStars" text="★★★☆☆" styleClass="panel-title"/>
     <Slider fx:id="slNote" min="0" max="5" value="3" majorTickUnit="1" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
     <HBox spacing="8">
         <Button text="Valider" onAction="#save"/>

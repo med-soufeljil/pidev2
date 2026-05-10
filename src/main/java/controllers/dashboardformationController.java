@@ -185,8 +185,12 @@ public class dashboardformationController {
 
     @FXML
     public void retourMain() {
+        if (MainController.isActive()) {
+            MainController.showTrainingHome();
+            return;
+        }
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/mainformation.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
             Stage stage = getStage();
             stage.setScene(new Scene(root));
             stage.show();
@@ -198,7 +202,7 @@ public class dashboardformationController {
     private void showTopMarketsPopup(String tech, List<String> entries) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Résultat Top Markets");
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/stylef.css").toExternalForm());
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         VBox box = new VBox(8);
         box.getStyleClass().addAll("card", "top-market-popup");

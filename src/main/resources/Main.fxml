@@ -26,21 +26,44 @@
 
             <VBox spacing="6" styleClass="brand-box">
                 <Label text="TalentFlow" styleClass="brand-title"/>
-                <Label text="Recruitment Management Suite" styleClass="brand-subtitle"/>
+                <Label fx:id="lblModuleSubtitle" text="Unified Management Suite" styleClass="brand-subtitle"/>
             </VBox>
 
-            <Label text="Navigation" styleClass="section-label"/>
+            <Label text="Espaces" styleClass="section-label"/>
+            <Button text="💼 Gestion de recrutement" fx:id="btnRecruitmentSpace" styleClass="sidebar-btn"/>
+            <Button text="🎓 Gestion des formations" fx:id="btnTrainingSpace" styleClass="sidebar-btn"/>
+            <Button text="🌴 Gestion congés et TT" fx:id="btnLeaveSpace" styleClass="sidebar-btn"/>
+            <Button text="👥 Gestion des utilisateurs" fx:id="btnUsers" styleClass="sidebar-btn"/>
 
-            <Button text="📊 Dashboard" fx:id="btnDashboard" styleClass="sidebar-btn"/>
-            <Button text="💼 Offres d'emploi" fx:id="btnOffre" styleClass="sidebar-btn"/>
-            <Button text="🗂 Applications" fx:id="btnCandidat" styleClass="sidebar-btn"/>
-            <Button text="📅 Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
+            <VBox fx:id="recruitmentMenu" spacing="10">
+                <Label text="Recrutement" styleClass="section-label"/>
+                <Button text="📊 Dashboard" fx:id="btnDashboard" styleClass="sidebar-btn"/>
+                <Button text="💼 Offres d'emploi" fx:id="btnOffre" styleClass="sidebar-btn"/>
+                <Button text="🧾 Recrutements" fx:id="btnRecrutement" styleClass="sidebar-btn"/>
+                <Button text="🗂 Applications" fx:id="btnCandidat" styleClass="sidebar-btn"/>
+                <Button text="📅 Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
+            </VBox>
+
+            <VBox fx:id="trainingMenu" spacing="10">
+                <Label text="Formation" styleClass="section-label"/>
+                <Button text="📘 Formations" fx:id="btnFormation" styleClass="sidebar-btn"/>
+                <Button text="👨‍🎓 Apprenants" fx:id="btnApprenant" styleClass="sidebar-btn"/>
+                <Button text="📈 Dashboard formation" fx:id="btnFormationDashboard" styleClass="sidebar-btn"/>
+            </VBox>
+
+            <VBox fx:id="leaveMenu" spacing="10">
+                <Label text="Congés &amp; TT" styleClass="section-label"/>
+                <Button text="📊 Dashboard congés" fx:id="btnCongesDashboard" styleClass="sidebar-btn"/>
+                <Button text="🌴 Demandes congés" fx:id="btnConges" styleClass="sidebar-btn"/>
+                <Button text="📊 Dashboard télétravail" fx:id="btnTeletravailDashboard" styleClass="sidebar-btn"/>
+                <Button text="🏠 Demandes télétravail" fx:id="btnTeletravail" styleClass="sidebar-btn"/>
+            </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
 
             <VBox spacing="4" styleClass="status-card">
                 <Label text="System status" styleClass="status-title"/>
-                <Label text="● Connected to recruitment database" styleClass="status-ok"/>
+                <Label fx:id="lblSystemStatus" text="● Connected to unified database" styleClass="status-ok"/>
             </VBox>
         </VBox>
     </left>
@@ -52,8 +75,8 @@
             </padding>
 
             <VBox spacing="2">
-                <Label text="Recruitment Operations Dashboard" styleClass="topbar-title"/>
-                <Label text="Track candidates, offers, hires and interviews in one place" styleClass="topbar-subtitle"/>
+                <Label fx:id="lblTopbarTitle" text="Operations Dashboard" styleClass="topbar-title"/>
+                <Label fx:id="lblTopbarSubtitle" text="Track recruitment and training operations in one place" styleClass="topbar-subtitle"/>
             </VBox>
 
             <Region HBox.hgrow="ALWAYS"/>
@@ -69,29 +92,29 @@
             <VBox fx:id="welcomePane" alignment="TOP_LEFT" spacing="18"
                   AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
 
-                <Label text="Welcome back, HR Team 👋" styleClass="welcome-title"/>
-                <Label text="Choose a module from the left to start managing the full recruitment lifecycle." styleClass="welcome-subtitle"/>
+                <Label fx:id="lblWelcomeTitle" text="Welcome back, Team 👋" styleClass="welcome-title"/>
+                <Label fx:id="lblWelcomeSubtitle" text="Choose a module from the left to start managing the workflow." styleClass="welcome-subtitle"/>
 
                 <HBox spacing="16">
                     <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
-                        <Label text="Candidate Pipeline" styleClass="kpi-label"/>
-                        <Label text="Organize profiles, contacts and CVs" styleClass="kpi-value"/>
+                        <Label fx:id="lblKpi1Label" text="Candidate Pipeline" styleClass="kpi-label"/>
+                        <Label fx:id="lblKpi1Value" text="Organize profiles, contacts and CVs" styleClass="kpi-value"/>
                     </VBox>
                     <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
-                        <Label text="Open Positions" styleClass="kpi-label"/>
-                        <Label text="Centralize offers and required skills" styleClass="kpi-value"/>
+                        <Label fx:id="lblKpi2Label" text="Open Positions" styleClass="kpi-label"/>
+                        <Label fx:id="lblKpi2Value" text="Centralize offers and required skills" styleClass="kpi-value"/>
                     </VBox>
                     <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
-                        <Label text="Hiring Decisions" styleClass="kpi-label"/>
-                        <Label text="Convert top candidates faster" styleClass="kpi-value"/>
+                        <Label fx:id="lblKpi3Label" text="Hiring Decisions" styleClass="kpi-label"/>
+                        <Label fx:id="lblKpi3Value" text="Convert top candidates faster" styleClass="kpi-value"/>
                     </VBox>
                 </HBox>
 
                 <VBox spacing="10" styleClass="welcome-panel">
-                    <Label text="Recommended workflow" styleClass="panel-title"/>
-                    <Label text="1. Create or review open offers." styleClass="panel-item"/>
-                    <Label text="2. Receive applications from job offers." styleClass="panel-item"/>
-                    <Label text="3. Update statuses, generate interviews and send offers." styleClass="panel-item"/>
+                    <Label fx:id="lblWorkflowTitle" text="Recommended workflow" styleClass="panel-title"/>
+                    <Label fx:id="lblWorkflow1" text="1. Create or review open offers." styleClass="panel-item"/>
+                    <Label fx:id="lblWorkflow2" text="2. Receive applications from job offers." styleClass="panel-item"/>
+                    <Label fx:id="lblWorkflow3" text="3. Update statuses, generate interviews and send offers." styleClass="panel-item"/>
                 </VBox>
             </VBox>
         </AnchorPane>

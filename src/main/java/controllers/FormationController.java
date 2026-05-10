@@ -271,8 +271,12 @@ public class FormationController implements Initializable {
 
     @FXML
     void retourMain() {
+        if (MainController.isActive()) {
+            MainController.showTrainingHome();
+            return;
+        }
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/mainformation.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
             Stage stage = (Stage) tableFormation.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -312,6 +316,10 @@ public class FormationController implements Initializable {
         if (!SessionContext.isUser() || selected == null) return;
         SessionContext.setPendingFormation(selected.getId_formation(), selected.getTitre());
         try {
+            if (MainController.isActive()) {
+                MainController.navigate("ApprenantView.fxml");
+                return;
+            }
             Parent root = FXMLLoader.load(getClass().getResource("/ApprenantView.fxml"));
             Stage stage = (Stage) tableFormation.getScene().getWindow();
             stage.setScene(new Scene(root));

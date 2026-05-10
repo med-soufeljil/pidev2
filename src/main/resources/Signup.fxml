@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="controllers.SignupController" stylesheets="@style.css" styleClass="content-area"
+           prefWidth="1000" prefHeight="760">
+    <VBox maxWidth="520" spacing="14" styleClass="welcome-panel">
+        <padding><Insets top="28" right="28" bottom="28" left="28"/></padding>
+        <VBox spacing="6">
+            <Label text="Inscription" styleClass="welcome-title"/>
+            <Label text="Créer un compte employé ou candidat" styleClass="welcome-subtitle"/>
+        </VBox>
+        <GridPane hgap="10" vgap="10" styleClass="form-grid">
+            <Label text="Nom" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Prénom" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtPrenom" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="CIN" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtCin" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="Email" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtMail" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label text="Téléphone" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtTel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            <Label text="Photo profil" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtPhoto" promptText="0 ou chemin image" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            <Label text="Rôle" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="cbRole" GridPane.rowIndex="6" GridPane.columnIndex="1" maxWidth="1.7976931348623157E308"/>
+            <Label text="Mot de passe" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <PasswordField fx:id="txtPassword" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+        </GridPane>
+        <Button text="Créer le compte" onAction="#signup" maxWidth="1.7976931348623157E308"/>
+        <Button text="Retour connexion" onAction="#openLogin" styleClass="secondary-btn" maxWidth="1.7976931348623157E308"/>
+    </VBox>
+</StackPane>

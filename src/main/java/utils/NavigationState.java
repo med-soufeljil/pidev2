@@ -11,6 +11,7 @@ public class NavigationState {
     public static Reunion selectedReunion;
     public static Recrutement selectedRecrutement;
     public static boolean readOnly;
+    public static String congesTtView;
 
     public static void clearAll() {
         selectedCandidat = null;

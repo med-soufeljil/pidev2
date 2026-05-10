@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="16" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.UtilisateursController" stylesheets="@style.css" styleClass="content-area">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+    <VBox spacing="6">
+        <Label text="Gestion des utilisateurs" styleClass="title-label"/>
+        <Label text="CRUD de la table utilisateur" styleClass="welcome-subtitle"/>
+    </VBox>
+    <VBox spacing="12" styleClass="welcome-panel" VBox.vgrow="ALWAYS">
+        <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="txtSearch" promptText="Rechercher par nom, email, rôle, CIN..." HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnAjouter" text="＋ Ajouter"/>
+            <Button fx:id="btnModifier" text="Modifier" styleClass="secondary-btn"/>
+            <Button fx:id="btnSupprimer" text="Supprimer" styleClass="danger-btn"/>
+        </HBox>
+        <TableView fx:id="tableUsers" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colNom" text="Nom" prefWidth="120"/>
+                <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="120"/>
+                <TableColumn fx:id="colCin" text="CIN" prefWidth="100"/>
+                <TableColumn fx:id="colMail" text="Email" prefWidth="220"/>
+                <TableColumn fx:id="colTel" text="Téléphone" prefWidth="110"/>
+                <TableColumn fx:id="colPhoto" text="Photo" prefWidth="220"/>
+                <TableColumn fx:id="colRole" text="Rôle" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

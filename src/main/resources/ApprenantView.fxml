@@ -8,13 +8,13 @@
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.ApprenantController"
-            stylesheets="@stylef.css"
-            styleClass="page-root">
+            stylesheets="@style.css"
+            styleClass="content-area">
 
     <top>
-        <VBox spacing="10" styleClass="top-bar">
+        <VBox spacing="10" styleClass="welcome-panel">
             <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-            <Label text="Gestion avancée des apprenants" styleClass="page-title"/>
+            <Label text="Gestion avancée des apprenants" styleClass="title-label"/>
             <HBox spacing="10">
                 <Button text="⬅ Retour" onAction="#retourMain" styleClass="secondary-btn"/>
                 <TextField fx:id="tfRecherche" promptText="Recherche..." HBox.hgrow="ALWAYS"/>
@@ -26,9 +26,9 @@
     </top>
 
     <center>
-        <VBox spacing="10" styleClass="card">
+        <VBox spacing="10" styleClass="welcome-panel">
             <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
-            <Label text="Liste des apprenants" styleClass="section-title"/>
+            <Label text="Liste des apprenants" styleClass="panel-title"/>
             <TableView fx:id="tableApprenant" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="60"/>

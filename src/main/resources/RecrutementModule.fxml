@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.RecrutementModuleController" spacing="0" stylesheets="@Style.css">
+    <VBox spacing="20" styleClass="sidebar" prefWidth="280">
+        <padding><Insets top="28" right="20" bottom="28" left="20"/></padding>
+        <Label text="Recrutement" styleClass="brand-title"/>
+        <Label text="Modules" styleClass="section-label"/>
+        <Button text="📊 Dashboard" fx:id="btnDashboard" styleClass="sidebar-btn"/>
+        <Button text="💼 Offres d'emploi" fx:id="btnOffre" styleClass="sidebar-btn"/>
+        <Button text="🗂 Applications" fx:id="btnCandidat" styleClass="sidebar-btn"/>
+        <Button text="📅 Réunions" fx:id="btnReunion" styleClass="sidebar-btn"/>
+        <Region VBox.vgrow="ALWAYS"/>
+    </VBox>
+    <AnchorPane fx:id="contentArea" styleClass="content-area" HBox.hgrow="ALWAYS"/>
+</HBox>

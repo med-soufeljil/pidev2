@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.ApprenantFormController" stylesheets="@stylef.css" styleClass="page-root">
+      fx:controller="controllers.ApprenantFormController" stylesheets="@style.css" styleClass="content-area">
     <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
-    <Label text="Formulaire apprenant" styleClass="section-title"/>
+    <Label text="Formulaire apprenant" styleClass="panel-title"/>
     <TextField fx:id="tfNom" promptText="Nom"/>
     <TextField fx:id="tfPrenom" promptText="Prénom"/>
     <TextField fx:id="tfEmail" promptText="Email"/>

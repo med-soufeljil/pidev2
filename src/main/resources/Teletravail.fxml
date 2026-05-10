@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="16" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.TeletravailController"
+      stylesheets="@style.css" styleClass="content-area">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <VBox spacing="6">
+        <Label text="Demandes télétravail" styleClass="title-label"/>
+        <Label text="CRUD, recherche mensuelle et validation des demandes TT" styleClass="welcome-subtitle"/>
+    </VBox>
+
+    <VBox spacing="12" styleClass="welcome-panel" VBox.vgrow="ALWAYS">
+        <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="txtSearchTt" promptText="Rechercher par employé, mois, motif, statut..." HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnAddTt" text="＋ Ajouter"/>
+            <Button fx:id="btnEditTt" text="Modifier" styleClass="secondary-btn"/>
+            <Button fx:id="btnDeleteTt" text="Supprimer" styleClass="danger-btn"/>
+            <Button fx:id="btnApproveTt" text="Approuver" styleClass="apply-btn"/>
+            <Button fx:id="btnRejectTt" text="Refuser" styleClass="danger-btn"/>
+        </HBox>
+        <TableView fx:id="tableTt" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colTtId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colTtEmployeId" text="Employé ID" prefWidth="90"/>
+                <TableColumn fx:id="colTtEmploye" text="Employé" prefWidth="160"/>
+                <TableColumn fx:id="colTtDebut" text="Début" prefWidth="110"/>
+                <TableColumn fx:id="colTtFin" text="Fin" prefWidth="110"/>
+                <TableColumn fx:id="colTtJours" text="Jours" prefWidth="70"/>
+                <TableColumn fx:id="colTtMois" text="Mois" prefWidth="100"/>
+                <TableColumn fx:id="colTtMotif" text="Motif" prefWidth="220"/>
+                <TableColumn fx:id="colTtStatut" text="Statut" prefWidth="110"/>
+                <TableColumn fx:id="colTtAction" text="Action" prefWidth="180"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>

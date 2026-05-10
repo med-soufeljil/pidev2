@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="16" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.CongesTeletravailController"
+      stylesheets="@style.css" styleClass="content-area">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <VBox spacing="6">
+        <Label text="Gestion des congés et télétravail" styleClass="title-label"/>
+        <Label text="Dashboard, validation et CRUD des demandes congés et TT" styleClass="welcome-subtitle"/>
+    </VBox>
+
+    <HBox spacing="16">
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Demandes congés" styleClass="kpi-label"/>
+            <Label fx:id="lblCongeTotal" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Demandes télétravail" styleClass="kpi-label"/>
+            <Label fx:id="lblTtTotal" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="En attente" styleClass="kpi-label"/>
+            <Label fx:id="lblPendingTotal" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Approuvées" styleClass="kpi-label"/>
+            <Label fx:id="lblApprovedTotal" text="0" styleClass="kpi-number"/>
+        </VBox>
+    </HBox>
+
+    <TabPane fx:id="tabPane" VBox.vgrow="ALWAYS">
+        <Tab fx:id="tabDashboard" text="Dashboard" closable="false">
+            <VBox spacing="14" styleClass="welcome-panel">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <Label text="Pilotage RH" styleClass="panel-title"/>
+                <Label text="✔ Suivez les volumes de demandes congés et télétravail." styleClass="panel-item"/>
+                <Label text="✔ Traitez rapidement les demandes en attente avec les actions Approuver / Refuser." styleClass="panel-item"/>
+                <Label text="✔ Utilisez les onglets CRUD pour ajouter, modifier, supprimer et rechercher les demandes." styleClass="panel-item"/>
+            </VBox>
+        </Tab>
+
+        <Tab fx:id="tabConge" text="Demandes congés" closable="false">
+            <VBox spacing="12" styleClass="welcome-panel">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="txtSearchConge" promptText="Rechercher par employé, type, motif, statut..." HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnAddConge" text="＋ Ajouter"/>
+                    <Button fx:id="btnEditConge" text="Modifier" styleClass="secondary-btn"/>
+                    <Button fx:id="btnDeleteConge" text="Supprimer" styleClass="danger-btn"/>
+                    <Button fx:id="btnApproveConge" text="Approuver" styleClass="apply-btn"/>
+                    <Button fx:id="btnRejectConge" text="Refuser" styleClass="danger-btn"/>
+                </HBox>
+                <TableView fx:id="tableConge" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colCongeId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colCongeEmployeId" text="Employé ID" prefWidth="90"/>
+                        <TableColumn fx:id="colCongeEmploye" text="Employé" prefWidth="160"/>
+                        <TableColumn fx:id="colCongeType" text="Type congé" prefWidth="210"/>
+                        <TableColumn fx:id="colCongeDebut" text="Début" prefWidth="110"/>
+                        <TableColumn fx:id="colCongeFin" text="Fin" prefWidth="110"/>
+                        <TableColumn fx:id="colCongeJours" text="Jours" prefWidth="70"/>
+                        <TableColumn fx:id="colCongeMotif" text="Motif" prefWidth="180"/>
+                        <TableColumn fx:id="colCongeStatut" text="Statut" prefWidth="110"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+
+        <Tab fx:id="tabTeletravail" text="Demandes TT" closable="false">
+            <VBox spacing="12" styleClass="welcome-panel">
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="txtSearchTt" promptText="Rechercher par employé, mois, motif, statut..." HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnAddTt" text="＋ Ajouter"/>
+                    <Button fx:id="btnEditTt" text="Modifier" styleClass="secondary-btn"/>
+                    <Button fx:id="btnDeleteTt" text="Supprimer" styleClass="danger-btn"/>
+                    <Button fx:id="btnApproveTt" text="Approuver" styleClass="apply-btn"/>
+                    <Button fx:id="btnRejectTt" text="Refuser" styleClass="danger-btn"/>
+                </HBox>
+                <TableView fx:id="tableTt" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colTtId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colTtEmployeId" text="Employé ID" prefWidth="90"/>
+                        <TableColumn fx:id="colTtEmploye" text="Employé" prefWidth="160"/>
+                        <TableColumn fx:id="colTtDebut" text="Début" prefWidth="110"/>
+                        <TableColumn fx:id="colTtFin" text="Fin" prefWidth="110"/>
+                        <TableColumn fx:id="colTtJours" text="Jours" prefWidth="70"/>
+                        <TableColumn fx:id="colTtMois" text="Mois" prefWidth="100"/>
+                        <TableColumn fx:id="colTtMotif" text="Motif" prefWidth="220"/>
+                        <TableColumn fx:id="colTtStatut" text="Statut" prefWidth="110"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>

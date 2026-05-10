@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="16" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.CongesController"
+      stylesheets="@style.css" styleClass="content-area">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <VBox spacing="6">
+        <Label text="Demandes congés" styleClass="title-label"/>
+        <Label text="CRUD, recherche et validation des demandes de congés" styleClass="welcome-subtitle"/>
+    </VBox>
+
+    <VBox spacing="12" styleClass="welcome-panel" VBox.vgrow="ALWAYS">
+        <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="txtSearchConge" promptText="Rechercher par employé, type, motif, statut..." HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnAddConge" text="＋ Ajouter"/>
+            <Button fx:id="btnEditConge" text="Modifier" styleClass="secondary-btn"/>
+            <Button fx:id="btnDeleteConge" text="Supprimer" styleClass="danger-btn"/>
+            <Button fx:id="btnApproveConge" text="Approuver" styleClass="apply-btn"/>
+            <Button fx:id="btnRejectConge" text="Refuser" styleClass="danger-btn"/>
+        </HBox>
+        <TableView fx:id="tableConge" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colCongeId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colCongeEmployeId" text="Employé ID" prefWidth="90"/>
+                <TableColumn fx:id="colCongeEmploye" text="Employé" prefWidth="160"/>
+                <TableColumn fx:id="colCongeType" text="Type congé" prefWidth="210"/>
+                <TableColumn fx:id="colCongeDebut" text="Début" prefWidth="110"/>
+                <TableColumn fx:id="colCongeFin" text="Fin" prefWidth="110"/>
+                <TableColumn fx:id="colCongeJours" text="Jours" prefWidth="70"/>
+                <TableColumn fx:id="colCongeMotif" text="Motif" prefWidth="180"/>
+                <TableColumn fx:id="colCongeStatut" text="Statut" prefWidth="110"/>
+                <TableColumn fx:id="colCongeAction" text="Action" prefWidth="180"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox>
