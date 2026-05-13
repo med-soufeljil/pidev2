@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="controllers.LoginController" stylesheets="@style.css" styleClass="content-area"
+           prefWidth="1000" prefHeight="680">
+    <VBox maxWidth="430" spacing="18" styleClass="welcome-panel">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+        <VBox spacing="6">
+            <Label text="Connexion" styleClass="welcome-title"/>
+            <Label text="Connectez-vous avec votre compte utilisateur" styleClass="welcome-subtitle"/>
+        </VBox>
+        <TextField fx:id="txtMail" promptText="Email"/>
+        <PasswordField fx:id="txtPassword" promptText="Mot de passe"/>
+        <Button text="Se connecter" onAction="#login" maxWidth="1.7976931348623157E308"/>
+        <Button text="Créer un compte" onAction="#openSignup" styleClass="secondary-btn" maxWidth="1.7976931348623157E308"/>
+        <HBox spacing="8" alignment="CENTER_RIGHT">
+            <Label text="Dark mode" styleClass="mode-label"/>
+            <ToggleButton fx:id="toggleDarkMode" styleClass="switch-toggle"/>
+        </HBox>
+    </VBox>
+</StackPane>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.DashboardController"
+      spacing="16" styleClass="content-area" stylesheets="@style.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Dashboard Exécutif" styleClass="title-label"/>
+
+    <HBox spacing="12">
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Candidats" styleClass="kpi-label"/>
+            <Label fx:id="lblCandidates" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Offres" styleClass="kpi-label"/>
+            <Label fx:id="lblOffers" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Recrutements" styleClass="kpi-label"/>
+            <Label fx:id="lblRecruitments" text="0" styleClass="kpi-number"/>
+        </VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS">
+            <Label text="Réunions" styleClass="kpi-label"/>
+            <Label fx:id="lblMeetings" text="0" styleClass="kpi-number"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="16">
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Statistique des offres par type" styleClass="panel-title"/>
+            <PieChart fx:id="pieOffresType" prefHeight="240" legendVisible="true"/>
+        </VBox>
+
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Applications par statut" styleClass="panel-title"/>
+            <PieChart fx:id="pieApplicationsStatut" prefHeight="240" legendVisible="true"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="16">
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Applications par offre" styleClass="panel-title"/>
+            <BarChart fx:id="barApplicationsByOffer" prefHeight="260" legendVisible="false" animated="false">
+                <xAxis>
+                    <CategoryAxis label="Offre"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Applications"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Actions" styleClass="panel-title"/>
+            <Button text="Exporter rapport PDF" onAction="#exportPdf"/>
+
+        </VBox>
+    </HBox>
+</VBox>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="25" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.event.MeteoController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
+
+    <VBox spacing="10">
+        <Label text="🌦️ Météo des Événements">
+            <font>
+                <Font name="System Bold" size="28" />
+            </font>
+        </Label>
+
+        <Label text="Consultez les prévisions météo pour vos événements"
+               style="-fx-text-fill: #666666; -fx-font-size: 14px;" />
+    </VBox>
+
+    <ComboBox fx:id="cbEvenement" promptText="Choisir un événement..." maxWidth="500" />
+
+    <!-- Carte météo améliorée -->
+    <VBox fx:id="meteoCard" spacing="20" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20" />
+        </padding>
+
+        <!-- En-tête avec ville et date -->
+        <VBox spacing="5">
+            <Label fx:id="lblVille" text="Sélectionnez un événement">
+                <font>
+                    <Font name="System Bold" size="20" />
+                </font>
+            </Label>
+            <Label fx:id="lblDate" text="-" style="-fx-text-fill: #666666;" />
+        </VBox>
+
+        <Separator />
+
+        <!-- Météo principale -->
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Label fx:id="lblMeteoPrincipale" style="-fx-font-size: 32px;">
+                <font>
+                    <Font size="32" />
+                </font>
+            </Label>
+            <VBox>
+                <Label fx:id="lblTemperature" style="-fx-font-size: 48px; -fx-font-weight: bold;" />
+                <Label fx:id="lblRessenti" style="-fx-text-fill: #666666;" />
+            </VBox>
+        </HBox>
+
+        <!-- Min/Max -->
+        <Label fx:id="lblMinMax" style="-fx-text-fill: #666666;" />
+
+        <!-- Grille de détails -->
+        <GridPane hgap="20" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="100" />
+                <ColumnConstraints minWidth="100" />
+            </columnConstraints>
+
+            <Label text="💧 Humidité" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+            <Label fx:id="lblHumidite" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+            <Label text="💨 Vent" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+            <Label fx:id="lblVent" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+            <Label text="📊 Pression" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+            <Label fx:id="lblPression" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+            <Label text="☁️ Nuages" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+            <Label fx:id="lblNuages" text="-" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+        </GridPane>
+
+        <Separator />
+
+        <!-- Conseil personnalisé -->
+        <VBox spacing="5">
+            <Label text="💡 Conseil" style="-fx-font-weight: bold;" />
+            <Label fx:id="lblConseil" wrapText="true" style="-fx-text-fill: #666666;" />
+        </VBox>
+    </VBox>
+</VBox>

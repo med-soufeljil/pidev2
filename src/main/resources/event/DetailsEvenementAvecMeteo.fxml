@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.event.DetailsEvenementController">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25" />
+    </padding>
+
+    <!-- En-tête avec emoji et titre -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label fx:id="emojiLabel" text="📅" style="-fx-font-size: 48px;" />
+        <VBox>
+            <Label fx:id="titreLabel" text="Titre de l'événement" wrapText="true">
+                <font>
+                    <Font name="System Bold" size="24" />
+                </font>
+            </Label>
+        </VBox>
+    </HBox>
+
+    <!-- Rectangle coloré -->
+    <Rectangle fx:id="colorRectangle" width="450" height="10" arcWidth="5" arcHeight="5" />
+
+    <Separator />
+
+    <!-- Grille d'informations -->
+    <VBox spacing="15">
+        <!-- Date -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="📅" style="-fx-font-size: 18px;" />
+            <Label text="Date :" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+            <Label fx:id="dateLabel" text="-" style="-fx-font-size: 14px;" />
+        </HBox>
+
+        <!-- Horaire -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="⏰" style="-fx-font-size: 18px;" />
+            <Label text="Horaire :" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+            <Label fx:id="heureLabel" text="-" style="-fx-font-size: 14px;" />
+        </HBox>
+
+        <!-- Lieu -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="📍" style="-fx-font-size: 18px;" />
+            <Label text="Lieu :" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+            <Label fx:id="lieuLabel" text="-" wrapText="true" style="-fx-font-size: 14px;" />
+        </HBox>
+
+        <!-- Bouton Maps -->
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 5 0 5 28;">
+            <Button fx:id="mapsButton" text="🗺️ Voir sur Google Maps" onAction="#handleOuvrirMaps"
+                    style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-cursor: hand; -fx-padding: 8 15; -fx-background-radius: 5; -fx-font-size: 13px;" />
+        </HBox>
+    </VBox>
+
+    <Separator />
+
+    <!-- Section Météo -->
+    <VBox spacing="8">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="🌦️" style="-fx-font-size: 18px;" />
+            <Label text="Météo prévue :" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+        </HBox>
+        <Label fx:id="meteoLabel" text="-" style="-fx-background-color: #f0f9ff; -fx-padding: 12; -fx-background-radius: 8; -fx-font-size: 13px;" wrapText="true" />
+    </VBox>
+
+    <!-- Section Places -->
+    <VBox spacing="8">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="👥" style="-fx-font-size: 18px;" />
+            <Label text="Places :" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+        </HBox>
+        <Label fx:id="placesLabel" text="-" style="-fx-font-size: 14px; -fx-padding: 5 0 0 28;" />
+    </VBox>
+
+    <!-- Section Description -->
+    <VBox spacing="8">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="📝" style="-fx-font-size: 18px;" />
+            <Label text="Description :" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+        </HBox>
+        <Label fx:id="descriptionLabel" text="-" wrapText="true" style="-fx-background-color: #f8fafc; -fx-padding: 12; -fx-background-radius: 8; -fx-font-size: 13px;" />
+    </VBox>
+
+    <Separator />
+
+    <!-- Boutons d'action -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button fx:id="participerButton" text="✅ Participer à cet événement"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 25; -fx-cursor: hand; -fx-background-radius: 8; -fx-font-size: 14px;" />
+        <Button text="❌ Fermer" onAction="#handleFermer"
+                style="-fx-background-color: #64748b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 25; -fx-cursor: hand; -fx-background-radius: 8; -fx-font-size: 14px;" />
+    </HBox>
+</VBox>

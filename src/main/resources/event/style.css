@@ -1,0 +1,183 @@
+/* style.css */
+
+.root {
+    -fx-font-family: 'Segoe UI', 'System';
+}
+
+/* Styles pour les boutons */
+.btn-primary {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.btn-secondary {
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #374151;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #d1d5db;
+}
+
+/* Styles pour les champs de formulaire */
+.input-field {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 5;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 14px;
+}
+
+.input-field:focused {
+    -fx-border-color: #2563eb;
+    -fx-border-width: 2;
+}
+
+/* Styles pour les labels de formulaire */
+.label-form {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #374151;
+}
+
+/* Style pour le panneau blanc */
+.white-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+/* Style pour la barre de recherche */
+.search-box {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-font-size: 14px;
+}
+
+/* Styles pour la sidebar */
+.sidebar {
+    -fx-background-color: #1e293b;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 14px;
+    -fx-padding: 12 20 12 20;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #334155;
+    -fx-text-fill: white;
+}
+
+/* Styles pour le sous-menu */
+.submenu {
+    -fx-background-color: #2b2b2b;
+}
+
+.submenu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 13px;
+    -fx-padding: 8 20 8 30;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+
+.submenu-btn:hover {
+    -fx-background-color: #334155;
+    -fx-text-fill: white;
+}
+
+.submenu-level-3-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 13px;
+    -fx-padding: 8 20 8 50;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+
+.submenu-level-3-btn:hover {
+    -fx-background-color: #334155;
+    -fx-text-fill: white;
+}
+
+/* Style pour le logo */
+.logo-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+}
+
+/* Style pour les icônes d'action */
+.action-icon {
+    -fx-cursor: hand;
+}
+
+.icon-edit {
+    -fx-fill: #2563eb;
+}
+
+.icon-delete {
+    -fx-fill: #dc2626;
+}
+
+.icon-edit:hover {
+    -fx-fill: #1d4ed8;
+}
+
+.icon-delete:hover {
+    -fx-fill: #b91c1c;
+}
+/* Add these styles for the participations icon */
+.icon-participations {
+    -fx-fill: #3b82f6;
+    -fx-cursor: hand;
+}
+
+.icon-participations:hover {
+    -fx-fill: #2563eb;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* Style for the action icons container */
+.action-icon {
+    -fx-cursor: hand;
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+}
+
+.icon-edit {
+    -fx-fill: #3b82f6;
+}
+
+.icon-edit:hover {
+    -fx-fill: #2563eb;
+}
+
+.icon-delete {
+    -fx-fill: #ef4444;
+}
+
+.icon-delete:hover {
+    -fx-fill: #dc2626;
+}

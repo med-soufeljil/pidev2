@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.FormationFormController" stylesheets="@style.css" styleClass="content-area">
+    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+    <Label text="Formulaire formation" styleClass="panel-title"/>
+    <TextField fx:id="tfTitre" promptText="Titre"/>
+    <TextArea fx:id="taDescription" promptText="Description" prefRowCount="3"/>
+    <TextField fx:id="tfDuree" promptText="Durée"/>
+    <ComboBox fx:id="cbNiveau" promptText="Niveau"/>
+    <ComboBox fx:id="cbCategorie" promptText="Catégorie"/>
+    <CheckBox fx:id="cbCertification" text="Certification incluse"/>
+    <HBox spacing="8">
+        <Button text="Enregistrer" onAction="#save"/>
+        <Button text="Annuler" onAction="#cancel" styleClass="secondary-btn"/>
+    </HBox>
+</VBox>

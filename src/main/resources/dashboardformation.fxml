@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true" pannable="true"
+            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@style.css" fx:controller="controllers.dashboardformationController">
+    <content>
+        <VBox prefWidth="1366" prefHeight="768" minHeight="768" spacing="16" styleClass="content-area">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+            <Button text="←" onAction="#retourMain" styleClass="secondary-btn"/>
+            <Label text="Dashboard décisionnel" styleClass="title-label"/>
+
+            <HBox spacing="12">
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations"/><Label fx:id="lblTotalFormations" styleClass="kpi-value"/></VBox>
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Apprenants"/><Label fx:id="lblTotalApprenants" styleClass="kpi-value"/></VBox>
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Durée moyenne"/><Label fx:id="lblAvgDuree" styleClass="kpi-value"/></VBox>
+                <VBox styleClass="kpi-card" prefWidth="220"><padding><Insets top="14" right="14" bottom="14" left="14"/></padding><Label text="Formations certifiées"/><Label fx:id="lblCertif" styleClass="kpi-value"/></VBox>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="welcome-panel">
+                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                <Label text="Top markets (tech)" styleClass="panel-title"/>
+                <TextField fx:id="tfTech" promptText="java / spring / react ..." prefWidth="240"/>
+                <Button text="Trouver Top 3" onAction="#findTopMarkets"/>
+                <Label fx:id="lblMarket1" text="-" styleClass="market-chip"/>
+                <Label fx:id="lblMarket2" text="-" styleClass="market-chip"/>
+                <Label fx:id="lblMarket3" text="-" styleClass="market-chip"/>
+                <Button text="Export PDF (API)" onAction="#exportPdf"/>
+                <Button text="Export CSV" onAction="#exportCsv" styleClass="secondary-btn"/>
+                
+            </HBox>
+
+            <HBox spacing="14">
+                <PieChart fx:id="pieChart" title="Certifications" prefWidth="460" prefHeight="260"/>
+                <BarChart fx:id="barChart" title="Vue comparative" prefWidth="620" prefHeight="260">
+                    <xAxis><CategoryAxis/></xAxis>
+                    <yAxis><NumberAxis/></yAxis>
+                </BarChart>
+            </HBox>
+
+            <LineChart fx:id="lineChart" title="Tendance" prefWidth="1080" prefHeight="220">
+                <xAxis><CategoryAxis/></xAxis>
+                <yAxis><NumberAxis/></yAxis>
+            </LineChart>
+        </VBox>
+    </content>
+</ScrollPane>

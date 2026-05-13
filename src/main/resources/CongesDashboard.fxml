@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="16" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.CongesDashboardController"
+      stylesheets="@style.css" styleClass="content-area">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="Dashboard Congés" styleClass="title-label"/>
+
+    <HBox spacing="12">
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><Label text="Total congés" styleClass="kpi-label"/><Label fx:id="lblCongeTotal" text="0" styleClass="kpi-number"/></VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><Label text="En attente" styleClass="kpi-label"/><Label fx:id="lblCongePending" text="0" styleClass="kpi-number"/></VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><Label text="Approuvées" styleClass="kpi-label"/><Label fx:id="lblCongeApproved" text="0" styleClass="kpi-number"/></VBox>
+        <VBox styleClass="kpi-card" HBox.hgrow="ALWAYS"><Label text="Refusées" styleClass="kpi-label"/><Label fx:id="lblCongeRejected" text="0" styleClass="kpi-number"/></VBox>
+    </HBox>
+
+    <HBox spacing="16" VBox.vgrow="ALWAYS">
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Demandes par statut" styleClass="panel-title"/>
+            <PieChart fx:id="pieStatut" prefHeight="260" legendVisible="true"/>
+        </VBox>
+        <VBox spacing="10" styleClass="welcome-panel" HBox.hgrow="ALWAYS">
+            <Label text="Demandes par type" styleClass="panel-title"/>
+            <BarChart fx:id="barType" prefHeight="260" legendVisible="false" animated="false">
+                <xAxis><CategoryAxis label="Type congé"/></xAxis>
+                <yAxis><NumberAxis label="Demandes"/></yAxis>
+            </BarChart>
+        </VBox>
+    </HBox>
+</VBox>
