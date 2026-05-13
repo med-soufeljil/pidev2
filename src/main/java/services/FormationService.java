@@ -45,8 +45,8 @@ public class FormationService {
     public void ajouter(Formation f) throws SQLException {
 
         // Requête SQL d’insertion avec des paramètres ?
-        String sql = "INSERT INTO formation (titre, description, duree, niveau, categorie, certification) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO formation (titre, description, duree, niveau, categorie, certification, course_url) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         // Préparation de la requête SQL
         PreparedStatement ps = connection.prepareStatement(sql);
@@ -58,6 +58,7 @@ public class FormationService {
         ps.setString(4, f.getNiveau().name());      // 4e ? → niveau (enum → String)
         ps.setString(5, f.getCategorie().name());   // 5e ? → catégorie (enum → String)
         ps.setBoolean(6, f.isCertification());      // 6e ? → certification (true/false)
+        ps.setString(7, f.getCourseUrl());          // 7e ? → URL du cours
 
         // Exécution de la requête INSERT
         ps.executeUpdate();
@@ -70,7 +71,7 @@ public class FormationService {
     public void modifier(Formation f) throws SQLException {
 
         // Requête SQL de mise à jour avec condition WHERE
-        String sql = "UPDATE formation SET titre=?, description=?, duree=?, niveau=?, categorie=?, certification=? " +
+        String sql = "UPDATE formation SET titre=?, description=?, duree=?, niveau=?, categorie=?, certification=?, course_url=? " +
                 "WHERE id_formation=?";
 
         // Préparation de la requête SQL
@@ -83,9 +84,10 @@ public class FormationService {
         ps.setString(4, f.getNiveau().name());      // nouveau niveau
         ps.setString(5, f.getCategorie().name());   // nouvelle catégorie
         ps.setBoolean(6, f.isCertification());      // nouvelle valeur certification
+        ps.setString(7, f.getCourseUrl());          // nouvelle URL
 
         // Condition WHERE (id de la formation à modifier)
-        ps.setInt(7, f.getId_formation());
+        ps.setInt(8, f.getId_formation());
 
         // Exécution de la requête UPDATE
         ps.executeUpdate();
@@ -152,6 +154,7 @@ public class FormationService {
 
             // Récupération du champ certification (true/false)
             f.setCertification(rs.getBoolean("certification"));
+            f.setCourseUrl(rs.getString("course_url"));
 
             // Ajout de la formation dans la liste
             formations.add(f);

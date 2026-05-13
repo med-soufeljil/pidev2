@@ -13,6 +13,7 @@
     <ComboBox fx:id="cbNiveau" promptText="Niveau"/>
     <ComboBox fx:id="cbCategorie" promptText="Catégorie"/>
     <CheckBox fx:id="cbCertification" text="Certification incluse"/>
+    <TextField fx:id="tfCourseUrl" promptText="Course URL"/>
     <HBox spacing="8">
         <Button text="Enregistrer" onAction="#save"/>
         <Button text="Annuler" onAction="#cancel" styleClass="secondary-btn"/>

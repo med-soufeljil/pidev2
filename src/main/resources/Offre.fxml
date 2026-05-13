@@ -36,7 +36,4 @@
         </columns>
     </TableView>
 
-    <Pagination fx:id="pagination" pageCount="1" maxPageIndicatorCount="5"/>
-
-    
 </VBox>

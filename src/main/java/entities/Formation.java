@@ -8,8 +8,9 @@ public class Formation {
     private Niveau niveau;
     private Categorie categorie;
     private boolean certification;
+    private String courseUrl;
 
-    public Formation(int id_formation, String titre, String description, int duree, Categorie categorie, Niveau niveau, boolean certification) {
+    public Formation(int id_formation, String titre, String description, int duree, Categorie categorie, Niveau niveau, boolean certification, String courseUrl) {
         this.id_formation = id_formation;
         this.titre = titre;
         this.description = description;
@@ -17,15 +18,17 @@ public class Formation {
         this.categorie = categorie;
         this.niveau = niveau;
         this.certification = certification;
+        this.courseUrl = courseUrl;
     }
 
-    public Formation(String titre, String description, Niveau niveau, int duree, Categorie categorie, boolean certification) {
+    public Formation(String titre, String description, Niveau niveau, int duree, Categorie categorie, boolean certification, String courseUrl) {
         this.titre = titre;
         this.description = description;
         this.niveau = niveau;
         this.duree = duree;
         this.categorie = categorie;
         this.certification = certification;
+        this.courseUrl = courseUrl;
     }
 
     public Formation() {
@@ -87,6 +90,14 @@ public class Formation {
         this.certification = certification;
     }
 
+    public String getCourseUrl() {
+        return courseUrl;
+    }
+
+    public void setCourseUrl(String courseUrl) {
+        this.courseUrl = courseUrl;
+    }
+
     @Override
     public String toString() {
         return "Formation{" +
@@ -97,6 +108,7 @@ public class Formation {
                 ", niveau=" + niveau +
                 ", categorie=" + categorie +
                 ", certification=" + certification +
+                ", courseUrl='" + courseUrl + '\'' +
                 '}';
     }
 }

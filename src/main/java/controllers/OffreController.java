@@ -27,13 +27,11 @@ public class OffreController {
     @FXML private TableColumn<Offre, Void> colAction;
     @FXML private Button btnAjouter, btnModifier, btnSupprimer, btnFiltre, btnResetFiltre;
     @FXML private Label lblCount;
-    @FXML private Pagination pagination;
 
     private final OffreService service = new OffreService();
     private final ObservableList<Offre> masterList = FXCollections.observableArrayList();
     private FilteredList<Offre> filteredList;
     private Comparator<Offre> currentComparator;
-    private static final int ROWS_PER_PAGE = 8;
 
     @FXML
     public void initialize() {
@@ -82,7 +80,6 @@ public class OffreController {
         configureActionColumn();
         applyPermissions();
 
-        pagination.currentPageIndexProperty().addListener((obs, oldV, newV) -> createPage(newV.intValue()));
         updatePagination();
     }
 
@@ -187,28 +184,7 @@ public class OffreController {
     }
 
     private void updatePagination() {
-        int total = getCurrentViewList().size();
-        int pageCount = (int) Math.ceil((double) total / ROWS_PER_PAGE);
-        pagination.setPageCount(pageCount == 0 ? 1 : pageCount);
-
-        int current = pagination.getCurrentPageIndex();
-        if (current >= pagination.getPageCount()) {
-            current = Math.max(0, pagination.getPageCount() - 1);
-            pagination.setCurrentPageIndex(current);
-        }
-        createPage(current);
-    }
-
-    private TableView<Offre> createPage(int pageIndex) {
-        List<Offre> list = getCurrentViewList();
-        int from = pageIndex * ROWS_PER_PAGE;
-        if (from >= list.size()) {
-            tableOffre.setItems(FXCollections.observableArrayList());
-            return tableOffre;
-        }
-        int to = Math.min(from + ROWS_PER_PAGE, list.size());
-        tableOffre.setItems(FXCollections.observableArrayList(list.subList(from, to)));
-        return tableOffre;
+        tableOffre.setItems(FXCollections.observableArrayList(getCurrentViewList()));
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {

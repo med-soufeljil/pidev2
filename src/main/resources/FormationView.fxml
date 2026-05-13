@@ -38,6 +38,7 @@
                         <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
                         <TableColumn fx:id="colCategorie" text="Catégorie" prefWidth="120"/>
                         <TableColumn fx:id="colCertif" text="Certif" prefWidth="90"/>
+                        <TableColumn fx:id="colCourseUrl" text="Course URL" prefWidth="220"/>
                         <TableColumn fx:id="colPostulerAction" text="Action" prefWidth="170"/>
                     </columns>
                 </TableView>

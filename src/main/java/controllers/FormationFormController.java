@@ -15,6 +15,7 @@ public class FormationFormController {
     @FXML private ComboBox<Niveau> cbNiveau;
     @FXML private ComboBox<Categorie> cbCategorie;
     @FXML private CheckBox cbCertification;
+    @FXML private TextField tfCourseUrl;
 
     private Formation result;
 
@@ -32,6 +33,7 @@ public class FormationFormController {
         cbNiveau.setValue(formation.getNiveau());
         cbCategorie.setValue(formation.getCategorie());
         cbCertification.setSelected(formation.isCertification());
+        tfCourseUrl.setText(formation.getCourseUrl());
     }
 
     @FXML
@@ -51,6 +53,7 @@ public class FormationFormController {
         f.setNiveau(cbNiveau.getValue());
         f.setCategorie(cbCategorie.getValue());
         f.setCertification(cbCertification.isSelected());
+        f.setCourseUrl(tfCourseUrl.getText() == null ? null : tfCourseUrl.getText().trim());
         result = f;
         close();
     }

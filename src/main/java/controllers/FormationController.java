@@ -50,6 +50,7 @@ public class FormationController implements Initializable {
     @FXML private TableColumn<Formation, Niveau> colNiveau;
     @FXML private TableColumn<Formation, Categorie> colCategorie;
     @FXML private TableColumn<Formation, Boolean> colCertif;
+    @FXML private TableColumn<Formation, String> colCourseUrl;
     @FXML private TableColumn<Formation, Void> colPostulerAction;
 
     @FXML private VBox boxEdition;
@@ -84,6 +85,7 @@ public class FormationController implements Initializable {
         colNiveau.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getNiveau()));
         colCategorie.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCategorie()));
         colCertif.setCellValueFactory(data -> new SimpleBooleanProperty(data.getValue().isCertification()));
+        colCourseUrl.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCourseUrl()));
         initActionColumn();
 
         tfRecherche.textProperty().addListener((obs, o, n) -> applyFiltersAndSort());
@@ -175,6 +177,7 @@ public class FormationController implements Initializable {
                 initial.setNiveau(result.getNiveau());
                 initial.setCategorie(result.getCategorie());
                 initial.setCertification(result.isCertification());
+                initial.setCourseUrl(result.getCourseUrl());
                 service.modifier(initial);
             }
             afficher();
