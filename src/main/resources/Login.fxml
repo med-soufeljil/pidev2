@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="controllers.LoginController" stylesheets="@style.css" styleClass="content-area"
            prefWidth="1000" prefHeight="680">
     <VBox maxWidth="430" spacing="18" styleClass="welcome-panel">
@@ -17,5 +17,9 @@
         <PasswordField fx:id="txtPassword" promptText="Mot de passe"/>
         <Button text="Se connecter" onAction="#login" maxWidth="1.7976931348623157E308"/>
         <Button text="Créer un compte" onAction="#openSignup" styleClass="secondary-btn" maxWidth="1.7976931348623157E308"/>
+        <HBox spacing="8" alignment="CENTER_RIGHT">
+            <Label text="Dark mode" styleClass="mode-label"/>
+            <ToggleButton fx:id="toggleDarkMode" styleClass="switch-toggle"/>
+        </HBox>
     </VBox>
 </StackPane>

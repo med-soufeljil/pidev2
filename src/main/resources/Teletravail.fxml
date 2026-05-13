@@ -26,7 +26,6 @@
         </HBox>
         <TableView fx:id="tableTt" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colTtId" text="ID" prefWidth="60"/>
                 <TableColumn fx:id="colTtEmployeId" text="Employé ID" prefWidth="90"/>
                 <TableColumn fx:id="colTtEmploye" text="Employé" prefWidth="160"/>
                 <TableColumn fx:id="colTtDebut" text="Début" prefWidth="110"/>

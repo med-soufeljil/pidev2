@@ -24,7 +24,7 @@ public class MainController {
     @FXML
     private Button btnRecruitmentSpace, btnTrainingSpace, btnLeaveSpace, btnUsers, btnFormation, btnApprenant;
     @FXML
-    private Button btnFormationDashboard, btnCongesDashboard, btnConges, btnTeletravailDashboard, btnTeletravail;
+    private Button btnFormationDashboard, btnCongesDashboard, btnConges, btnTeletravail;
     @FXML
     private ToggleButton toggleDarkMode;
     @FXML
@@ -73,9 +73,8 @@ public class MainController {
         btnApprenant.setOnAction(e -> loadUI("ApprenantView.fxml"));
         btnFormationDashboard.setOnAction(e -> loadUI("dashboardformation.fxml"));
 
-        btnCongesDashboard.setOnAction(e -> loadUI("CongesDashboard.fxml"));
+        btnCongesDashboard.setOnAction(e -> loadUI("CongesTeletravail.fxml"));
         btnConges.setOnAction(e -> loadUI("Conges.fxml"));
-        btnTeletravailDashboard.setOnAction(e -> loadUI("TeletravailDashboard.fxml"));
         btnTeletravail.setOnAction(e -> loadUI("Teletravail.fxml"));
 
         applyPermissions();

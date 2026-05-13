@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="controllers.SignupController" stylesheets="@style.css" styleClass="content-area"
            prefWidth="1000" prefHeight="760">
     <VBox maxWidth="520" spacing="14" styleClass="welcome-panel">
@@ -33,5 +33,9 @@
         </GridPane>
         <Button text="Créer le compte" onAction="#signup" maxWidth="1.7976931348623157E308"/>
         <Button text="Retour connexion" onAction="#openLogin" styleClass="secondary-btn" maxWidth="1.7976931348623157E308"/>
+        <HBox spacing="8" alignment="CENTER_RIGHT">
+            <Label text="Dark mode" styleClass="mode-label"/>
+            <ToggleButton fx:id="toggleDarkMode" styleClass="switch-toggle"/>
+        </HBox>
     </VBox>
 </StackPane>

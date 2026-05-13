@@ -6,16 +6,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import models.Utilisateur;
 import services.UtilisateurService;
 import utils.AuthContext;
 import utils.SessionContext;
+import utils.ThemeContext;
 
 public class SignupController {
     @FXML private TextField txtNom, txtPrenom, txtCin, txtMail, txtTel, txtPhoto;
     @FXML private PasswordField txtPassword;
     @FXML private ComboBox<String> cbRole;
+    @FXML private ToggleButton toggleDarkMode;
+    @FXML private StackPane rootPane;
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
 
@@ -23,6 +27,12 @@ public class SignupController {
     public void initialize() {
         cbRole.setItems(FXCollections.observableArrayList("EMPLOYE", "CANDIDAT"));
         cbRole.setValue("EMPLOYE");
+        applyTheme(ThemeContext.isDarkMode());
+        toggleDarkMode.setSelected(ThemeContext.isDarkMode());
+        toggleDarkMode.selectedProperty().addListener((obs, old, dark) -> {
+            ThemeContext.setDarkMode(dark);
+            applyTheme(dark);
+        });
     }
 
     @FXML
@@ -58,6 +68,7 @@ public class SignupController {
     private void openScene(String fxml, String title) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
+            if (ThemeContext.isDarkMode()) root.getStyleClass().add("dark-mode");
             Stage stage = (Stage) txtMail.getScene().getWindow();
             stage.setTitle(title);
             stage.setScene(new Scene(root));
@@ -65,6 +76,11 @@ public class SignupController {
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Navigation", e.getMessage());
         }
+    }
+
+    private void applyTheme(boolean dark) {
+        rootPane.getStyleClass().remove("dark-mode");
+        if (dark) rootPane.getStyleClass().add("dark-mode");
     }
 
     private void showAlert(Alert.AlertType type, String header, String content) {

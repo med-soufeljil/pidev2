@@ -53,9 +53,8 @@
 
             <VBox fx:id="leaveMenu" spacing="10">
                 <Label text="Congés &amp; TT" styleClass="section-label"/>
-                <Button text="📊 Dashboard congés" fx:id="btnCongesDashboard" styleClass="sidebar-btn"/>
+                <Button text="📊 Dashboard congés &amp; TT" fx:id="btnCongesDashboard" styleClass="sidebar-btn"/>
                 <Button text="🌴 Demandes congés" fx:id="btnConges" styleClass="sidebar-btn"/>
-                <Button text="📊 Dashboard télétravail" fx:id="btnTeletravailDashboard" styleClass="sidebar-btn"/>
                 <Button text="🏠 Demandes télétravail" fx:id="btnTeletravail" styleClass="sidebar-btn"/>
             </VBox>
 

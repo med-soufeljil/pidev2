@@ -19,7 +19,7 @@ import java.time.temporal.ChronoUnit;
 public class TeletravailController {
     @FXML private TextField txtSearchTt;
     @FXML private TableView<DemandeTeletravail> tableTt;
-    @FXML private TableColumn<DemandeTeletravail, Integer> colTtId, colTtEmployeId, colTtJours;
+    @FXML private TableColumn<DemandeTeletravail, Integer> colTtEmployeId, colTtJours;
     @FXML private TableColumn<DemandeTeletravail, String> colTtEmploye, colTtMotif, colTtStatut, colTtMois;
     @FXML private TableColumn<DemandeTeletravail, LocalDate> colTtDebut, colTtFin;
     @FXML private TableColumn<DemandeTeletravail, Void> colTtAction;
@@ -38,7 +38,6 @@ public class TeletravailController {
     }
 
     private void configureTable() {
-        colTtId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTtEmployeId.setCellValueFactory(new PropertyValueFactory<>("idEmploye"));
         colTtEmploye.setCellValueFactory(new PropertyValueFactory<>("employeNom"));
         colTtDebut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
@@ -96,7 +95,7 @@ public class TeletravailController {
 
     private void refreshTable() {
         try {
-            ttMaster.setAll(ttService.recupererVisibles());
+            ttMaster.setAll(AuthContext.isAdmin() ? ttService.recuperer() : ttService.recupererVisibles());
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Chargement", e.getMessage());
         }
@@ -105,7 +104,6 @@ public class TeletravailController {
     private void filterTeletravail(String query) {
         String q = query == null ? "" : query.toLowerCase().trim();
         ttFiltered.setPredicate(d -> q.isEmpty()
-                || String.valueOf(d.getId()).contains(q)
                 || String.valueOf(d.getIdEmploye()).contains(q)
                 || safe(d.getEmployeNom()).contains(q)
                 || safe(d.getMoisConcerne()).contains(q)

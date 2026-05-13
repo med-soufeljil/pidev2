@@ -27,14 +27,14 @@ public class CongesTeletravailController {
     @FXML private Tab tabDashboard, tabConge, tabTeletravail;
 
     @FXML private TableView<DemandeConge> tableConge;
-    @FXML private TableColumn<DemandeConge, Integer> colCongeId, colCongeEmployeId;
+    @FXML private TableColumn<DemandeConge, Integer> colCongeEmployeId;
     @FXML private TableColumn<DemandeConge, String> colCongeEmploye, colCongeType, colCongeMotif, colCongeStatut;
     @FXML private TableColumn<DemandeConge, LocalDate> colCongeDebut, colCongeFin;
     @FXML private TableColumn<DemandeConge, Long> colCongeJours;
     @FXML private Button btnAddConge, btnEditConge, btnDeleteConge, btnApproveConge, btnRejectConge;
 
     @FXML private TableView<DemandeTeletravail> tableTt;
-    @FXML private TableColumn<DemandeTeletravail, Integer> colTtId, colTtEmployeId, colTtJours;
+    @FXML private TableColumn<DemandeTeletravail, Integer> colTtEmployeId, colTtJours;
     @FXML private TableColumn<DemandeTeletravail, String> colTtEmploye, colTtMotif, colTtStatut, colTtMois;
     @FXML private TableColumn<DemandeTeletravail, LocalDate> colTtDebut, colTtFin;
     @FXML private Button btnAddTt, btnEditTt, btnDeleteTt, btnApproveTt, btnRejectTt;
@@ -57,7 +57,6 @@ public class CongesTeletravailController {
     }
 
     private void configureCongeTable() {
-        colCongeId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCongeEmployeId.setCellValueFactory(new PropertyValueFactory<>("idEmploye"));
         colCongeEmploye.setCellValueFactory(new PropertyValueFactory<>("employeNom"));
         colCongeType.setCellValueFactory(new PropertyValueFactory<>("typeConge"));
@@ -72,7 +71,6 @@ public class CongesTeletravailController {
     }
 
     private void configureTtTable() {
-        colTtId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTtEmployeId.setCellValueFactory(new PropertyValueFactory<>("idEmploye"));
         colTtEmploye.setCellValueFactory(new PropertyValueFactory<>("employeNom"));
         colTtDebut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
@@ -151,7 +149,6 @@ public class CongesTeletravailController {
     private void filterConges(String query) {
         String q = query == null ? "" : query.toLowerCase().trim();
         congeFiltered.setPredicate(d -> q.isEmpty()
-                || String.valueOf(d.getId()).contains(q)
                 || String.valueOf(d.getIdEmploye()).contains(q)
                 || safe(d.getEmployeNom()).contains(q)
                 || safe(d.getTypeConge()).contains(q)
@@ -162,7 +159,6 @@ public class CongesTeletravailController {
     private void filterTeletravail(String query) {
         String q = query == null ? "" : query.toLowerCase().trim();
         ttFiltered.setPredicate(d -> q.isEmpty()
-                || String.valueOf(d.getId()).contains(q)
                 || String.valueOf(d.getIdEmploye()).contains(q)
                 || safe(d.getEmployeNom()).contains(q)
                 || safe(d.getMoisConcerne()).contains(q)

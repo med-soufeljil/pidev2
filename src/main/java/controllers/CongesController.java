@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class CongesController {
     @FXML private TextField txtSearchConge;
     @FXML private TableView<DemandeConge> tableConge;
-    @FXML private TableColumn<DemandeConge, Integer> colCongeId, colCongeEmployeId;
+    @FXML private TableColumn<DemandeConge, Integer> colCongeEmployeId;
     @FXML private TableColumn<DemandeConge, String> colCongeEmploye, colCongeType, colCongeMotif, colCongeStatut;
     @FXML private TableColumn<DemandeConge, LocalDate> colCongeDebut, colCongeFin;
     @FXML private TableColumn<DemandeConge, Long> colCongeJours;
@@ -37,7 +37,6 @@ public class CongesController {
     }
 
     private void configureTable() {
-        colCongeId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCongeEmployeId.setCellValueFactory(new PropertyValueFactory<>("idEmploye"));
         colCongeEmploye.setCellValueFactory(new PropertyValueFactory<>("employeNom"));
         colCongeType.setCellValueFactory(new PropertyValueFactory<>("typeConge"));
@@ -95,7 +94,7 @@ public class CongesController {
 
     private void refreshTable() {
         try {
-            congeMaster.setAll(congeService.recupererVisibles());
+            congeMaster.setAll(AuthContext.isAdmin() ? congeService.recuperer() : congeService.recupererVisibles());
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Chargement", e.getMessage());
         }
@@ -104,7 +103,6 @@ public class CongesController {
     private void filterConges(String query) {
         String q = query == null ? "" : query.toLowerCase().trim();
         congeFiltered.setPredicate(d -> q.isEmpty()
-                || String.valueOf(d.getId()).contains(q)
                 || String.valueOf(d.getIdEmploye()).contains(q)
                 || safe(d.getEmployeNom()).contains(q)
                 || safe(d.getTypeConge()).contains(q)

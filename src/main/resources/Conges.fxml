@@ -26,7 +26,6 @@
         </HBox>
         <TableView fx:id="tableConge" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colCongeId" text="ID" prefWidth="60"/>
                 <TableColumn fx:id="colCongeEmployeId" text="Employé ID" prefWidth="90"/>
                 <TableColumn fx:id="colCongeEmploye" text="Employé" prefWidth="160"/>
                 <TableColumn fx:id="colCongeType" text="Type congé" prefWidth="210"/>

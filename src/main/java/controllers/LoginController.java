@@ -7,17 +7,32 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import models.Utilisateur;
 import services.UtilisateurService;
 import utils.AuthContext;
 import utils.SessionContext;
+import utils.ThemeContext;
 
 public class LoginController {
     @FXML private TextField txtMail;
     @FXML private PasswordField txtPassword;
+    @FXML private ToggleButton toggleDarkMode;
+    @FXML private StackPane rootPane;
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
+
+    @FXML
+    public void initialize() {
+        applyTheme(ThemeContext.isDarkMode());
+        toggleDarkMode.setSelected(ThemeContext.isDarkMode());
+        toggleDarkMode.selectedProperty().addListener((obs, old, dark) -> {
+            ThemeContext.setDarkMode(dark);
+            applyTheme(dark);
+        });
+    }
 
     @FXML
     private void login() {
@@ -47,6 +62,7 @@ public class LoginController {
     private void openScene(String fxml, String title) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
+            if (ThemeContext.isDarkMode()) root.getStyleClass().add("dark-mode");
             Stage stage = (Stage) txtMail.getScene().getWindow();
             stage.setTitle(title);
             stage.setScene(new Scene(root));
@@ -54,6 +70,11 @@ public class LoginController {
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Navigation", e.getMessage());
         }
+    }
+
+    private void applyTheme(boolean dark) {
+        rootPane.getStyleClass().remove("dark-mode");
+        if (dark) rootPane.getStyleClass().add("dark-mode");
     }
 
     private void showAlert(Alert.AlertType type, String header, String content) {
